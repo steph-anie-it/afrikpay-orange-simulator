@@ -8,88 +8,131 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: NumberRepository::class)]
 class Number
 {
+    public const MSISDN="msisdn";
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $numberId = null;
+    #[ORM\Column(length: 255)]
+    private ?string $numberid = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $numberNumber = null;
+    private ?string $customername = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $numberphone = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $msisdn = null;
 
 
     #[ORM\Column(length: 255)]
-    private ?string $airtimeBalance = null;
+    private ?string $accountNumber = null;
+
+    #[ORM\Column(length: 255,nullable: true)]
+    private ?string $numberoldbalance = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $description = null;
+    private ?string $numbernewbalance = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $customerName = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getNumberId(): ?int
+    public function getNumberid(): ?string
     {
-        return $this->numberId;
+        return $this->numberid;
     }
 
-    public function setNumberId(int $numberId): static
+    public function setNumberid(string $numberid): static
     {
-        $this->numberId = $numberId;
+        $this->numberid = $numberid;
 
         return $this;
     }
 
-    public function getNumberNumber(): ?string
+
+    public function getCustomername(): ?string
     {
-        return $this->numberNumber;
+        return $this->customername;
     }
 
-    public function setNumberNumber(string $numberNumber): static
+    public function setCustomername(string $numberid): static
     {
-        $this->numberNumber = $numberNumber;
+        $this->customername = $numberid;
 
         return $this;
     }
 
-    public function getDescription(): ?string
+
+    /**
+     * @return string|null
+     */
+    public function getNumberphone(): ?string
     {
-        return $this->description;
+        return $this->numberphone;
     }
 
-    public function setDescription(string $description): static
+
+    /**
+     * @param string|null $numberphone
+     */
+    public function setNumberphone(?string $numberphone): static
     {
-        $this->description = $description;
+        $this->numberphone = $numberphone;
 
         return $this;
     }
 
-    public function getCustomerName(): ?string
+    public function getNumberoldbalance(): ?string
     {
-        return $this->customerName;
+        return $this->numberoldbalance;
     }
 
-    public function setCustomerName(string $customerName): static
+    public function setNumberoldbalance(string $numberoldbalance): static
     {
-        $this->customerName = $customerName;
+        $this->numberoldbalance = $numberoldbalance;
 
         return $this;
     }
 
-    public function getAirtimeBalance(): ?string
+    public function getNumbernewbalance(): ?string
     {
-        return $this->airtimeBalance;
+        return $this->numbernewbalance;
     }
 
-    public function setAirtimeBalance(string $airtimeBalance): static
+    public function setNumbernewbalance(string $numbernewbalance): static
     {
-        $this->airtimeBalance = $airtimeBalance;
+        $this->numbernewbalance = $numbernewbalance;
+
+        return $this;
+    }
+
+    public function getMsisdn(): ?string
+    {
+        return $this->msisdn;
+    }
+
+    public function setMsisdn(string $msisdn): static
+    {
+        $this->msisdn = $msisdn;
+
+        return $this;
+    }
+
+
+    public function getAccountNumber(): ?string
+    {
+        return $this->accountNumber;
+    }
+
+    public function setAccountNumber(string $accountnummber): static
+    {
+        $this->accountNumber = $accountnummber;
 
         return $this;
     }

@@ -2,9 +2,23 @@
 
 namespace App\Service;
 
-use App\Dto\NumberResultDto;
+use App\Dto\AccountCreateDto;
+use App\Dto\AccountCreateResultDto;
+use App\Dto\GenerateNumberDto;
+use App\Dto\GenerateNumberResultDto;
+use App\Dto\PayAirtimeDto;
+use App\Dto\PayAirtimeFullDto;
+use App\Dto\PayAirtimeResultDto;
+use App\Dto\Result\CommandResultDto;
 
 interface NumberService
 {
-    public function generateNumber():NumberResultDto;
+    public function generateNumber() : GenerateNumberResultDto;
+
+    public function payAirtime(PayAirtimeFullDto $payAirtimeFullDto):CommandResultDto;
+
+    public function payeAirtime(string $xmlString) : mixed;
+
+    public function createAirtimeAccount(AccountCreateDto $createDto) : AccountCreateResultDto;
+
 }

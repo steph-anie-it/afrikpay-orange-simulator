@@ -21,7 +21,7 @@ class NumberRepository extends ServiceEntityRepository
         parent::__construct($registry, Number::class);
     }
 
-    public function save(Number $number):Number{
+    public function save(Number $number): Number{
         $entityManager =  $this->getEntityManager();
         $entityManager->persist($number);
         $entityManager->flush();;

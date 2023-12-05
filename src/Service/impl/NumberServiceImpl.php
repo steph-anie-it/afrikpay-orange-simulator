@@ -305,9 +305,4 @@ class NumberServiceImpl implements NumberService
         return $this->utilService->map($sourceObject,$destinationClass);
     }
 
-    public function payeAirtime(string $xmlString): mixed
-    {
-        dd($xmlString);
-        // TODO: Implement payeAirtime() method.
-    }
 }

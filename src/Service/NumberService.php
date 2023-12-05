@@ -19,8 +19,6 @@ interface NumberService
 
     public function payAirtime(PayAirtimeFullDto $payAirtimeFullDto):CommandResultDto;
 
-    public function payeAirtime(string $xmlString) : mixed;
-
     public function check(PayAirtimeDto $payAirtimeDto);
 
     public function checkAccount(CommandHeaderDto $header,Transaction $transaction=null);

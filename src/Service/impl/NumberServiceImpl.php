@@ -143,7 +143,7 @@ class NumberServiceImpl implements NumberService
         return $result;
     }
 
-    private function checkAccount(CommandHeaderDto $header,Transaction $transaction=null){
+    public function checkAccount(CommandHeaderDto $header,Transaction $transaction=null){
         $mappedAccount = $this->utilService->mapWithUnder($header,Account::class);
         if (!($mappedAccount instanceof Account)) {
             throw new InvalidDataException();

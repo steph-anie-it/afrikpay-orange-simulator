@@ -38,6 +38,10 @@ class Number
     private ?string $numbernewbalance = null;
 
 
+    #[ORM\Column(length: 255)]
+    private ?string $numberdatabalance = null;
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -133,6 +137,18 @@ class Number
     public function setAccountNumber(string $accountnummber): static
     {
         $this->accountNumber = $accountnummber;
+
+        return $this;
+    }
+
+    public function getNumberdatabalance(): ?string
+    {
+        return $this->numberdatabalance;
+    }
+
+    public function setNumberdatabalance(string $numberdatabalance): static
+    {
+        $this->numberdatabalance = $numberdatabalance;
 
         return $this;
     }

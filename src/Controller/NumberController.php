@@ -31,7 +31,24 @@ interface NumberController
     public const ACCOUNT_AIRTIME_DESCRIPTION = 'Create an airtime account';
     public const ACCOUNT_AIRTIME_METHOD = 'POST';
 
+
+    public const TRANSACTION_STATUS_URI = '/api/transaction/status';
+    public const TRANSACTION_STATUS_NAME = 'transaction_status_post';
+    public const TRANSACTION_STATUS_DESCRIPTION = 'Status of a transaction';
+    public const TRANSACTION_STATUS_METHOD = 'POST';
+
+
+    public const PAY_DATA_URI = '/api/data/pay';
+    public const PAY_DATA_NAME = 'number_pay_data_post';
+    public const PAY_DATA_DESCRIPTION = 'Pay data for a number';
+    public const PAY_DATA_METHOD = 'POST';
+
+
     public function createAccount(AccountCreateDto $createDto): AccountAirtimeResponse;
     public function generateNumber(): GenerateAirtimeResponse;
     public function payAirtime(Request $request, \App\Dto\Command $payAirtimeDto):\App\Response\Command;
+
+    public function payData(Request $request, \App\Dto\Command $payAirtimeDto):\App\Response\Command;
+
+    public function transactionStatus(Request $request, \App\Dto\Command $payAirtimeDto):\App\Response\Command;
 }

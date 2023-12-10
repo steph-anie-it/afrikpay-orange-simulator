@@ -9,7 +9,9 @@ use App\Dto\GenerateNumberDto;
 use App\Dto\GenerateNumberResultDto;
 use App\Dto\PayAirtimeDto;
 use App\Dto\PayAirtimeFullDto;
+use App\Dto\PayDataFullDto;
 use App\Dto\Result\CommandResultDto;
+use App\Dto\TransactionStatusFullDto;
 use App\Entity\Account;
 use App\Entity\Number;
 use App\Entity\Transaction;
@@ -76,9 +78,16 @@ class NumberServiceImpl implements NumberService
     }
 
     /**
-     * @throws InsufficientBalanceException
-     * @throws NonUniqueExternalIdException
+     * @param PayAirtimeFullDto $payAirtimeFullDto
+     * @return CommandResultDto
      * @throws AccountNotFoundException
+     * @throws BadPinNumberException
+     * @throws InsufficientBalanceException
+     * @throws InvalidCredentialsException
+     * @throws InvalidDataException
+     * @throws InvalidPhoneNumberException
+     * @throws NonUniqueExternalIdException
+     * @throws ParameterNotFoundException
      * @throws \ReflectionException
      */
     public function payAirtime(PayAirtimeFullDto $payAirtimeFullDto): CommandResultDto
@@ -301,4 +310,13 @@ class NumberServiceImpl implements NumberService
         return $this->utilService->map($sourceObject,$destinationClass);
     }
 
+    public function payData(PayDataFullDto $param): CommandResultDto
+    {
+        // TODO: Implement payData() method.
+    }
+
+    public function transactionStatus(TransactionStatusFullDto $param): CommandResultDto
+    {
+        // TODO: Implement transactionStatus() method.
+    }
 }

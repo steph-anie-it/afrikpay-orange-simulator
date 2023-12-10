@@ -161,7 +161,7 @@ class NumberServiceImpl implements NumberService
         if(!$account){
             throw new AccountNotFoundException($mappedAccount->getLogin(),$transaction);
         }
-
+/*
         $account = $this->accountRepository->findOneBy([
                 Account::REQUESTGATEWAYCODE => $mappedAccount->getRequestgatewaycode()]
         );
@@ -170,7 +170,7 @@ class NumberServiceImpl implements NumberService
             $message = sprintf(self::BADPARAMETER_FORMAT,Account::REQUESTGATEWAYCODE,$mappedAccount->getRequestgatewaycode());
             throw new ParameterNotFoundException($message,$transaction);
         }
-
+*/
         if(!$this->passwordHasher->isPasswordValid($account,$mappedAccount->getPassword())){
             throw new InvalidCredentialsException($account->getLogin(),$transaction);
         }

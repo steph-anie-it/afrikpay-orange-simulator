@@ -13,11 +13,11 @@ class Command
 
     public ?string $LOGINID=null;
     public ?string $EXTREFNUM;
-    public ?int $MSISDN2;
-    public ?float $AMOUNT;
-    public ?int $SELECTOR;
-    public ?int $LANGUAGE1;
-    public ?int $LANGUAGE2;
+    public ?int $MSISDN2=null;
+    public ?float $AMOUNT=null;
+    public ?int $SELECTOR=null;
+    public ?int $LANGUAGE1=null;
+    public ?int $LANGUAGE2=null;
 
 
 

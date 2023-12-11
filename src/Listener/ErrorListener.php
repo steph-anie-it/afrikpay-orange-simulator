@@ -41,7 +41,7 @@ class ErrorListener implements EventSubscriberInterface
 
         $txttype = null;
         $extRefNum = null;
-//        dd($throwable);
+        dd($throwable);
         $messageFormat  = "Code %s message %s file %s line %s";
         $message = $throwable->getMessage();
         if($throwable instanceof GeneralException){

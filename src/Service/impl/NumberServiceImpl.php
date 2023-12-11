@@ -96,8 +96,13 @@ class NumberServiceImpl implements NumberService
         $transaction->setTxnStatus(strval(200));
         $transaction->setOperation($operation);
         $transaction->setType($type);
-        $transaction->setBalanceold($oldBalance);
-        $transaction->setBalancenew($newbalance);
+        if($oldBalance){
+            $transaction->setBalanceold($oldBalance);
+        }
+        if($newbalance){
+            $transaction->setBalancenew($newbalance);
+        }
+
         $transaction->setTxnid($txnId);
         return  $transaction;
     }
@@ -129,7 +134,6 @@ class NumberServiceImpl implements NumberService
         $number = $this->numberRepository->findOneBy([Number::MSISDN=> $transaction->getMsisdn2()]);
 
         if(!$number){
-            $responseStatus = ResponseStatus::INVALID_PHONE_NUMBER;
             throw new GeneralException(null,$transaction,ResponseStatus::INVALID_PHONE_NUMBER);
         }
         $transactionId = null;
@@ -201,12 +205,7 @@ class NumberServiceImpl implements NumberService
         return $result;
     }
 
-    /**
-     * @throws InvalidCredentialsException
-     * @throws AccountNotFoundException
-     * @throws InvalidDataException
-     * @throws BadPinNumberException
-     */
+
     public function checkCredentials(CommandHeaderDto $header, Transaction $transaction=null): Account
     {
         $mappedAccount = $this->utilService->mapWithUnder($header,Account::class);
@@ -224,7 +223,6 @@ class NumberServiceImpl implements NumberService
             throw new GeneralException("",$transaction,ResponseStatus::ACCOUNT_NOT_FOUND);
         }
 
-
         if(!$this->passwordHasher->isPasswordValid($account,$mappedAccount->getPassword())){
             throw new GeneralException("",$transaction,ResponseStatus::INVALID_CREDENTIAL);
         }
@@ -236,7 +234,7 @@ class NumberServiceImpl implements NumberService
         return $account;
     }
 
-    public function checkAccount(CommandHeaderDto $header,Transaction $transaction=null){
+    public function checkAccount(CommandHeaderDto $header,Transaction $transaction=null): Account{
         $mappedAccount = $this->utilService->mapWithUnder($header,Account::class);
         if (!($mappedAccount instanceof Account)) {
             throw new InvalidDataException();
@@ -335,6 +333,7 @@ class NumberServiceImpl implements NumberService
         if($result instanceof AccountCreateResultDto){
             $result->apikey = $clearApiKey;
         }
+
         return  $result;
     }
 
@@ -396,12 +395,12 @@ class NumberServiceImpl implements NumberService
 
     public function payData(PayDataFullDto $param): CommandResultDto
     {
-        // TODO: Implement payData() method.
+        return new CommandResultDto();
     }
 
     public function transactionStatus(TransactionStatusFullDto $param): CommandResultDto
     {
-        // TODO: Implement transactionStatus() method.
+        return new CommandResultDto();
     }
 
     public function listAccount(): array
@@ -447,11 +446,20 @@ class NumberServiceImpl implements NumberService
         $commandHeader = $this->utilService->mapObjectXml($commandXml,CommandHeaderDto::class);
 
         $command = $this->utilService->mapObjectXml($commandXml,Command::class);
-        $transaction    = $this->utilService->map($command,Transaction::class,true);
+
+        $transaction   = $this->utilService->map($command,Transaction::class);
+//        dd($transaction);
         $account =  $this->checkCredentials($commandHeader,$transaction);
-        $result = $this->utilService->map($account,CommandResultDto::class,true);
-        $message = $this->getMessage($command->TYPE);
+        $txnsid = $this->utilService->generateTransactionId();
+        $transaction = $this->buildTransaction($txnsid,OperationNature::BALANCE->value(),$command->TYPE);
+        $transaction->setExtrefnum($command->EXTREFNUM);
+        $transaction =  $this->transactionRepository->save($transaction);
+
+        $result = $this->utilService->map($transaction,CommandResultDto::class,true);
+
         if($result instanceof CommandResultDto){
+            $message = $this->getMessage($command->TYPE);
+            $result->DATE = $transaction->getDateEndTransaction()->format('d/m/Y H:i:s');
             $result->MESSAGE = sprintf($message->getMessage(),$account->getBalance());
         }
         return $result;

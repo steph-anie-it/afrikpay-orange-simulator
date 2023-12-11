@@ -26,7 +26,7 @@ interface NumberService
 
     public function check(PayAirtimeDto $payAirtimeDto);
 
-    public function checkAccount(CommandHeaderDto $header,Transaction $transaction=null);
+    public function checkAccount(CommandHeaderDto $header,Transaction $transaction=null):Account;
 
     public function createAirtimeAccount(AccountCreateDto $createDto) : AccountCreateResultDto;
 

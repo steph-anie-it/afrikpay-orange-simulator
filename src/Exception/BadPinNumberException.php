@@ -3,6 +3,7 @@
 namespace App\Exception;
 
 use App\Entity\Transaction;
+use App\Model\ResponseStatus;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\WithHttpStatus;
 use Throwable;
@@ -16,6 +17,6 @@ class BadPinNumberException extends  GeneralException
     {
         $this->transaction = $transaction;
         $message = sprintf(self::MESSAGE,$message);
-        parent::__construct($message,$transaction, $code, $previous);
+        parent::__construct($message,$transaction,ResponseStatus::UNKNOW_ERROR,$code);
     }
 }

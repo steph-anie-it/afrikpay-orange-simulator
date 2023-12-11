@@ -34,11 +34,14 @@ class Number
     #[ORM\Column(length: 255,nullable: true)]
     private ?string $numberoldbalance = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255,nullable: true)]
+    private ?string $numberbalance = null;
+
+    #[ORM\Column(length: 255,nullable: true)]
     private ?string $numbernewbalance = null;
 
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255,nullable: true)]
     private ?string $numberdatabalance = null;
 
 
@@ -149,6 +152,18 @@ class Number
     public function setNumberdatabalance(string $numberdatabalance): static
     {
         $this->numberdatabalance = $numberdatabalance;
+
+        return $this;
+    }
+
+    public function getNumberbalance(): ?string
+    {
+        return $this->numberbalance;
+    }
+
+    public function setNumberbalance(?string $numberbalance): static
+    {
+        $this->numberbalance = $numberbalance;
 
         return $this;
     }

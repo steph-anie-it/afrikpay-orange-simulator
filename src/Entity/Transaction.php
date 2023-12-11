@@ -36,6 +36,10 @@ class Transaction
     #[ORM\Column(type: "bigint",nullable: true)]
     private ?int $txnStatus = null;
 
+
+    #[ORM\Column(length: 255,nullable: true)]
+    private ?string $operation = null;
+
     #[ORM\Column(length: 255,nullable: true)]
     private ?string $txnid = null;
 
@@ -81,13 +85,13 @@ class Transaction
     #[ORM\Column(length: 255,nullable: true)]
     private ?string $language2 = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255,nullable: true)]
     private ?string $pin = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255,nullable: true)]
     private ?string $extnwcode = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255,nullable: true)]
     private ?string $selector = null;
 
     public function getId(): ?int
@@ -331,6 +335,18 @@ class Transaction
     public function setMsisdn2(?string $msisdn2): static
     {
         $this->msisdn2 = $msisdn2;
+
+        return $this;
+    }
+
+    public function getOperation(): ?string
+    {
+        return $this->operation;
+    }
+
+    public function setOperation(?string $operation): static
+    {
+        $this->operation = $operation;
 
         return $this;
     }

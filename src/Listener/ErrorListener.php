@@ -38,8 +38,17 @@ class ErrorListener implements EventSubscriberInterface
         $throwable = $exceptionEvent->getThrowable();
         $code = strval($throwable->getCode());
         $txnid = null;
+
         $txttype = null;
         $extRefNum = null;
+//        dd($throwable);
+        $messageFormat  = "Code %s message %s file %s line %s";
+        $message = $throwable->getMessage();
+        if($throwable instanceof GeneralException){
+            $code = $throwable->getResponseStatus()->code();
+            $message = $throwable->getResponseStatus()->message();
+        }
+
         if(is_subclass_of($throwable,GeneralException::class)){
             $transaction = $throwable->getTransaction();
             if($transaction){
@@ -48,10 +57,18 @@ class ErrorListener implements EventSubscriberInterface
                 $txnid = $transaction->getTxnid();
                 $extRefNum = $transaction->getExtrefnum();
             }
+            $code = $throwable->getResponseStatus()->code();
+            $message = $throwable->getResponseStatus()->message();
         }
-        $code = $throwable->getCode();
 
-        $this->logger->info(sprintf($message, $throwable->getCode(), $throwable->getMessage()));
+//        $this->logger->info(sprintf($message, $throwable->getCode(), $throwable->getMessage()));
+
+        $errorMessage = sprintf($messageFormat, $code,
+            $message,
+            $throwable->getFile(),$throwable->getLine());
+
+        $this->logger->critical($errorMessage);
+
         $exceptionEvent->allowCustomResponseCode();
         $commandResult = new \App\Dto\Result\CommandResultDto();
 
@@ -69,8 +86,8 @@ class ErrorListener implements EventSubscriberInterface
 
         $commandResult->TXNSTATUS = $code;
         $date = new \DateTime();
-        $commandResult->DATE = $date->format('Y:m:d H:i:s');
-        $commandResult->MESSAGE  = $throwable->getMessage();
+        $commandResult->DATE = $date->format('Y/m/d H:i:s');
+        $commandResult->MESSAGE  = $message;
         $response = new Command($commandResult);
         $response->setStatusCode(200);
         $exceptionEvent->setResponse($response);

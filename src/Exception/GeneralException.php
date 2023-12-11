@@ -3,15 +3,21 @@
 namespace App\Exception;
 
 use App\Entity\Transaction;
+use App\Model\ResponseStatus;
 use Throwable;
 
 class GeneralException extends  \Exception
 {
     public ?Transaction $transaction = null;
+    private ResponseStatus $responseStatus;
 
-    public function __construct(string $message = "",Transaction $transaction = null, int $code = 500, ?Throwable $previous = null)
+    public function __construct(string $message = "",
+                                Transaction $transaction = null,
+                                ResponseStatus $responseStatus = ResponseStatus::UNKNOW_ERROR,
+                                int $code = 500, ?Throwable $previous = null)
     {
         $this->transaction = $transaction;
+        $this->responseStatus = $responseStatus;
         parent::__construct($message, $code, $previous);
     }
 
@@ -21,6 +27,14 @@ class GeneralException extends  \Exception
     public function getTransaction(): ?Transaction
     {
         return $this->transaction;
+    }
+
+    /**
+     * @return ResponseStatus
+     */
+    public function getResponseStatus(): ResponseStatus
+    {
+        return $this->responseStatus;
     }
 
 }

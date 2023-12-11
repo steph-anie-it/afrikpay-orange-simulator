@@ -5,6 +5,7 @@ use App\Controller\NumberController as INumberController;
 use App\Dto\AccountCreateDto;
 use App\Dto\AccountCreateResultDto;
 use App\Dto\Command;
+use App\Dto\CommandMessage;
 use App\Dto\PayAirtimeDto;
 use App\Dto\PayAirtimeFullDto;
 use App\Dto\PayAirtimeResultDto;
@@ -17,6 +18,7 @@ use App\Service\NumberService;
 use App\Service\XmlResolver;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Annotation\Route;
@@ -50,6 +52,15 @@ class NumberController extends AbstractController implements INumberController
     }
 
 
+
+    #[Route(self::PAY_NUMBER_AIRTIME_URI, name: self::PAY_NUMBER_AIRTIME_NAME, defaults: ["_format"=>"xml/command.dtd"], methods: [self::PAY_NUMBER_AIRTIME_METHOD])]
+    public function payNumberAirtime(Request $request): \App\Response\Command
+    {
+        return new \App\Response\Command(
+            $this->numberService->payNumberAirtime($request->getContent(),$request->headers->all())
+        );
+    }
+
 //    #[Route(self::PAY_AIRTIME_URI, name: self::PAY_AIRTIME_NAME, methods: [self::PAY_AIRTIME_METHOD])]
 //    public function payeAirtime(Request $request): PayAirtimeResponse
 //    {
@@ -77,11 +88,44 @@ class NumberController extends AbstractController implements INumberController
     }
 
 
-    #[Route(self::ACCOUNT_AIRTIME_URI, name: self::ACCOUNT_AIRTIME_NAME, methods: [self::ACCOUNT_AIRTIME_METHOD])]
+    #[Route(self::TRANSACTION_STATUS_URI, name: self::TRANSACTION_STATUS_NAME, methods: [self::TRANSACTION_STATUS_METHOD])]
     public function transactionStatus(Request $request,\App\Dto\Command $payAirtimeDto): \App\Response\Command
     {
         return new \App\Response\Command(
             $this->numberService->transactionStatus(new TransactionStatusFullDto($payAirtimeDto,$request->headers->all()))
+        );
+    }
+
+
+    #[Route(self::ACCOUNT_LIST_URI, name: self::ACCOUNT_LIST_NAME, methods: [self::ACCOUNT_LIST_METHOD])]
+    public function listAccount(): Response
+    {
+        return new Response(json_encode($this->numberService->listAccount())
+        );
+    }
+
+
+    #[Route(self::API_BALANCE_URI, name: self::API_BALANCE_NAME, methods: [self::API_BALANCE_METHOD])]
+    public function checkBalance(Request $request): \App\Response\Command
+    {
+        return new \App\Response\Command(
+            $this->numberService->checkBalance($request->getContent())
+        );
+    }
+
+    /*
+    #[Route(self::ACCOUNT_LIST_URI, name: self::ACCOUNT_LIST_NAME, methods: [self::ACCOUNT_LIST_METHOD])]
+    public function listAccount(): Response
+    {
+        return new Response(json_encode($this->numberService->listAccount())
+        );
+    }*/
+
+    #[Route(self::API_MESSAGE_NEW_URI, name: self::API_MESSAGE_NEW_NAME , defaults: ["_format"=>"xml/command.dtd"], methods: [self::API_MESSAGE_NEW_METHOD])]
+    public function newMessage(#[MapRequestPayload] CommandMessage $commandMessage): \App\Response\Command
+    {
+        return new \App\Response\Command(
+            $this->numberService->newMessage($commandMessage)
         );
     }
 }

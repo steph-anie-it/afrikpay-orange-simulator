@@ -43,6 +43,9 @@ class Account  implements UserInterface, PasswordAuthenticatedUserInterface
 
 
     #[ORM\Column(length: 255)]
+    private ?string $currency = null;
+
+    #[ORM\Column(length: 255)]
     private ?string $accountNumber = null;
 
 
@@ -378,6 +381,18 @@ class Account  implements UserInterface, PasswordAuthenticatedUserInterface
     public function setRequestgatewaycode(string $requestgatewaycode): static
     {
         $this->requestgatewaycode = $requestgatewaycode;
+
+        return $this;
+    }
+
+    public function getCurrency(): ?string
+    {
+        return $this->currency;
+    }
+
+    public function setCurrency(string $currency): static
+    {
+        $this->currency = $currency;
 
         return $this;
     }

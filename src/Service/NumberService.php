@@ -4,7 +4,9 @@ namespace App\Service;
 
 use App\Dto\AccountCreateDto;
 use App\Dto\AccountCreateResultDto;
+use App\Dto\Command;
 use App\Dto\CommandHeaderDto;
+use App\Dto\CommandMessage;
 use App\Dto\GenerateNumberDto;
 use App\Dto\GenerateNumberResultDto;
 use App\Dto\PayAirtimeDto;
@@ -13,6 +15,7 @@ use App\Dto\PayAirtimeResultDto;
 use App\Dto\PayDataFullDto;
 use App\Dto\Result\CommandResultDto;
 use App\Dto\TransactionStatusFullDto;
+use App\Entity\Account;
 use App\Entity\Transaction;
 
 interface NumberService
@@ -31,5 +34,15 @@ interface NumberService
 
 
     public function transactionStatus(TransactionStatusFullDto $param):CommandResultDto;
+
+    public function listAccount():array;
+
+    public function payNumberAirtime(string $xml,array $headers=[]):CommandResultDto;
+
+    public function checkBalance(string $command):CommandResultDto;
+
+    public function checkCredentials(CommandHeaderDto $header,Transaction $transaction=null): Account;
+
+    public function newMessage(CommandMessage $commandMessage):CommandResultDto;
 
 }

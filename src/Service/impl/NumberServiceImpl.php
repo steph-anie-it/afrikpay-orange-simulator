@@ -4,7 +4,9 @@ namespace App\Service\impl;
 
 use App\Dto\AccountCreateDto;
 use App\Dto\AccountCreateResultDto;
+use App\Dto\Command;
 use App\Dto\CommandHeaderDto;
+use App\Dto\CommandMessage;
 use App\Dto\GenerateNumberDto;
 use App\Dto\GenerateNumberResultDto;
 use App\Dto\PayAirtimeDto;
@@ -13,10 +15,12 @@ use App\Dto\PayDataFullDto;
 use App\Dto\Result\CommandResultDto;
 use App\Dto\TransactionStatusFullDto;
 use App\Entity\Account;
+use App\Entity\Message;
 use App\Entity\Number;
 use App\Entity\Transaction;
 use App\Exception\AccountNotFoundException;
 use App\Exception\BadPinNumberException;
+use App\Exception\GeneralException;
 use App\Exception\InsufficientBalanceException;
 use App\Exception\InvalidCredentialsException;
 use App\Exception\InvalidDataException;
@@ -26,7 +30,9 @@ use App\Exception\NonUniqueExternalIdException;
 use App\Exception\ParameterNotFoundException;
 use App\Exception\UnableToGeneratePhoneException;
 use App\Exception\UnspecifedParameterException;
+use App\Model\ResponseStatus;
 use App\Repository\AccountRepository;
+use App\Repository\MessageRepository;
 use App\Repository\NumberRepository;
 use App\Repository\TransactionRepository;
 use App\Service\NumberService;
@@ -42,7 +48,8 @@ class NumberServiceImpl implements NumberService
                                 protected AccountRepository $accountRepository,
                                 protected  UtilService $utilService,
                                 protected TransactionRepository $transactionRepository,
-                                protected UserPasswordHasherInterface  $passwordHasher
+                                protected UserPasswordHasherInterface  $passwordHasher,
+                                protected MessageRepository $messageRepository
     ){
 
     }
@@ -97,7 +104,7 @@ class NumberServiceImpl implements NumberService
 
         $transaction = $this->utilService->map($payAirtimeDto,Transaction::class);
 
-        $this->checkAccount($header,$transaction);
+        $account = $this->checkCredentials($header,$transaction);
 
         $transactionId = null;
 
@@ -117,14 +124,13 @@ class NumberServiceImpl implements NumberService
             $transaction->setTxnid($this->utilService->generateTransactionId());
         }
         $transaction = $this->transactionRepository->save($transaction);
-        $this->checkAccount($header,$transaction);
+        //$this->checkAccount($header,$transaction);
 
-        $number = $this->numberRepository->findOneBy([Number::MSISDN=> $transaction->getMsisdn2()]);
-        if(!$number){
-            throw new InvalidPhoneNumberException($transaction->getMsisdn2(),$transaction);
-        }
+        //$number = $this->numberRepository->findOneBy([Number::MSISDN=> $transaction->getMsisdn2()]);
+        //if(!$number){
+        //    throw new InvalidPhoneNumberException($transaction->getMsisdn2(),$transaction);
+        //}
 
-        $account = null;
         if($account instanceof Account){
             $balance = $account->getBalance();
             $oldBalance  = $account->getNewbalance() ?? $balance;
@@ -132,6 +138,9 @@ class NumberServiceImpl implements NumberService
             if($cBalance < 0){
                 throw new InsufficientBalanceException($account->getMsisdn(),$transaction);
             }
+            $account->setNewbalance($cBalance);
+            $account->setOldbalance($oldBalance);
+            $this->accountRepository->save($account);
         }
 
         $transaction = $this->transactionRepository->findOneBy([Transaction::TRANSACTION_ID => $transactionId]);
@@ -140,12 +149,60 @@ class NumberServiceImpl implements NumberService
         if($transaction){
            $transaction->setDateEndTransaction(new \DateTime());
            $transaction->setTxnStatus(strval(200));
-           $transaction->setDate($transaction->getDateTransaction()->format('Y:m:d H:i:s'));
+           $transaction->setDate($transaction->getDateTransaction()->format('d/m/Y H:i:s'));
+           $transaction->setBalancenew($account->getNewbalance());
+           $transaction->setBalanceold($account->getOldbalance());
            $transaction = $this->transactionRepository->save($transaction);
            $result = $this->utilService->map($transaction,CommandResultDto::class,true);
         }
 
+        if($result instanceof CommandResultDto){
+            $message = $this->getMessage($payAirtimeDto->TYPE);
+//            Transaction n° %s. Transfert de %s %s de %s vers %s. Ancien solde %s nouveau solde %s .
+            $textMessage = sprintf(
+                $message->getMessage(),
+                $transaction->getTxnid(),
+                $payAirtimeDto->AMOUNT,
+                $account->getCurrency(),
+                $account->getMsisdn(),
+                $payAirtimeDto->MSISDN2,
+                $transaction->getBalanceold(),
+                $transaction->getBalancenew()
+            );
+//            dd($textMessage);
+            $result->MESSAGE = $textMessage;
+        }
+
         return $result;
+    }
+
+    public function checkCredentials(CommandHeaderDto $header,Transaction $transaction=null): Account
+    {
+        $mappedAccount = $this->utilService->mapWithUnder($header,Account::class);
+        if (!($mappedAccount instanceof Account)) {
+            throw new InvalidDataException();
+        }
+
+        $login = $header->LOGIN ?? $header->LOGINID;
+
+        $account = $this->accountRepository->findOneBy([
+                Account::LOGIN => $login]
+        );
+
+        if(!$account){
+            throw new AccountNotFoundException($mappedAccount->getLogin(),$transaction);
+        }
+
+
+        if(!$this->passwordHasher->isPasswordValid($account,$mappedAccount->getPassword())){
+            throw new InvalidCredentialsException($account->getLogin(),$transaction);
+        }
+
+        if($transaction &&  $account->getPin() != $transaction->getPin()){
+            throw new BadPinNumberException("",$transaction);
+        }
+
+        return $account;
     }
 
     public function checkAccount(CommandHeaderDto $header,Transaction $transaction=null){
@@ -154,8 +211,10 @@ class NumberServiceImpl implements NumberService
             throw new InvalidDataException();
         }
 
+        $login = $header->LOGIN ?? $header->LOGINID;
+
         $account = $this->accountRepository->findOneBy([
-            Account::LOGIN => $mappedAccount->getLogin()]
+            Account::LOGIN => $login]
         );
 
         if(!$account){
@@ -171,9 +230,7 @@ class NumberServiceImpl implements NumberService
             throw new ParameterNotFoundException($message,$transaction);
         }
 */
-        if(!$this->passwordHasher->isPasswordValid($account,$mappedAccount->getPassword())){
-            throw new InvalidCredentialsException($account->getLogin(),$transaction);
-        }
+
 
         $account = $this->accountRepository->findOneBy([
                 Account::REQUESTGATEWAYTYPE => $mappedAccount->getRequestgatewaytype()]
@@ -200,10 +257,6 @@ class NumberServiceImpl implements NumberService
         if(!$account){
             $message = sprintf(self::BADPARAMETER_FORMAT,Account::SOURCETYPE,$mappedAccount->getSourcetype());
             throw new ParameterNotFoundException($message,$transaction);
-        }
-
-        if($transaction &&  $account->getPin() != $transaction->getPin()){
-            throw new BadPinNumberException("",$transaction);
         }
 
         return $account;
@@ -318,5 +371,95 @@ class NumberServiceImpl implements NumberService
     public function transactionStatus(TransactionStatusFullDto $param): CommandResultDto
     {
         // TODO: Implement transactionStatus() method.
+    }
+
+    public function listAccount(): array
+    {
+        $accountDtos = [];
+        foreach ( $this->accountRepository->findAll() as $account){
+//            $accountDtos[] = $this->utilService->map()
+        }
+        return $accountDtos;
+    }
+
+    /**
+     * @throws InvalidCredentialsException
+     * @throws NonUniqueExternalIdException
+     * @throws InsufficientBalanceException
+     * @throws AccountNotFoundException
+     * @throws ParameterNotFoundException
+     * @throws InvalidDataException
+     * @throws BadPinNumberException
+     * @throws InvalidPhoneNumberException
+     * @throws \ReflectionException
+     */
+    public function payNumberAirtime(string $xml, array $headers=[]): CommandResultDto
+    {
+        $commandXml = simplexml_load_string($xml);
+        $command = $this->utilService->mapObjectXml($commandXml,Command::class);
+        return $this->payAirtime(new PayAirtimeFullDto($command,$headers));
+    }
+
+
+    /**
+     * @throws InvalidCredentialsException
+     * @throws AccountNotFoundException
+     * @throws ParameterNotFoundException
+     * @throws InvalidDataException
+     * @throws BadPinNumberException
+     * @throws \ReflectionException
+     */
+    public function checkBalance(string $command): CommandResultDto
+    {
+        $commandXml = simplexml_load_string($command);
+        $commandHeader = $this->utilService->mapObjectXml($commandXml,CommandHeaderDto::class);
+
+        $command = $this->utilService->mapObjectXml($commandXml,Command::class);
+        $account =  $this->checkCredentials($commandHeader);
+        $result = $this->utilService->map($account,CommandResultDto::class,true);
+        $message = $this->getMessage($command->TYPE);
+        if($result instanceof CommandResultDto){
+            $result->MESSAGE = sprintf($message->getMessage(),$account->getBalance());
+        }
+        return $result;
+    }
+
+
+    /**
+     * @throws GeneralException
+     */
+    public function getMessage(string $type, int $languageIndex=0) :Message
+    {
+        $message = $this->messageRepository->findOneBy([Message::TYPE => $type, Message::MESSAGEINDEX => $languageIndex]);
+        if(!$message){
+            throw new GeneralException("",null,ResponseStatus::NOMESSAGE_SPECIFIED);
+        }
+        return $message;
+    }
+
+
+    public function newMessage(CommandMessage $commandMessage): CommandResultDto
+    {
+        $message = $this->utilService->map($commandMessage, Message::class);
+        if($message instanceof Message){
+            $message->setLanguageid($this->utilService->generateUnique());
+        }
+        $fmessage = $this->messageRepository->findOneBy(
+            [Message::TYPE => $message->getType(), Message::MESSAGEINDEX => $message->getLanguageindex()]
+        );
+
+        if($fmessage){
+            $fmessage->setMessage($message->getMessage());
+            $message = $fmessage;
+        }
+        $message = $this->messageRepository->save($message);
+        $result = $this->utilService->map($message,CommandResultDto::class,true);
+        if($result instanceof CommandResultDto){
+            $result->TXNSTATUS = 200;
+            unset($result->{"EXTREFNUM"});
+            unset($result->{"DATE"});
+            unset($result->{"TXNID"});
+        }
+        return $result;
     }
 }

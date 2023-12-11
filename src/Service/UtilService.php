@@ -14,6 +14,119 @@ class UtilService
     public const GEN_DATE='genDate';
     public const TIME='time';
 
+    public function object_to_array($obj)
+    {
+        if (is_object($obj))
+            $obj = (array)$this->dismount($obj);
+        if (is_array($obj)) {
+            $new = array();
+            foreach ($obj as $key => $val) {
+                $new[$key] = $this->object_to_array($val);
+            }
+        }
+        else
+            $new = $obj;
+        return $new;
+    }
+
+    public function dismount($object)
+    {
+        $reflectionClass = new \ReflectionClass(get_class($object));
+        $array = array();
+        foreach ($reflectionClass->getProperties() as $property) {
+            $property->setAccessible(true);
+            try{
+                $array[$property->getName()] = $property->getValue($object);
+            }catch (\Throwable $throwable){
+                //Avoid uninitialized properties
+            }
+            $property->setAccessible(   false);
+        }
+        return $array;
+    }
+
+    public function arrayToXml($array, $entryRootElement = null, $xml = null,$previous=null) {
+        $_xml = $xml;
+
+        $rootElement = sprintf("<%s/>",$entryRootElement);
+        // If there is no Root Element then insert root
+        if ($_xml === null) {
+            $_xml = new SimpleXMLElement($rootElement !== null ? $rootElement : '<root/>');
+        }
+        $hasIntIndex = false;
+        $xml_toAdd = $_xml;
+        // Visit all key value pair
+        foreach ($array as $k => $v) {
+            $currentName = $_xml->getName();
+
+            if(is_int($k)){
+                $subIndex = $k;
+                $hasIntIndex = $subIndex == null;
+                $parent = $_xml->xpath('parent::*');
+                if(strtoupper($currentName) == strtoupper($previous)){
+                    $array = $_xml->xpath('parent::*');
+                    if(is_array($array) && count($array) > 0){
+                        $_xml = $array[0];
+                    }
+                }
+                if(array_key_exists($k,$array)){
+                    $v = $array[$k];
+                }
+                $k = $entryRootElement;
+            }
+            // If there is nested array then
+            if (is_array($v)) {
+                //$xml_toAdd = $_xml;
+                $previous = $xml_toAdd->getName();
+                if(!$hasIntIndex){
+                    $xml_toAdd = $_xml->addChild($k);
+                }
+                // Call function for nested array
+                $this->arrayToXml($v, $k, $xml_toAdd,$previous);
+            }
+
+            else {
+
+                // Simply add child element.
+                $_xml->addChild($k, $v);
+            }
+        }
+
+        return $_xml->asXML();
+    }
+
+    public function mapObjectXml(mixed $xml, string $destinationClass){
+        $json_string = json_encode($xml);
+        $xmlArray = json_decode($json_string, true);
+        $dest = new \ReflectionObject(new $destinationClass());
+        $destination = new $destinationClass();
+
+        foreach ($xmlArray as $key => $value){
+            if(!$dest->hasProperty($key)) {
+                continue;
+            }
+            $destProperty = $dest->getProperty($key);
+
+            if(is_array($value)){
+                if(count($value) == 0){
+                    $value = null;
+                }else{
+                    $className = str_replace("?","",strval($destProperty->getType()));
+                    $value = $this->mapFullArray($value,$className);
+                }
+            }
+            $destProperty->setAccessible(true);
+
+            try{
+                $destProperty->setValue($destination, $value);
+            }catch (\Exception $exception){
+
+            }
+        }
+        return $destination;
+    }
+
+
     /**
      * @throws \ReflectionException
      */

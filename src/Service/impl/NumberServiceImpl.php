@@ -230,7 +230,6 @@ class NumberServiceImpl implements NumberService
         if($transaction &&  $account->getPin() != $transaction->getPin()){
             throw new GeneralException("",$transaction,ResponseStatus::BAD_PIN_NUMBER);
         }
-
         return $account;
     }
 
@@ -400,7 +399,33 @@ class NumberServiceImpl implements NumberService
 
     public function transactionStatus(TransactionStatusFullDto $param): CommandResultDto
     {
-        return new CommandResultDto();
+        $commandHeader = $this->utilService->map($param->command,CommandHeaderDto::class,true);
+        $transaction = $this->utilService->map($param->command,Transaction::class);
+        $account =  $this->checkCredentials($commandHeader,$transaction);
+        $txnsid = $this->utilService->generateTransactionId();
+        $ctransaction = $this->buildTransaction(
+            $txnsid,
+            OperationNature::BALANCE->value(),
+            $param->command->TYPE,
+            $account->getNewbalance(),
+            $account->getNewbalance()
+        );
+        $ctransaction->setExtrefnum($param->command->EXTREFNUM);
+        $ctransaction =  $this->transactionRepository->save($ctransaction);
+        $rTrans =null;
+        if($transaction instanceof Transaction){
+            $rTrans = $this->transactionRepository->findOneBy([Transaction::TXNID => $transaction->getTxnid()]);
+        }
+        $result  = $this->utilService->map($ctransaction,CommandResultDto::class,true);
+
+        if($result instanceof CommandResultDto){
+            $message = $this->getMessage($ctransaction->getType());
+            $result->DATE = $ctransaction->getDateEndTransaction()->format('d/m/Y H:i:s');
+            $result->MESSAGE = sprintf($message->getMessage(),$transaction->getTxnid(),
+            $rTrans?->getTxnStatus() ?? 500
+            );
+        }
+        return $result;
     }
 
     public function listAccount(): array

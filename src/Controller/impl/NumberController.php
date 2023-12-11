@@ -88,11 +88,14 @@ class NumberController extends AbstractController implements INumberController
     }
 
 
+    /**
+     * @throws \ReflectionException
+     */
     #[Route(self::TRANSACTION_STATUS_URI, name: self::TRANSACTION_STATUS_NAME, methods: [self::TRANSACTION_STATUS_METHOD])]
     public function transactionStatus(Request $request,\App\Dto\Command $payAirtimeDto): \App\Response\Command
     {
         return new \App\Response\Command(
-            $this->numberService->transactionStatus(new TransactionStatusFullDto($payAirtimeDto,$request->headers->all()))
+            $this->numberService->transactionStatus(new TransactionStatusFullDto($request->getContent(),$request->headers->all()))
         );
     }
 

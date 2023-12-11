@@ -7,9 +7,16 @@ class TransactionStatusFullDto
 {
     public ?Command $command = null;
     public ?CommandHeaderDto $commandHeaderDto = null;
-    public function __construct(Command $command, array $header=[]){
-        $this->command = $command;
+
+    /**
+     * @throws \ReflectionException
+     */
+    public function __construct(string $content, array $header=[]){
+
         $utilService = new UtilService();
+        $commandXml = simplexml_load_string($content);
+        $command = $utilService->mapObjectXml($commandXml,Command::class);
+        $this->command = $command;
         $this->commandHeaderDto = $utilService->mapArray($header,CommandHeaderDto::class);
     }
 }

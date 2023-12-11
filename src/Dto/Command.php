@@ -19,7 +19,7 @@ class Command
     public ?int $LANGUAGE1=null;
     public ?int $LANGUAGE2=null;
 
-
+    public ?string $TXNID = null;
 
 
 

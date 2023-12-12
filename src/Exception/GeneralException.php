@@ -11,13 +11,14 @@ class GeneralException extends  \Exception
     public ?Transaction $transaction = null;
     private ResponseStatus $responseStatus;
 
-    public function __construct(string $message = "",
+    public function __construct(string $message = null,
                                 Transaction $transaction = null,
                                 ResponseStatus $responseStatus = ResponseStatus::UNKNOW_ERROR,
                                 int $code = 500, ?Throwable $previous = null)
     {
         $this->transaction = $transaction;
         $this->responseStatus = $responseStatus;
+        $message = $message ?? "";
         parent::__construct($message, $code, $previous);
     }
 

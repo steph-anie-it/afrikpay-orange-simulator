@@ -69,7 +69,7 @@ class ErrorListener implements EventSubscriberInterface
 
         $this->logger->critical($errorMessage);
 
-        $exceptionEvent->allowCustomResponseCode();
+        //$exceptionEvent->allowCustomResponseCode();
         $commandResult = new \App\Dto\Result\CommandResultDto();
 
         if($txnid){
@@ -83,7 +83,7 @@ class ErrorListener implements EventSubscriberInterface
         if($extRefNum){
             $commandResult->EXTREFNUM = $extRefNum;
         }
-
+        dd($throwable);
         $commandResult->TXNSTATUS = $code;
         $date = new \DateTime();
         $commandResult->DATE = $date->format('Y/m/d H:i:s');

@@ -12,6 +12,7 @@ use App\Dto\GenerateNumberResultDto;
 use App\Dto\PayAirtimeDto;
 use App\Dto\PayAirtimeFullDto;
 use App\Dto\PayAirtimeResultDto;
+use App\Dto\PayDataDto;
 use App\Dto\PayDataFullDto;
 use App\Dto\Result\CommandResultDto;
 use App\Dto\TransactionStatusFullDto;
@@ -31,6 +32,8 @@ interface NumberService
     public function createAirtimeAccount(AccountCreateDto $createDto) : AccountCreateResultDto;
 
     public function payData(PayDataFullDto $param):CommandResultDto;
+
+    public function payInternetData(PayDataDto $payDataDto):CommandResultDto;
 
 
     public function transactionStatus(TransactionStatusFullDto $param):CommandResultDto;

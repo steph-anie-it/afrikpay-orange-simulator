@@ -9,6 +9,7 @@ use App\Dto\CommandMessage;
 use App\Dto\PayAirtimeDto;
 use App\Dto\PayAirtimeFullDto;
 use App\Dto\PayAirtimeResultDto;
+use App\Dto\PayDataDto;
 use App\Dto\PayDataFullDto;
 use App\Dto\TransactionStatusFullDto;
 use App\Response\AccountAirtimeResponse;
@@ -79,11 +80,11 @@ class NumberController extends AbstractController implements INumberController
     }
 
 
-    #[Route(self::ACCOUNT_AIRTIME_URI, name: self::ACCOUNT_AIRTIME_NAME, methods: [self::ACCOUNT_AIRTIME_METHOD])]
-    public function payData(Request $request, \App\Dto\Command $payAirtimeDto): \App\Response\Command
+    #[Route(self::PAY_DATA_URI, name: self::PAY_DATA_NAME, methods: [self::PAY_DATA_METHOD])]
+    public function payData(Request $request): \App\Response\Command
     {
         return new \App\Response\Command(
-            $this->numberService->payData(new PayDataFullDto($payAirtimeDto,$request->headers->all()))
+            $this->numberService->payInternetData(new PayDataDto($request->getContent(),$request->headers->all()))
         );
     }
 

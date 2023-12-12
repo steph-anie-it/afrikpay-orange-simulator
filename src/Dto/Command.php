@@ -15,6 +15,8 @@ class Command
     public ?string $EXTREFNUM;
     public ?int $MSISDN2=null;
     public ?float $AMOUNT=null;
+
+    public ?string $ACCOUNTNUM=null;
     public ?int $SELECTOR=null;
     public ?int $LANGUAGE1=null;
     public ?int $LANGUAGE2=null;

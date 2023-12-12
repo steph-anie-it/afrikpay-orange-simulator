@@ -75,7 +75,7 @@ interface NumberController
 
     public function payNumberAirtime(Request $request):\App\Response\Command;
 
-    public function payData(Request $request, \App\Dto\Command $payAirtimeDto):\App\Response\Command;
+    public function payData(Request $request):\App\Response\Command;
 
 
     public function listAccount():Response;

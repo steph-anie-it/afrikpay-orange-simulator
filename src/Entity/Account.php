@@ -50,6 +50,18 @@ class Account  implements UserInterface, PasswordAuthenticatedUserInterface
 
 
     #[ORM\Column(nullable: true)]
+    private ?float $databalance = null;
+
+
+    #[ORM\Column(nullable: true)]
+    private ?float $datanewbalance = null;
+
+
+    #[ORM\Column(nullable: true)]
+    private ?float $dataoldbalance = null;
+
+
+    #[ORM\Column(nullable: true)]
     private ?float $balance = null;
 
 
@@ -393,6 +405,42 @@ class Account  implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCurrency(string $currency): static
     {
         $this->currency = $currency;
+
+        return $this;
+    }
+
+    public function getDatabalance(): ?float
+    {
+        return $this->databalance;
+    }
+
+    public function setDatabalance(?float $databalance): static
+    {
+        $this->databalance = $databalance;
+
+        return $this;
+    }
+
+    public function getDatanewbalance(): ?float
+    {
+        return $this->datanewbalance;
+    }
+
+    public function setDatanewbalance(?float $datanewbalance): static
+    {
+        $this->datanewbalance = $datanewbalance;
+
+        return $this;
+    }
+
+    public function getDataoldbalance(): ?float
+    {
+        return $this->dataoldbalance;
+    }
+
+    public function setDataoldbalance(?float $dataoldbalance): static
+    {
+        $this->dataoldbalance = $dataoldbalance;
 
         return $this;
     }

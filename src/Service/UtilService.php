@@ -456,4 +456,9 @@ class UtilService
         return $transactionId;
     }
 
+    public function getDataCurrency(float $sizeMo=0) :string
+    {
+        return  $_ENV['BASE_DATA_UNIT'];
+    }
+
 }

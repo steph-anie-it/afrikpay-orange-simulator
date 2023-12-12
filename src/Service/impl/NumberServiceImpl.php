@@ -11,6 +11,7 @@ use App\Dto\GenerateNumberDto;
 use App\Dto\GenerateNumberResultDto;
 use App\Dto\PayAirtimeDto;
 use App\Dto\PayAirtimeFullDto;
+use App\Dto\PayDataDto;
 use App\Dto\PayDataFullDto;
 use App\Dto\Result\CommandResultDto;
 use App\Dto\TransactionStatusFullDto;
@@ -395,6 +396,110 @@ class NumberServiceImpl implements NumberService
     public function payData(PayDataFullDto $param): CommandResultDto
     {
         return new CommandResultDto();
+    }
+
+
+    /**
+     * @throws \ReflectionException
+     * @throws InvalidDataException
+     * @throws GeneralException
+     */
+    public function payInternetData(PayDataDto $payDataDto): CommandResultDto
+    {
+        $payAirtimeDto = $payDataDto->command;
+        $header = $payDataDto->commandHeaderDto;
+
+        $transaction = $this->utilService->map($payAirtimeDto,Transaction::class);
+
+        if($transaction instanceof Transaction){
+            $transaction->setMsisdn2($payAirtimeDto->ACCOUNTNUM);
+        }
+        $account = $this->checkCredentials($header,$transaction);
+
+        $number = $this->numberRepository->findOneBy([Number::MSISDN=> $transaction->getMsisdn2()]);
+
+        if(!$number){
+            throw new GeneralException(null,$transaction,ResponseStatus::INVALID_PHONE_NUMBER);
+        }
+        $transactionId = null;
+        $numberTransaction = null;
+        $type = $transaction->getType();
+        $transactionId = $this->utilService->generateTransactionId();
+
+        if($account instanceof Account){
+            $balance = $account->getDatabalance();
+            $oldBalance  = $account->getDatanewbalance() ?? $balance;
+            $cBalance = $oldBalance - $this->getDataFromAmount($payAirtimeDto->AMOUNT);
+            if($cBalance < 0){
+                throw new GeneralException("",$transaction,ResponseStatus::INSUFFICIENT_BALANCE_NUMBER);
+            }
+            $account->setDatanewbalance($cBalance);
+            $account->setDataoldbalance($oldBalance);
+
+            $transtation  = $this->buildTransaction($transactionId,
+                OperationNature::DEBIT->value(),
+                $type,
+                $oldBalance,
+                $cBalance
+            );
+            $transtation->setMsisdn($account->getMsisdn());
+            $transtation->setMsisdn2($number->getMsisdn());
+            $transtation->setExtrefnum($payAirtimeDto->EXTREFNUM);
+            $this->transactionRepository->save($transtation);
+            $this->accountRepository->save($account);
+        }
+
+        if($number){
+            $balance = $number->getNumberdatabalance() ?? 0;
+            $oldBalance = $number->getNumberdatanewbalance() ?? $balance;
+            $cBalance = floatval($oldBalance) + floatval($payAirtimeDto->AMOUNT);
+            if($cBalance >= $_ENV['maxBalance']){
+            }
+
+            $number->setNumberdatanewbalance(strval($cBalance));
+            $number->setNumberdataoldbalance(strval($oldBalance));
+            $transaction = $this->buildTransaction($transactionId,
+                OperationNature::CREDIT->value(),
+                $type,
+                $oldBalance,
+                $cBalance);
+            $number =  $this->numberRepository->save($number);
+            $transaction->setMsisdn($number->getMsisdn());
+            $transaction->setMsisdn2($account->getMsisdn());
+            $transaction->setExtrefnum($payAirtimeDto->EXTREFNUM);
+            $transaction->setBalancedatanew($number->getNumberdatanewbalance());
+            $transaction->setBalancedataold($number->getNumberdataoldbalance());
+            $numberTransaction = $this->transactionRepository->save($transaction);
+        }
+
+
+
+        $result = $this->utilService->map($numberTransaction,CommandResultDto::class,true);
+
+        if($result instanceof CommandResultDto){
+            $message = $this->getMessage($payAirtimeDto->TYPE);
+            $result->DATE = $numberTransaction->getDateEndTransaction()->format('d/m/Y H:i:s');
+            $dataCurrency = $this->utilService->getDataCurrency();
+            $textMessage = sprintf(
+                $message->getMessage(),
+                $numberTransaction->getTxnid(),
+                $payAirtimeDto->AMOUNT,
+                $dataCurrency,
+                $account->getMsisdn(),
+                $payAirtimeDto->MSISDN2,
+                $numberTransaction->getBalancedataold(),
+                $numberTransaction->getBalancedatanew()
+            );
+            $result->MESSAGE = $textMessage;
+        }
+
+        return $result;
+    }
+
+
+    public function getDataFromAmount(float $amount) : float
+    {
+        return $amount;
     }
 
     public function transactionStatus(TransactionStatusFullDto $param): CommandResultDto

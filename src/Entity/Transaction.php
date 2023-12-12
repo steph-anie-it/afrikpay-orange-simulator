@@ -79,6 +79,18 @@ class Transaction
     private ?float $balancenew =  null;
 
 
+    #[ORM\Column(type:Types::FLOAT,nullable: true)]
+    private ?float $balancedata = null;
+
+    #[ORM\Column(type:Types::FLOAT,nullable: true)]
+    private ?float $balancedataold = null;
+
+    #[ORM\Column(type:Types::FLOAT,nullable: true)]
+    private ?float $balancedatanew =  null;
+
+
+
+
     #[ORM\Column(length: 255,nullable: true)]
     private ?string $language1 = null;
 
@@ -347,6 +359,42 @@ class Transaction
     public function setOperation(?string $operation): static
     {
         $this->operation = $operation;
+
+        return $this;
+    }
+
+    public function getBalancedata(): ?float
+    {
+        return $this->balancedata;
+    }
+
+    public function setBalancedata(?float $balancedata): static
+    {
+        $this->balancedata = $balancedata;
+
+        return $this;
+    }
+
+    public function getBalancedataold(): ?float
+    {
+        return $this->balancedataold;
+    }
+
+    public function setBalancedataold(?float $balancedataold): static
+    {
+        $this->balancedataold = $balancedataold;
+
+        return $this;
+    }
+
+    public function getBalancedatanew(): ?float
+    {
+        return $this->balancedatanew;
+    }
+
+    public function setBalancedatanew(?float $balancedatanew): static
+    {
+        $this->balancedatanew = $balancedatanew;
 
         return $this;
     }

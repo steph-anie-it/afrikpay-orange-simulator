@@ -45,6 +45,14 @@ class Number
     private ?string $numberdatabalance = null;
 
 
+    #[ORM\Column(length: 255,nullable: true)]
+    private ?string $numberdataoldbalance = null;
+
+
+    #[ORM\Column(length: 255,nullable: true)]
+    private ?string $numberdatanewbalance = null;
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -164,6 +172,30 @@ class Number
     public function setNumberbalance(?string $numberbalance): static
     {
         $this->numberbalance = $numberbalance;
+
+        return $this;
+    }
+
+    public function getNumberdataoldbalance(): ?string
+    {
+        return $this->numberdataoldbalance;
+    }
+
+    public function setNumberdataoldbalance(?string $numberdataoldbalance): static
+    {
+        $this->numberdataoldbalance = $numberdataoldbalance;
+
+        return $this;
+    }
+
+    public function getNumberdatanewbalance(): ?string
+    {
+        return $this->numberdatanewbalance;
+    }
+
+    public function setNumberdatanewbalance(?string $numberdatanewbalance): static
+    {
+        $this->numberdatanewbalance = $numberdatanewbalance;
 
         return $this;
     }

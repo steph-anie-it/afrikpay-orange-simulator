@@ -12,12 +12,13 @@ enum ResponseStatus
 
     case BAD_PIN_NUMBER;
 
-
     case INVALID_CREDENTIAL;
 
 
     case ACCOUNT_NOT_FOUND;
 
+
+    case ACCOUNT_ALREADY_EXISTS;
 
     case INVALID_PHONE_NUMBER;
 
@@ -34,7 +35,8 @@ enum ResponseStatus
             ResponseStatus::INVALID_CREDENTIAL => 'Invalid Credentials',
             ResponseStatus::ACCOUNT_NOT_FOUND => 'Account not found',
             ResponseStatus::INVALID_PHONE_NUMBER => 'Invalid phone number for account %s',
-            ResponseStatus::INSUFFICIENT_BALANCE_NUMBER => 'Insufficient Balance'
+            ResponseStatus::INSUFFICIENT_BALANCE_NUMBER => 'Insufficient Balance',
+            ResponseStatus::ACCOUNT_ALREADY_EXISTS => 'Account already exits'
         };
     }
 
@@ -48,7 +50,8 @@ enum ResponseStatus
             ResponseStatus::INVALID_CREDENTIAL => '401',
             ResponseStatus::ACCOUNT_NOT_FOUND => '404',
             ResponseStatus::INVALID_PHONE_NUMBER => '403',
-            ResponseStatus::INSUFFICIENT_BALANCE_NUMBER => '402'
+            ResponseStatus::INSUFFICIENT_BALANCE_NUMBER => '402',
+            ResponseStatus::ACCOUNT_ALREADY_EXISTS => '405'
         };
     }
 

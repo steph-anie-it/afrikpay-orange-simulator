@@ -42,7 +42,7 @@ class Account  implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $msisdn = null;
 
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255,nullable: true)]
     private ?string $currency = null;
 
     #[ORM\Column(length: 255)]

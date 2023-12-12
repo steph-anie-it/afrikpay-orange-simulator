@@ -355,7 +355,9 @@ class NumberServiceImpl implements NumberService
             $account->setAccountNumber($this->utilService->generateAccountNumber(true));
             $account->setRequestgatewaytype(strtoupper($this->utilService->generateRandomString($_ENV['REQUEST_GATEWAY_TYPE_LENGTH'])));
             $account->setType(strtoupper($this->utilService->generateRandomString($_ENV['TYPE_LENGTH'])));
+            $account->setCurrency($_ENV['TRANSACTION_CURRENCY']);
             $account->setBalance($this->utilService->generateBalance());
+            $account->setDatabalance($this->utilService->generateBalance());
             $account->setLogin($account->getUsername());
             $account->setSourcetype(strtoupper($this->utilService->generateRandomString($_ENV['SOURCE_TYPE_LENGTH'])));
             $account->setServiceport($this->utilService->generateRandomRangeNumber($_ENV['SERVICE_PORT_MIN'],$_ENV['SERVICE_PORT_MAX']));

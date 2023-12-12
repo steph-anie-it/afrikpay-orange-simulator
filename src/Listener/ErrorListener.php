@@ -69,7 +69,7 @@ class ErrorListener implements EventSubscriberInterface
 
         $this->logger->critical($errorMessage);
 
-        //$exceptionEvent->allowCustomResponseCode();
+        $exceptionEvent->allowCustomResponseCode();
         $commandResult = new \App\Dto\Result\CommandResultDto();
 
         if($txnid){

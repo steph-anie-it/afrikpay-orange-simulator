@@ -510,12 +510,15 @@ class NumberServiceImpl implements NumberService
         $transaction = $this->utilService->map($param->command,Transaction::class);
         $account =  $this->checkCredentials($commandHeader,$transaction);
         $txnsid = $this->utilService->generateTransactionId();
+        $balance = $account->getBalance() ?? 0;
+        $oldBalance =  $account->getOldbalance() ?? 0;
+        $newBalance = $account->getNewbalance() ?? 0;
         $ctransaction = $this->buildTransaction(
             $txnsid,
             OperationNature::BALANCE->value(),
             $param->command->TYPE,
-            $account->getNewbalance(),
-            $account->getNewbalance()
+            floatval($oldBalance),
+            floatval($newBalance)
         );
         $ctransaction->setExtrefnum($param->command->EXTREFNUM);
         $ctransaction =  $this->transactionRepository->save($ctransaction);

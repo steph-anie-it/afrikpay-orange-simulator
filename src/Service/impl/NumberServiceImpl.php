@@ -223,37 +223,37 @@ class NumberServiceImpl implements NumberService
 
         $account = $this->accountRepository->findOneBy([Account::REQUESTGATEWAYTYPE => $commandHeaderDto->REQUEST_GATEWAY_TYPE]);
         if(!$account){
-            $value = strtoupper(Account::REQUESTGATEWAYTYPE).",".$commandHeaderDto->REQUEST_GATEWAY_TYPE;
+            $value = sprintf(self::BADPARAMETER_FORMAT,strtoupper(Account::REQUESTGATEWAYTYPE),$commandHeaderDto->REQUEST_GATEWAY_TYPE);
             throw new GeneralException($value,null,ResponseStatus::INVALID_PARAMETER);
         }
 
         $account = $this->accountRepository->findOneBy([Account::REQUESTGATEWAYCODE => $commandHeaderDto->REQUEST_GATEWAY_CODE]);
         if(!$account){
-            $value = strtoupper(Account::REQUESTGATEWAYCODE).",".$commandHeaderDto->REQUEST_GATEWAY_CODE;
+            $value =  sprintf(self::BADPARAMETER_FORMAT, strtoupper(Account::REQUESTGATEWAYCODE),$commandHeaderDto->REQUEST_GATEWAY_CODE);
             throw new GeneralException($value,null,ResponseStatus::INVALID_PARAMETER);
         }
 
         $account = $this->accountRepository->findOneBy([Account::LOGIN => $commandHeaderDto->LOGIN]);
         if(!$account){
-            $value = strtoupper(Account::LOGIN).",".$commandHeaderDto->LOGIN;
+            $value = sprintf(self::BADPARAMETER_FORMAT,strtoupper(Account::LOGIN).",".$commandHeaderDto->LOGIN);
             throw new GeneralException($value,null,ResponseStatus::INVALID_PARAMETER);
         }
 
         $account = $this->accountRepository->findOneBy([Account::SERVICEPORT => $commandHeaderDto->SERVICE_PORT]);
         if(!$account){
-            $value = strtoupper(Account::SERVICEPORT).",".$commandHeaderDto->SERVICE_PORT;
+            $value = sprintf(self::BADPARAMETER_FORMAT,strtoupper(Account::SERVICEPORT),$commandHeaderDto->SERVICE_PORT);
             throw new GeneralException($value,null,ResponseStatus::INVALID_PARAMETER);
         }
 
         $account = $this->accountRepository->findOneBy([Account::SOURCETYPE => $commandHeaderDto->SOURCE_TYPE]);
         if(!$account){
-            $value = strtoupper(Account::SOURCETYPE).",".$commandHeaderDto->SOURCE_TYPE;
+            $value = sprintf(strtoupper(Account::SOURCETYPE),$commandHeaderDto->SOURCE_TYPE);
             throw new GeneralException($value,null,ResponseStatus::INVALID_PARAMETER);
         }
 
         $account = $this->accountRepository->findOneBy([Account::LOGIN => $commandHeaderDto->LOGIN]);
         if(!$account){
-            $value = strtoupper(Account::LOGIN).",".$commandHeaderDto->LOGIN;
+            $value = sprintf(self::BADPARAMETER_FORMAT,strtoupper(Account::LOGIN),$commandHeaderDto->LOGIN);
             throw new GeneralException($value,null,ResponseStatus::INVALID_PARAMETER);
         }
         if(!$this->passwordHasher->isPasswordValid($account,$commandHeaderDto->PASSWORD)){

@@ -28,9 +28,9 @@ enum ResponseStatus
     case INSUFFICIENT_BALANCE_NUMBER;
 
     case INVALID_PARAMETER;
-
-
     case INVALID_AMOUNT;
+
+    case BAD_AMOUNT_MULTIPLE;
 
     public function message(string $param = ""): string
     {
@@ -46,7 +46,8 @@ enum ResponseStatus
             ResponseStatus::ACCOUNT_ALREADY_EXISTS => 'Account already exits',
             ResponseStatus::INVALID_HEADER => 'Invalid header',
             ResponseStatus::INVALID_PARAMETER => 'Invalid %s parameter %s',
-            ResponseStatus::INVALID_AMOUNT => 'Invalid amount %s'
+            ResponseStatus::INVALID_AMOUNT => 'Invalid amount %s',
+            ResponseStatus::BAD_AMOUNT_MULTIPLE => 'Amount must be a multiple of %s'
         };
     }
 
@@ -71,7 +72,8 @@ enum ResponseStatus
             ResponseStatus::ACCOUNT_ALREADY_EXISTS => '405',
             ResponseStatus::INVALID_HEADER => '406',
             ResponseStatus::INVALID_PARAMETER => '407',
-            ResponseStatus::INVALID_AMOUNT => '408'
+            ResponseStatus::INVALID_AMOUNT => '408',
+            ResponseStatus::BAD_AMOUNT_MULTIPLE => '409'
         };
     }
 

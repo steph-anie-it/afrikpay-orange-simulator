@@ -137,10 +137,17 @@ class NumberServiceImpl implements NumberService
             $message = sprintf(self::BADPARAMETER_FORMAT,Number::AMOUNT,"");
             throw new GeneralException($message,$transaction,ResponseStatus::INVALID_PARAMETER);
         }
-        $minAmount = $_ENV['MIN_TRANSACTION_AMOUNT'];
-        if(floatval($payAirtimeDto->AMOUNT) < floatval($minAmount)){
+        $minAmount = floatval($_ENV['MIN_TRANSACTION_AMOUNT']);
+        $amount = floatval($payAirtimeDto->AMOUNT);
+        if($amount < $minAmount){
             $message = sprintf(self::BADPARAMETER_FORMAT,$payAirtimeDto->AMOUNT,"");
             throw new GeneralException($message,$transaction,ResponseStatus::INVALID_AMOUNT);
+        }
+
+        $multiple = floatval($_ENV['AMOUNT_MUTIPLE']);
+        if(intval(fmod($amount , $multiple)) != 0){
+            $message = sprintf(self::BADPARAMETER_FORMAT,$minAmount,"");
+            throw new GeneralException($message,$transaction,ResponseStatus::BAD_AMOUNT_MULTIPLE);
         }
 
         $number = $this->numberRepository->findOneBy([Number::MSISDN=> $transaction->getMsisdn2()]);

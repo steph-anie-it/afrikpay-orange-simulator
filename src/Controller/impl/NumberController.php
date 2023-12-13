@@ -48,7 +48,7 @@ class NumberController extends AbstractController implements INumberController
     public function payAirtime(Request $request,   #[MapRequestPayload] Command $payAirtimeDto): \App\Response\Command
     {
         return new \App\Response\Command(
-            $this->numberService->payAirtime(new PayAirtimeFullDto($payAirtimeDto,$request->headers->all()))
+            $this->numberService->payAirtime(new PayAirtimeFullDto($payAirtimeDto,$request->query->all()))
         );
     }
 
@@ -58,7 +58,7 @@ class NumberController extends AbstractController implements INumberController
     public function payNumberAirtime(Request $request): \App\Response\Command
     {
         return new \App\Response\Command(
-            $this->numberService->payNumberAirtime($request->getContent(),$request->headers->all())
+            $this->numberService->payNumberAirtime($request->getContent(),$request->query->all())
         );
     }
 
@@ -84,7 +84,7 @@ class NumberController extends AbstractController implements INumberController
     public function payData(Request $request): \App\Response\Command
     {
         return new \App\Response\Command(
-            $this->numberService->payInternetData(new PayDataDto($request->getContent(),$request->headers->all()))
+            $this->numberService->payInternetData(new PayDataDto($request->getContent(),$request->query->all()))
         );
     }
 
@@ -96,7 +96,7 @@ class NumberController extends AbstractController implements INumberController
     public function transactionStatus(Request $request,\App\Dto\Command $payAirtimeDto): \App\Response\Command
     {
         return new \App\Response\Command(
-            $this->numberService->transactionStatus(new TransactionStatusFullDto($request->getContent(),$request->headers->all()))
+            $this->numberService->transactionStatus(new TransactionStatusFullDto($request->getContent(),$request->query->all()))
         );
     }
 
@@ -113,7 +113,7 @@ class NumberController extends AbstractController implements INumberController
     public function checkBalance(Request $request): \App\Response\Command
     {
         return new \App\Response\Command(
-            $this->numberService->checkBalance($request->getContent(),$request->headers->all())
+            $this->numberService->checkBalance($request->getContent(),$request->query->all())
         );
     }
 

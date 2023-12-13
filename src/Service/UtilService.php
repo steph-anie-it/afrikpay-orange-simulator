@@ -174,7 +174,7 @@ class UtilService
             $destProperty = $dest->getProperty($key);
             $destProperty->setAccessible(true);
             try{
-                $destProperty->setValue($destination, $value[0]);
+                $destProperty->setValue($destination, $value);
             }catch (\Exception $exception){
 
             }

@@ -46,7 +46,7 @@ class ErrorListener implements EventSubscriberInterface
         $message = $throwable->getMessage();
         if($throwable instanceof GeneralException){
             $code = $throwable->getResponseStatus()->code();
-            $message = $throwable->getResponseStatus()->message();
+            $message = $throwable->getResponseStatus()->getMessage($message);
         }
 
         if(is_subclass_of($throwable,GeneralException::class)){
@@ -58,7 +58,7 @@ class ErrorListener implements EventSubscriberInterface
                 $extRefNum = $transaction->getExtrefnum();
             }
             $code = $throwable->getResponseStatus()->code();
-            $message = $throwable->getResponseStatus()->message();
+            $message = $throwable->getResponseStatus()->getMessage($message);
         }
 
 //        $this->logger->info(sprintf($message, $throwable->getCode(), $throwable->getMessage()));

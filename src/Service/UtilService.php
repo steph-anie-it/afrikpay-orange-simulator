@@ -158,11 +158,16 @@ class UtilService
     }
 
 
-    public function mapArray(array $source, string $destinationClass){
+    public function mapArray(array $source, string $destinationClass,bool $toUpper=true){
         $destination = new $destinationClass();
         $dest = new \ReflectionObject(new $destinationClass());
         foreach ($source as $key => $value){
-            $key = strtoupper(str_replace("-","_",$key));
+            if(str_contains($key,"-")){
+                $key = str_replace("-","_",$key);
+            }
+            if($toUpper){
+                $key = strtoupper($key);
+            }
             if(!$dest->hasProperty($key)) {
                 continue;
             }

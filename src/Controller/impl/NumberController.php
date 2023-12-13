@@ -113,7 +113,7 @@ class NumberController extends AbstractController implements INumberController
     public function checkBalance(Request $request): \App\Response\Command
     {
         return new \App\Response\Command(
-            $this->numberService->checkBalance($request->getContent())
+            $this->numberService->checkBalance($request->getContent(),$request->headers->all())
         );
     }
 

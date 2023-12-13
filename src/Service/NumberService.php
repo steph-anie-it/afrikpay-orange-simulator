@@ -42,10 +42,13 @@ interface NumberService
 
     public function payNumberAirtime(string $xml,array $headers=[]):CommandResultDto;
 
-    public function checkBalance(string $command):CommandResultDto;
+    public function checkBalance(string $command,array $headers=[]):CommandResultDto;
 
     public function checkCredentials(CommandHeaderDto $header,Transaction $transaction=null): Account;
 
     public function newMessage(CommandMessage $commandMessage):CommandResultDto;
+
+    public function checkConnection(mixed $headers):void;
+
 
 }

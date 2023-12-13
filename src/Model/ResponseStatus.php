@@ -8,6 +8,8 @@ enum ResponseStatus
     case NOMESSAGE_SPECIFIED;
 
     case UNKNOW_ERROR;
+
+    case INVALID_HEADER;
     case INVALID_KEY;
 
     case BAD_PIN_NUMBER;
@@ -25,6 +27,8 @@ enum ResponseStatus
 
     case INSUFFICIENT_BALANCE_NUMBER;
 
+    case INVALID_PARAMETER;
+
     public function message(string $param = ""): string
     {
         return match ($this) {
@@ -32,12 +36,21 @@ enum ResponseStatus
             ResponseStatus::NOMESSAGE_SPECIFIED => 'No message specified',
             ResponseStatus::UNKNOW_ERROR => 'Unknown error',
             ResponseStatus::BAD_PIN_NUMBER => 'Bad pin number',
-            ResponseStatus::INVALID_CREDENTIAL => 'Invalid Credentials',
+            ResponseStatus::INVALID_CREDENTIAL => 'Invalid Credentials for %s',
             ResponseStatus::ACCOUNT_NOT_FOUND => 'Account not found',
             ResponseStatus::INVALID_PHONE_NUMBER => 'Invalid phone number for account %s',
             ResponseStatus::INSUFFICIENT_BALANCE_NUMBER => 'Insufficient Balance',
-            ResponseStatus::ACCOUNT_ALREADY_EXISTS => 'Account already exits'
+            ResponseStatus::ACCOUNT_ALREADY_EXISTS => 'Account already exits',
+            ResponseStatus::INVALID_HEADER => 'Invalid header',
+            ResponseStatus::INVALID_PARAMETER => 'Invalid %s parameter %s'
         };
+    }
+
+    public function getMessage(mixed ...$message):string
+    {
+        $value = $message[0];
+        $value = array_map('strval', explode(',', $value));
+        return sprintf($this->message(),...$value);
     }
 
     public function code(): string
@@ -51,7 +64,9 @@ enum ResponseStatus
             ResponseStatus::ACCOUNT_NOT_FOUND => '404',
             ResponseStatus::INVALID_PHONE_NUMBER => '403',
             ResponseStatus::INSUFFICIENT_BALANCE_NUMBER => '402',
-            ResponseStatus::ACCOUNT_ALREADY_EXISTS => '405'
+            ResponseStatus::ACCOUNT_ALREADY_EXISTS => '405',
+            ResponseStatus::INVALID_HEADER => '406',
+            ResponseStatus::INVALID_PARAMETER => '407'
         };
     }
 

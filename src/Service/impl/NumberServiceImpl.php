@@ -207,6 +207,60 @@ class NumberServiceImpl implements NumberService
     }
 
 
+    /**
+     * @throws GeneralException
+     */
+    public function checkConnection(mixed $headers):void
+    {
+        $commandHeaderDto = $headers;
+        if(is_array($headers)){
+            $commandHeaderDto = $this->utilService->mapArray($headers,CommandHeaderDto::class);
+        }
+
+        if(!($commandHeaderDto instanceof CommandHeaderDto)){
+          throw new GeneralException(null,null,ResponseStatus::INVALID_HEADER);
+        }
+
+        $account = $this->accountRepository->findOneBy([Account::REQUESTGATEWAYTYPE => $commandHeaderDto->REQUEST_GATEWAY_TYPE]);
+        if(!$account){
+            $value = strtoupper(Account::REQUESTGATEWAYTYPE).",".$commandHeaderDto->REQUEST_GATEWAY_TYPE;
+            throw new GeneralException($value,null,ResponseStatus::INVALID_PARAMETER);
+        }
+
+        $account = $this->accountRepository->findOneBy([Account::REQUESTGATEWAYCODE => $commandHeaderDto->REQUEST_GATEWAY_CODE]);
+        if(!$account){
+            $value = strtoupper(Account::REQUESTGATEWAYCODE).",".$commandHeaderDto->REQUEST_GATEWAY_CODE;
+            throw new GeneralException($value,null,ResponseStatus::INVALID_PARAMETER);
+        }
+
+        $account = $this->accountRepository->findOneBy([Account::LOGIN => $commandHeaderDto->LOGIN]);
+        if(!$account){
+            $value = strtoupper(Account::LOGIN).",".$commandHeaderDto->LOGIN;
+            throw new GeneralException($value,null,ResponseStatus::INVALID_PARAMETER);
+        }
+
+        $account = $this->accountRepository->findOneBy([Account::SERVICEPORT => $commandHeaderDto->SERVICE_PORT]);
+        if(!$account){
+            $value = strtoupper(Account::SERVICEPORT).",".$commandHeaderDto->SERVICE_PORT;
+            throw new GeneralException($value,null,ResponseStatus::INVALID_PARAMETER);
+        }
+
+        $account = $this->accountRepository->findOneBy([Account::SOURCETYPE => $commandHeaderDto->SOURCE_TYPE]);
+        if(!$account){
+            $value = strtoupper(Account::SOURCETYPE).",".$commandHeaderDto->SOURCE_TYPE;
+            throw new GeneralException($value,null,ResponseStatus::INVALID_PARAMETER);
+        }
+
+        $account = $this->accountRepository->findOneBy([Account::LOGIN => $commandHeaderDto->LOGIN]);
+        if(!$account){
+            $value = strtoupper(Account::LOGIN).",".$commandHeaderDto->LOGIN;
+            throw new GeneralException($value,null,ResponseStatus::INVALID_PARAMETER);
+        }
+        if(!$this->passwordHasher->isPasswordValid($account,$commandHeaderDto->PASSWORD)){
+            throw new GeneralException($commandHeaderDto->LOGIN,null,ResponseStatus::INVALID_CREDENTIAL);
+        }
+    }
+
     public function checkCredentials(CommandHeaderDto $header, Transaction $transaction=null): Account
     {
         $mappedAccount = $this->utilService->mapWithUnder($header,Account::class);
@@ -249,16 +303,6 @@ class NumberServiceImpl implements NumberService
         if(!$account){
             throw new AccountNotFoundException($mappedAccount->getLogin(),$transaction);
         }
-/*
-        $account = $this->accountRepository->findOneBy([
-                Account::REQUESTGATEWAYCODE => $mappedAccount->getRequestgatewaycode()]
-        );
-
-        if(!$account){
-            $message = sprintf(self::BADPARAMETER_FORMAT,Account::REQUESTGATEWAYCODE,$mappedAccount->getRequestgatewaycode());
-            throw new ParameterNotFoundException($message,$transaction);
-        }
-*/
 
 
         $account = $this->accountRepository->findOneBy([
@@ -416,12 +460,13 @@ class NumberServiceImpl implements NumberService
         if($transaction instanceof Transaction){
             $transaction->setMsisdn2($payAirtimeDto->ACCOUNTNUM);
         }
+        $this->checkConnection($header);
         $account = $this->checkCredentials($header,$transaction);
-
-        $number = $this->numberRepository->findOneBy([Number::MSISDN=> $transaction->getMsisdn2()]);
+        $searchNumber = $transaction->getMsisdn2();
+        $number = $this->numberRepository->findOneBy([Number::MSISDN=> $searchNumber]);
 
         if(!$number){
-            throw new GeneralException(null,$transaction,ResponseStatus::INVALID_PHONE_NUMBER);
+            throw new GeneralException($searchNumber,$transaction,ResponseStatus::INVALID_PHONE_NUMBER);
         }
         $transactionId = null;
         $numberTransaction = null;
@@ -506,6 +551,7 @@ class NumberServiceImpl implements NumberService
 
     public function transactionStatus(TransactionStatusFullDto $param): CommandResultDto
     {
+        $this->checkConnection($param->commandHeaderDto);
         $commandHeader = $this->utilService->map($param->command,CommandHeaderDto::class,true);
         $transaction = $this->utilService->map($param->command,Transaction::class);
         $account =  $this->checkCredentials($commandHeader,$transaction);
@@ -560,6 +606,7 @@ class NumberServiceImpl implements NumberService
      */
     public function payNumberAirtime(string $xml, array $headers=[]): CommandResultDto
     {
+        $this->checkConnection($headers);
         $commandXml = simplexml_load_string($xml);
         $command = $this->utilService->mapObjectXml($commandXml,Command::class);
         return $this->payAirtime(new PayAirtimeFullDto($command,$headers));
@@ -575,15 +622,16 @@ class NumberServiceImpl implements NumberService
      * @throws \ReflectionException
      * @throws GeneralException
      */
-    public function checkBalance(string $command): CommandResultDto
+    public function checkBalance(string $command,array $headers=[]): CommandResultDto
     {
+        $this->checkConnection($headers);
         $commandXml = simplexml_load_string($command);
         $commandHeader = $this->utilService->mapObjectXml($commandXml,CommandHeaderDto::class);
 
         $command = $this->utilService->mapObjectXml($commandXml,Command::class);
 
         $transaction   = $this->utilService->map($command,Transaction::class);
-//        dd($transaction);
+
         $account =  $this->checkCredentials($commandHeader,$transaction);
         $txnsid = $this->utilService->generateTransactionId();
         $transaction = $this->buildTransaction($txnsid,OperationNature::BALANCE->value(),$command->TYPE);

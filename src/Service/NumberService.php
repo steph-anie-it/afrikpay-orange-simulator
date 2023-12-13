@@ -31,6 +31,8 @@ interface NumberService
 
     public function createAirtimeAccount(AccountCreateDto $createDto) : AccountCreateResultDto;
 
+    public function loginAirtimeAccount(AccountCreateDto $createDto) : AccountCreateResultDto;
+
     public function payData(PayDataFullDto $param):CommandResultDto;
 
     public function payInternetData(PayDataDto $payDataDto):CommandResultDto;

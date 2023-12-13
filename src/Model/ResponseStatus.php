@@ -37,7 +37,7 @@ enum ResponseStatus
             ResponseStatus::UNKNOW_ERROR => 'Unknown error',
             ResponseStatus::BAD_PIN_NUMBER => 'Bad pin number',
             ResponseStatus::INVALID_CREDENTIAL => 'Invalid Credentials for %s',
-            ResponseStatus::ACCOUNT_NOT_FOUND => 'Account not found',
+            ResponseStatus::ACCOUNT_NOT_FOUND => 'Account %s not found',
             ResponseStatus::INVALID_PHONE_NUMBER => 'Invalid phone number for account %s',
             ResponseStatus::INSUFFICIENT_BALANCE_NUMBER => 'Insufficient Balance',
             ResponseStatus::ACCOUNT_ALREADY_EXISTS => 'Account already exits',

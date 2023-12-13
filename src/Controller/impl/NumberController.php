@@ -132,4 +132,13 @@ class NumberController extends AbstractController implements INumberController
             $this->numberService->newMessage($commandMessage)
         );
     }
+
+
+    #[Route(self::ACCOUNT_AIRTIME_LOGIN_URI, name: self::ACCOUNT_AIRTIME_LOGIN_NAME , methods: [self::ACCOUNT_AIRTIME_LOGIN_METHOD])]
+    public function loginAccount(#[MapRequestPayload] AccountCreateDto $createDto): AccountAirtimeResponse
+    {
+        return new AccountAirtimeResponse(
+            $this->numberService->loginAirtimeAccount($createDto)
+        );
+    }
 }

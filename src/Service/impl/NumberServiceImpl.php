@@ -40,6 +40,7 @@ use App\Repository\TransactionRepository;
 use App\Service\NumberService;
 use App\Service\UtilService;
 use http\Exception\InvalidArgumentException;
+use Symfony\Component\HttpKernel\Exception\GoneHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class NumberServiceImpl implements NumberService
@@ -210,11 +211,11 @@ class NumberServiceImpl implements NumberService
     /**
      * @throws GeneralException
      */
-    public function checkConnection(mixed $headers):void
+    public function checkConnection(mixed $queryParams):void
     {
-        $commandHeaderDto = $headers;
-        if(is_array($headers)){
-            $commandHeaderDto = $this->utilService->mapArray($headers,CommandHeaderDto::class);
+        $commandHeaderDto = $queryParams;
+        if(is_array($queryParams)){
+            $commandHeaderDto = $this->utilService->mapArray($queryParams,CommandHeaderDto::class);
         }
 
         if(!($commandHeaderDto instanceof CommandHeaderDto)){
@@ -256,6 +257,12 @@ class NumberServiceImpl implements NumberService
             $value = sprintf(self::BADPARAMETER_FORMAT,strtoupper(Account::LOGIN),$commandHeaderDto->LOGIN);
             throw new GeneralException($value,null,ResponseStatus::INVALID_PARAMETER);
         }
+
+        if(!isset($commandHeaderDto->PASSWORD)){
+            $value = sprintf(self::BADPARAMETER_FORMAT,strtoupper(Account::PASSWORD),"");
+            throw new GeneralException($value,null,ResponseStatus::INVALID_PARAMETER);
+        }
+
         if(!$this->passwordHasher->isPasswordValid($account,$commandHeaderDto->PASSWORD)){
             throw new GeneralException($commandHeaderDto->LOGIN,null,ResponseStatus::INVALID_CREDENTIAL);
         }
@@ -685,5 +692,33 @@ class NumberServiceImpl implements NumberService
             unset($result->{"TXNID"});
         }
         return $result;
+    }
+
+    /**
+     * @throws GeneralException
+     */
+    public function loginAirtimeAccount(AccountCreateDto $createDto): AccountCreateResultDto
+    {
+        if(!isset($createDto->username)){
+            $message = sprintf(self::BADPARAMETER_FORMAT,Account::USERNAME,"");
+            throw new GeneralException($message,null,ResponseStatus::INVALID_PARAMETER);
+        }
+
+        if(!isset($createDto->password)){
+            $message = sprintf(self::BADPARAMETER_FORMAT,Account::PASSWORD,"");
+            throw new GeneralException($message,null,ResponseStatus::INVALID_PARAMETER);
+        }
+
+        $account = $this->accountRepository->findOneBy([Account::USERNAME => $createDto->username]);
+        if(!$account){
+            throw new GeneralException($createDto->username,null,ResponseStatus::ACCOUNT_NOT_FOUND);
+        }
+
+        if(!$this->passwordHasher->isPasswordValid($account,$createDto->password)){
+            throw new GeneralException(null,null,ResponseStatus::INVALID_CREDENTIAL);
+        }
+
+        $account =   $this->accountRepository->save($account);
+        return $this->map($account,AccountCreateResultDto::class);
     }
 }

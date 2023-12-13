@@ -216,7 +216,7 @@ class NumberServiceImpl implements NumberService
         if(is_array($headers)){
             $commandHeaderDto = $this->utilService->mapArray($headers,CommandHeaderDto::class);
         }
-
+        dd($headers,$commandHeaderDto);
         if(!($commandHeaderDto instanceof CommandHeaderDto)){
           throw new GeneralException(null,null,ResponseStatus::INVALID_HEADER);
         }

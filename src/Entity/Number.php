@@ -10,6 +10,8 @@ class Number
 {
     public const MSISDN="msisdn";
 
+    public const AMOUNT="amount";
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

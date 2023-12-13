@@ -10,5 +10,4 @@ class CommandHeaderDto
     public ?int $SERVICE_PORT = null;
     public ?string $REQUEST_GATEWAY_TYPE = null;
     public ?string $LOGIN = null;
-    public ?string $LOGINID=null;
 }

@@ -133,6 +133,16 @@ class NumberServiceImpl implements NumberService
 
         $account = $this->checkCredentials($header,$transaction);
 
+        if(!isset($payAirtimeDto->AMOUNT)){
+            $message = sprintf(self::BADPARAMETER_FORMAT,Number::AMOUNT,"");
+            throw new GeneralException($message,$transaction,ResponseStatus::INVALID_PARAMETER);
+        }
+        $minAmount = $_ENV['MIN_TRANSACTION_AMOUNT'];
+        if(floatval($payAirtimeDto->AMOUNT) < floatval($minAmount)){
+            $message = sprintf(self::BADPARAMETER_FORMAT,$payAirtimeDto->AMOUNT,"");
+            throw new GeneralException($message,$transaction,ResponseStatus::INVALID_AMOUNT);
+        }
+
         $number = $this->numberRepository->findOneBy([Number::MSISDN=> $transaction->getMsisdn2()]);
 
         if(!$number){
@@ -222,6 +232,12 @@ class NumberServiceImpl implements NumberService
           throw new GeneralException(null,null,ResponseStatus::INVALID_HEADER);
         }
 
+        $undefinded = $this->utilService->getUndefinedParams($commandHeaderDto);
+        if(!empty($undefinded)){
+            $message = sprintf(self::BADPARAMETER_FORMAT,$undefinded,"");
+            throw new GeneralException($message,null,ResponseStatus::INVALID_PARAMETER);
+        }
+
         $account = $this->accountRepository->findOneBy([Account::REQUESTGATEWAYTYPE => $commandHeaderDto->REQUEST_GATEWAY_TYPE]);
         if(!$account){
             $value = sprintf(self::BADPARAMETER_FORMAT,strtoupper(Account::REQUESTGATEWAYTYPE),$commandHeaderDto->REQUEST_GATEWAY_TYPE);
@@ -275,7 +291,7 @@ class NumberServiceImpl implements NumberService
             throw new InvalidDataException();
         }
 
-        $login = $header->LOGIN ?? $header->LOGINID;
+        $login = $header->LOGIN;
 
         $account = $this->accountRepository->findOneBy([
                 Account::LOGIN => $login]

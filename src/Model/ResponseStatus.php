@@ -29,6 +29,9 @@ enum ResponseStatus
 
     case INVALID_PARAMETER;
 
+
+    case INVALID_AMOUNT;
+
     public function message(string $param = ""): string
     {
         return match ($this) {
@@ -42,7 +45,8 @@ enum ResponseStatus
             ResponseStatus::INSUFFICIENT_BALANCE_NUMBER => 'Insufficient Balance',
             ResponseStatus::ACCOUNT_ALREADY_EXISTS => 'Account already exits',
             ResponseStatus::INVALID_HEADER => 'Invalid header',
-            ResponseStatus::INVALID_PARAMETER => 'Invalid %s parameter %s'
+            ResponseStatus::INVALID_PARAMETER => 'Invalid %s parameter %s',
+            ResponseStatus::INVALID_AMOUNT => 'Invalid amount %s'
         };
     }
 
@@ -66,7 +70,8 @@ enum ResponseStatus
             ResponseStatus::INSUFFICIENT_BALANCE_NUMBER => '402',
             ResponseStatus::ACCOUNT_ALREADY_EXISTS => '405',
             ResponseStatus::INVALID_HEADER => '406',
-            ResponseStatus::INVALID_PARAMETER => '407'
+            ResponseStatus::INVALID_PARAMETER => '407',
+            ResponseStatus::INVALID_AMOUNT => '408'
         };
     }
 

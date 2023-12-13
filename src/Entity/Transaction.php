@@ -78,7 +78,6 @@ class Transaction
     #[ORM\Column(type:Types::FLOAT,nullable: true)]
     private ?float $balancenew =  null;
 
-
     #[ORM\Column(type:Types::FLOAT,nullable: true)]
     private ?float $balancedata = null;
 

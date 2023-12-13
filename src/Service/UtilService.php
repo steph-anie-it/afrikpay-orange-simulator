@@ -182,6 +182,25 @@ class UtilService
         return $destination;
     }
 
+
+    public const UNDEFINED_TEMPLATE = "%s";
+    public function getUndefinedParams(mixed $object) : ?string
+    {
+        $reflection = new \ReflectionObject($object);
+        $properties = $reflection->getProperties();
+        $undefinesValues = "";
+        foreach ($properties as $property) {
+            $value = $property->getValue($object);
+            if (!$value) {
+                if (!empty($undefinesValues)) {
+                    $undefinesValues .= " or ";
+                }
+                $undefinesValues .= sprintf(self::UNDEFINED_TEMPLATE, $property->getName());
+            }
+        }
+        return  $undefinesValues;
+    }
+
     public function mapWithUnder(mixed $sourceClass, string $destinationClass){
         $object = new \ReflectionObject($sourceClass);
 

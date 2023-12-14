@@ -47,6 +47,8 @@ class NumberServiceImpl implements NumberService
 {
 
     public const BADPARAMETER_FORMAT="%s,%s";
+
+    public const BADTRHREEPARAMETER_FORMAT="%s,%s,%s";
     public function __construct(protected NumberRepository $numberRepository,
                                 protected AccountRepository $accountRepository,
                                 protected  UtilService $utilService,
@@ -137,11 +139,22 @@ class NumberServiceImpl implements NumberService
             $message = sprintf(self::BADPARAMETER_FORMAT,Number::AMOUNT,"");
             throw new GeneralException($message,$transaction,ResponseStatus::INVALID_PARAMETER);
         }
+
         $minAmount = floatval($_ENV['MIN_TRANSACTION_AMOUNT']);
+
+        $maxAmount = floatval($_ENV['MAX_TRANSACTION_AMOUNT']);
+
         $amount = floatval($payAirtimeDto->AMOUNT);
+
         if($amount < $minAmount){
-            $message = sprintf(self::BADPARAMETER_FORMAT,$payAirtimeDto->AMOUNT,"");
-            throw new GeneralException($message,$transaction,ResponseStatus::INVALID_AMOUNT);
+            $message = sprintf(self::BADTRHREEPARAMETER_FORMAT,$payAirtimeDto->AMOUNT,$minAmount,$maxAmount);
+            throw new GeneralException($message,$transaction,ResponseStatus::INVALID_AMOUNT_MIN_MAX);
+        }
+
+
+        if($account > $maxAmount){
+            $message = sprintf(self::BADTRHREEPARAMETER_FORMAT,$payAirtimeDto->AMOUNT,$minAmount,$maxAmount);
+            throw new GeneralException($message,$transaction,ResponseStatus::INVALID_AMOUNT_MIN_MAX);
         }
 
         $multiple = floatval($_ENV['AMOUNT_MUTIPLE']);

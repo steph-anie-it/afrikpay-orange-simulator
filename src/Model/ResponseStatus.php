@@ -32,6 +32,8 @@ enum ResponseStatus
 
     case BAD_AMOUNT_MULTIPLE;
 
+    case INVALID_AMOUNT_MIN_MAX;
+
     public function message(string $param = ""): string
     {
         return match ($this) {
@@ -47,7 +49,7 @@ enum ResponseStatus
             ResponseStatus::INVALID_HEADER => 'Invalid header',
             ResponseStatus::INVALID_PARAMETER => 'Invalid %s parameter %s',
             ResponseStatus::INVALID_AMOUNT => 'Invalid amount %s',
-            ResponseStatus::BAD_AMOUNT_MULTIPLE => 'Amount must be a multiple of %s'
+            ResponseStatus::INVALID_AMOUNT_MIN_MAX => 'Amount %s must be between %s and %s.'
         };
     }
 
@@ -73,7 +75,8 @@ enum ResponseStatus
             ResponseStatus::INVALID_HEADER => '406',
             ResponseStatus::INVALID_PARAMETER => '407',
             ResponseStatus::INVALID_AMOUNT => '408',
-            ResponseStatus::BAD_AMOUNT_MULTIPLE => '409'
+            ResponseStatus::BAD_AMOUNT_MULTIPLE => '409',
+            ResponseStatus::INVALID_AMOUNT_MIN_MAX => '410'
         };
     }
 

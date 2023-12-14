@@ -33,5 +33,5 @@ class AccountCreateResultDto
 
     public ?string $requestgatewaycode = null;
 
-
+    public ?string $test ="sdfsdfsdfsdfs";
 }

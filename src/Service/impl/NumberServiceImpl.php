@@ -146,7 +146,7 @@ class NumberServiceImpl implements NumberService
 
         $multiple = floatval($_ENV['AMOUNT_MUTIPLE']);
         if(fmod($amount , $multiple) != floatval(0)){
-            $message = sprintf(self::BADPARAMETER_FORMAT,$minAmount,"");
+            $message = sprintf(self::BADPARAMETER_FORMAT,$multiple,"");
             throw new GeneralException($message,$transaction,ResponseStatus::BAD_AMOUNT_MULTIPLE);
         }
 

@@ -152,7 +152,7 @@ class NumberServiceImpl implements NumberService
         }
 
 
-        if($account > $maxAmount){
+        if($amount > $maxAmount){
             $message = sprintf(self::BADTRHREEPARAMETER_FORMAT,$payAirtimeDto->AMOUNT,$minAmount,$maxAmount);
             throw new GeneralException($message,$transaction,ResponseStatus::INVALID_AMOUNT_MIN_MAX);
         }

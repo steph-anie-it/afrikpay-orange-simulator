@@ -19,6 +19,7 @@ enum ResponseStatus
 
     case ACCOUNT_NOT_FOUND;
 
+    case INVALID_TYPE_FOROPERATION;
 
     case ACCOUNT_ALREADY_EXISTS;
 
@@ -50,7 +51,8 @@ enum ResponseStatus
             ResponseStatus::INVALID_PARAMETER => 'Invalid %s parameter %s',
             ResponseStatus::INVALID_AMOUNT => 'Invalid amount %s',
             ResponseStatus::INVALID_AMOUNT_MIN_MAX => 'Amount %s must be between %s and %s.',
-            ResponseStatus::BAD_AMOUNT_MULTIPLE => 'Amount %s must be a multiple of %s'
+            ResponseStatus::BAD_AMOUNT_MULTIPLE => 'Amount %s must be a multiple of %s',
+            ResponseStatus::INVALID_TYPE_FOROPERATION => 'Invalid Type for operation'
         };
     }
 

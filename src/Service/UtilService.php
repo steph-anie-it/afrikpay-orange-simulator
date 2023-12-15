@@ -184,12 +184,26 @@ class UtilService
 
 
     public const UNDEFINED_TEMPLATE = "%s";
-    public function getUndefinedParams(mixed $object) : ?string
+    public function getUndefinedParams(mixed $object,array $optionalProp=[]) : ?string
     {
         $reflection = new \ReflectionObject($object);
         $properties = $reflection->getProperties();
         $undefinesValues = "";
         foreach ($properties as $property) {
+            $propName = $property->getName();
+            if(!$property->isInitialized($object)){
+                if (!empty($undefinesValues)) {
+                    $undefinesValues .= " or ";
+                }
+                $isOptional = is_array($optionalProp)
+                    && count($optionalProp) > 0
+                    && in_array($propName,$optionalProp);
+
+                if (!$isOptional){
+                    $undefinesValues .= sprintf(self::UNDEFINED_TEMPLATE, $propName);
+                }
+                continue;
+            }
             $value = $property->getValue($object);
             if (!$value) {
                 if (!empty($undefinesValues)) {
@@ -200,6 +214,7 @@ class UtilService
         }
         return  $undefinesValues;
     }
+
 
     public function mapWithUnder(mixed $sourceClass, string $destinationClass){
         $object = new \ReflectionObject($sourceClass);

@@ -168,6 +168,8 @@ class NumberServiceImpl implements NumberService
         $payAirtimeDto = $payAirtimeFullDto->command;
         $header = $payAirtimeFullDto->commandHeaderDto;
 
+        $this->checkOperation($payAirtimeDto->TYPE,$_ENV['AIRTIME_PAY']);
+
         $transaction = $this->utilService->map($payAirtimeDto,Transaction::class);
 
         $account = $this->checkCredentials($header,$transaction);
@@ -253,6 +255,14 @@ class NumberServiceImpl implements NumberService
         }
 
         return $result;
+    }
+
+
+    public function checkOperation(string $operation,string $expected):void
+    {
+        if($operation != $expected){
+            throw new GeneralException($operation,null,ResponseStatus::ACCOUNT_NOT_FOUND);
+        }
     }
 
 
@@ -516,11 +526,13 @@ class NumberServiceImpl implements NumberService
         $payAirtimeDto = $payDataDto->command;
         $header = $payDataDto->commandHeaderDto;
 
+
         $transaction = $this->utilService->map($payAirtimeDto,Transaction::class);
 
         if($transaction instanceof Transaction){
             $transaction->setMsisdn2($payAirtimeDto->ACCOUNTNUM);
         }
+        $this->checkOperation($payAirtimeDto->TYPE,$_ENV['INTERNET_RECHARCHE']);
         $this->checkConnection($header);
         $account = $this->checkCredentials($header,$transaction);
         $searchNumber = $transaction->getMsisdn2();
@@ -614,10 +626,15 @@ class NumberServiceImpl implements NumberService
         return $amount;
     }
 
+    /**
+     * @throws \ReflectionException
+     * @throws InvalidDataException
+     * @throws GeneralException
+     */
     public function transactionStatus(TransactionStatusFullDto $param): CommandResultDto
     {
         $this->checkConnection($param->commandHeaderDto);
-//        dd($param);
+        $this->checkOperation($param->command->TYPE,$_ENV['TRANSACTION_STATUS']);
 //        $commandHeader = $this->utilService->map($param->command,CommandHeaderDto::class,true);
         $transaction = $this->utilService->map($param->command,Transaction::class);
         $account =  $this->checkCredentials($param->commandHeaderDto,$transaction);
@@ -695,6 +712,8 @@ class NumberServiceImpl implements NumberService
         $commandHeader = $this->utilService->mapArray($headers,CommandHeaderDto::class);
 
         $command = $this->utilService->mapObjectXml($commandXml,Command::class);
+
+        $this->checkOperation($command->TYPE,$_ENV['API_BALANCE']);
 
         $transaction   = $this->utilService->map($command,Transaction::class);
 

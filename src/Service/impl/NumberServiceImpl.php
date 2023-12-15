@@ -595,9 +595,10 @@ class NumberServiceImpl implements NumberService
     public function transactionStatus(TransactionStatusFullDto $param): CommandResultDto
     {
         $this->checkConnection($param->commandHeaderDto);
-        $commandHeader = $this->utilService->map($param->command,CommandHeaderDto::class,true);
+//        dd($param);
+//        $commandHeader = $this->utilService->map($param->command,CommandHeaderDto::class,true);
         $transaction = $this->utilService->map($param->command,Transaction::class);
-        $account =  $this->checkCredentials($commandHeader,$transaction);
+        $account =  $this->checkCredentials($param->commandHeaderDto,$transaction);
         $txnsid = $this->utilService->generateTransactionId();
         $balance = $account->getBalance() ?? 0;
         $oldBalance =  $account->getOldbalance() ?? 0;

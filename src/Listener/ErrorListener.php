@@ -63,11 +63,6 @@ class ErrorListener implements EventSubscriberInterface
 
 //        $this->logger->info(sprintf($message, $throwable->getCode(), $throwable->getMessage()));
 
-        $errorMessage = sprintf($messageFormat, $code,
-            $message,
-            $throwable->getFile(),$throwable->getLine());
-
-        $this->logger->critical($errorMessage);
 
         $exceptionEvent->allowCustomResponseCode();
         $commandResult = new \App\Dto\Result\CommandResultDto();
@@ -84,10 +79,18 @@ class ErrorListener implements EventSubscriberInterface
             $commandResult->EXTREFNUM = $extRefNum;
         }
 
+        $commandResult->MESSAGE  = $message;
+
+        $errorMessage = sprintf($messageFormat, $code,
+            $message,
+            $throwable->getFile(),$throwable->getLine());
+
+        $this->logger->critical($errorMessage);
+
+
         $commandResult->TXNSTATUS = $code;
         $date = new \DateTime();
         $commandResult->DATE = $date->format('d/m/Y H:i:s');
-        $commandResult->MESSAGE  = $message;
         $response = new Command($commandResult);
         $response->setStatusCode(200);
         $exceptionEvent->setResponse($response);

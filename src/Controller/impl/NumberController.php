@@ -39,7 +39,7 @@ class NumberController extends AbstractController implements INumberController
     public function generateNumber(#[MapQueryParameter] ?string $number=null): GenerateAirtimeResponse
     {
         return new GenerateAirtimeResponse(
-            $this->numberService->generateNumber()
+            $this->numberService->generateNumber($number)
         );
     }
 

@@ -441,8 +441,27 @@ class NumberServiceImpl implements NumberService
         return $account;
     }
 
+    /**
+     * @throws \ReflectionException
+     * @throws GeneralException
+     */
     public function generateNumber(?string $number = null): GenerateNumberResultDto
     {
+        if($number){
+            if(!preg_match($_ENV['PHONE_REGEX'],$number)){
+                throw new GeneralException(null,null,ResponseStatus::INVALID_PHONE_NUMBER);
+            }
+          $accountExists =  $this->accountRepository->findOneBy([Account::ACCOUNT_MSISDN => $number]);
+          if($accountExists){
+              throw new GeneralException(null,null,ResponseStatus::NUMBER_ALREADY_EXISTS);
+          }
+
+          $numberExists =  $this->numberRepository->findOneBy([Number::MSISDN => $number]);
+          if($numberExists){
+              throw new GeneralException(null,null,ResponseStatus::NUMBER_ALREADY_EXISTS);
+          }
+        }
+
         $phone = $number ?: $this->utilService->generatePhone();
         while ($this->accountRepository->findOneBy([Account::ACCOUNT_MSISDN => $phone])){
             $phone = $this->utilService->generatePhone();

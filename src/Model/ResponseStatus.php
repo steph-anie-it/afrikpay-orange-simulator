@@ -30,6 +30,8 @@ enum ResponseStatus
     case INVALID_PHONE_NUMBER;
 
 
+    case NUMBER_ALREADY_EXISTS;
+
     case INSUFFICIENT_BALANCE_NUMBER;
 
     case INVALID_PARAMETER;
@@ -58,7 +60,8 @@ enum ResponseStatus
             ResponseStatus::BAD_AMOUNT_MULTIPLE => 'Amount %s must be a multiple of %s',
             ResponseStatus::INVALID_TYPE_FOROPERATION => 'Invalid Type %s for operation',
             ResponseStatus::INVALID_DATE_FORMAT => 'Invalid Date format',
-            ResponseStatus::INVALID_DATE_VALUE => 'Invalid Date value'
+            ResponseStatus::INVALID_DATE_VALUE => 'Invalid Date value',
+            ResponseStatus::NUMBER_ALREADY_EXISTS => 'Number already exists'
         };
     }
 
@@ -88,7 +91,8 @@ enum ResponseStatus
             ResponseStatus::INVALID_AMOUNT_MIN_MAX => '410',
             ResponseStatus::INVALID_TYPE_FOROPERATION => '411',
             ResponseStatus::INVALID_DATE_FORMAT => '412',
-            ResponseStatus::INVALID_DATE_VALUE =>  '413'
+            ResponseStatus::INVALID_DATE_VALUE =>  '413',
+            ResponseStatus::NUMBER_ALREADY_EXISTS => '414'
         };
     }
 

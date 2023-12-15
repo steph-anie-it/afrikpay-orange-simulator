@@ -21,7 +21,7 @@ use App\Entity\Transaction;
 
 interface NumberService
 {
-    public function generateNumber() : GenerateNumberResultDto;
+    public function generateNumber(?string $number=null) : GenerateNumberResultDto;
 
     public function payAirtime(PayAirtimeFullDto $payAirtimeFullDto):CommandResultDto;
 

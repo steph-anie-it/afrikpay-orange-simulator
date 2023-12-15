@@ -36,7 +36,7 @@ class NumberController extends AbstractController implements INumberController
     }
 
     #[Route(self::GENERATE_URI, name: self::GENERATE_NAME, methods: [self::GENERATE_METHOD])]
-    public function generateNumber(): GenerateAirtimeResponse
+    public function generateNumber(#[MapQueryParameter] ?string $number=null): GenerateAirtimeResponse
     {
         return new GenerateAirtimeResponse(
             $this->numberService->generateNumber()

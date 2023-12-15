@@ -441,9 +441,9 @@ class NumberServiceImpl implements NumberService
         return $account;
     }
 
-    public function generateNumber(): GenerateNumberResultDto
+    public function generateNumber(?string $number = null): GenerateNumberResultDto
     {
-        $phone =  $this->utilService->generatePhone();
+        $phone = $number ?: $this->utilService->generatePhone();
         while ($this->accountRepository->findOneBy([Account::ACCOUNT_MSISDN => $phone])){
             $phone = $this->utilService->generatePhone();
         }

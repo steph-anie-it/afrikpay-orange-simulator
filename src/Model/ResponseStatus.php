@@ -49,7 +49,8 @@ enum ResponseStatus
             ResponseStatus::INVALID_HEADER => 'Invalid header',
             ResponseStatus::INVALID_PARAMETER => 'Invalid %s parameter %s',
             ResponseStatus::INVALID_AMOUNT => 'Invalid amount %s',
-            ResponseStatus::INVALID_AMOUNT_MIN_MAX => 'Amount %s must be between %s and %s.'
+            ResponseStatus::INVALID_AMOUNT_MIN_MAX => 'Amount %s must be between %s and %s.',
+            ResponseStatus::BAD_AMOUNT_MULTIPLE => 'Amount %s must be a multiple of %s'
         };
     }
 

@@ -113,6 +113,43 @@ class NumberServiceImpl implements NumberService
 
 
     /**
+     * @throws GeneralException
+     */
+    private function checkMultiple(float $amount, float $multiple, Transaction $transaction):void
+    {
+        if(fmod($amount , $multiple) != floatval(0)){
+            $message = sprintf(self::BADPARAMETER_FORMAT,strval($amount),strval($multiple));
+            throw new GeneralException($message,$transaction,ResponseStatus::BAD_AMOUNT_MULTIPLE);
+        }
+    }
+
+    /**
+     * @throws GeneralException
+     */
+    public function checkAmount(float $amount, Transaction $transaction): void
+    {
+        $minAmount = floatval($_ENV['MIN_TRANSACTION_AMOUNT']);
+
+        $maxAmount = floatval($_ENV['MAX_TRANSACTION_AMOUNT']);
+
+        if($amount < $minAmount){
+            $message = sprintf(self::BADTRHREEPARAMETER_FORMAT,strval($amount),strval($minAmount),strval($maxAmount));
+            throw new GeneralException($message,$transaction,ResponseStatus::INVALID_AMOUNT_MIN_MAX);
+        }
+
+
+        if($amount > $maxAmount){
+            $message = sprintf(self::BADTRHREEPARAMETER_FORMAT,strval($amount),strval($minAmount),strval($maxAmount));
+            throw new GeneralException($message,$transaction,ResponseStatus::INVALID_AMOUNT_MIN_MAX);
+        }
+
+        $multiple = floatval($_ENV['AMOUNT_MUTIPLE']);
+        $this->checkMultiple($amount,$multiple,$transaction);
+
+    }
+
+
+    /**
      * @param PayAirtimeFullDto $payAirtimeFullDto
      * @return CommandResultDto
      * @throws AccountNotFoundException
@@ -140,28 +177,9 @@ class NumberServiceImpl implements NumberService
             throw new GeneralException($message,$transaction,ResponseStatus::INVALID_PARAMETER);
         }
 
-        $minAmount = floatval($_ENV['MIN_TRANSACTION_AMOUNT']);
-
-        $maxAmount = floatval($_ENV['MAX_TRANSACTION_AMOUNT']);
-
         $amount = floatval($payAirtimeDto->AMOUNT);
 
-        if($amount < $minAmount){
-            $message = sprintf(self::BADTRHREEPARAMETER_FORMAT,$payAirtimeDto->AMOUNT,$minAmount,$maxAmount);
-            throw new GeneralException($message,$transaction,ResponseStatus::INVALID_AMOUNT_MIN_MAX);
-        }
-
-
-        if($amount > $maxAmount){
-            $message = sprintf(self::BADTRHREEPARAMETER_FORMAT,$payAirtimeDto->AMOUNT,$minAmount,$maxAmount);
-            throw new GeneralException($message,$transaction,ResponseStatus::INVALID_AMOUNT_MIN_MAX);
-        }
-
-        $multiple = floatval($_ENV['AMOUNT_MUTIPLE']);
-        if(fmod($amount , $multiple) != floatval(0)){
-            $message = sprintf(self::BADPARAMETER_FORMAT,$multiple,"");
-            throw new GeneralException($message,$transaction,ResponseStatus::BAD_AMOUNT_MULTIPLE);
-        }
+        $this->checkAmount($amount,$transaction);
 
         $number = $this->numberRepository->findOneBy([Number::MSISDN=> $transaction->getMsisdn2()]);
 
@@ -516,6 +534,10 @@ class NumberServiceImpl implements NumberService
         $type = $transaction->getType();
         $transactionId = $this->utilService->generateTransactionId();
 
+        $amount = floatval($payAirtimeDto->AMOUNT);
+        $this->checkAmount($amount,$transaction);
+
+
         if($account instanceof Account){
             $balance = $account->getDatabalance();
             $oldBalance  = $account->getDatanewbalance() ?? $balance;
@@ -670,7 +692,7 @@ class NumberServiceImpl implements NumberService
     {
         $this->checkConnection($headers);
         $commandXml = simplexml_load_string($command);
-        $commandHeader = $this->utilService->mapObjectXml($commandXml,CommandHeaderDto::class);
+        $commandHeader = $this->utilService->mapArray($headers,CommandHeaderDto::class);
 
         $command = $this->utilService->mapObjectXml($commandXml,Command::class);
 

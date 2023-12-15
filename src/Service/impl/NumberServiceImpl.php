@@ -569,8 +569,7 @@ class NumberServiceImpl implements NumberService
         }
         $this->checkOperation($payAirtimeDto->TYPE,$_ENV['INTERNET_RECHARCHE']);
         $this->checkConnection($header);
-        $this->checkCredentials($header,$transaction);
-
+        $account =  $this->checkCredentials($header,$transaction);
         $undefined = $this->utilService->getUndefinedParams($payAirtimeDto,['TXNID','MSISDN2'],['NOTIFICATION_MSISDN','PASSWORD','EXTCODE']);
 
         if(!empty($undefined)){

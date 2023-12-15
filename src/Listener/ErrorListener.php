@@ -86,7 +86,7 @@ class ErrorListener implements EventSubscriberInterface
 
         $commandResult->TXNSTATUS = $code;
         $date = new \DateTime();
-        $commandResult->DATE = $date->format('Y/m/d H:i:s');
+        $commandResult->DATE = $date->format('d/m/Y H:i:s');
         $commandResult->MESSAGE  = $message;
         $response = new Command($commandResult);
         $response->setStatusCode(200);

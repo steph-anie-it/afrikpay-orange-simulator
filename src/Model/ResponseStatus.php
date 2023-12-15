@@ -19,6 +19,10 @@ enum ResponseStatus
 
     case ACCOUNT_NOT_FOUND;
 
+    case INVALID_DATE_FORMAT;
+
+    case INVALID_DATE_VALUE;
+
     case INVALID_TYPE_FOROPERATION;
 
     case ACCOUNT_ALREADY_EXISTS;
@@ -52,7 +56,9 @@ enum ResponseStatus
             ResponseStatus::INVALID_AMOUNT => 'Invalid amount %s',
             ResponseStatus::INVALID_AMOUNT_MIN_MAX => 'Amount %s must be between %s and %s.',
             ResponseStatus::BAD_AMOUNT_MULTIPLE => 'Amount %s must be a multiple of %s',
-            ResponseStatus::INVALID_TYPE_FOROPERATION => 'Invalid Type for operation'
+            ResponseStatus::INVALID_TYPE_FOROPERATION => 'Invalid Type %s for operation',
+            ResponseStatus::INVALID_DATE_FORMAT => 'Invalid Date format',
+            ResponseStatus::INVALID_DATE_VALUE => 'Invalid Date value'
         };
     }
 
@@ -79,7 +85,10 @@ enum ResponseStatus
             ResponseStatus::INVALID_PARAMETER => '407',
             ResponseStatus::INVALID_AMOUNT => '408',
             ResponseStatus::BAD_AMOUNT_MULTIPLE => '409',
-            ResponseStatus::INVALID_AMOUNT_MIN_MAX => '410'
+            ResponseStatus::INVALID_AMOUNT_MIN_MAX => '410',
+            ResponseStatus::INVALID_TYPE_FOROPERATION => '411',
+            ResponseStatus::INVALID_DATE_FORMAT => '412',
+            ResponseStatus::INVALID_DATE_VALUE =>  '413'
         };
     }
 

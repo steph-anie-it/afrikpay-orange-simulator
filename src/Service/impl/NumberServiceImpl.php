@@ -39,6 +39,7 @@ use App\Repository\NumberRepository;
 use App\Repository\TransactionRepository;
 use App\Service\NumberService;
 use App\Service\UtilService;
+use DateTime;
 use http\Exception\InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\GoneHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -174,6 +175,15 @@ class NumberServiceImpl implements NumberService
 
         $account = $this->checkCredentials($header,$transaction);
 
+        $undefined = $this->utilService->getUndefinedParams($payAirtimeDto,['ACCOUNTNUM','TXNID'],['LOGINID','PASSWORD','EXTCODE']);
+
+        if(!empty($undefined)){
+            $message = sprintf(self::BADPARAMETER_FORMAT,$undefined,"");
+            throw new GeneralException($message,null,ResponseStatus::INVALID_PARAMETER);
+        }
+
+        $this->checkDateFormat($payAirtimeDto->DATE);
+
         if(!isset($payAirtimeDto->AMOUNT)){
             $message = sprintf(self::BADPARAMETER_FORMAT,Number::AMOUNT,"");
             throw new GeneralException($message,$transaction,ResponseStatus::INVALID_PARAMETER);
@@ -261,7 +271,7 @@ class NumberServiceImpl implements NumberService
     public function checkOperation(string $operation,string $expected):void
     {
         if($operation != $expected){
-            throw new GeneralException($operation,null,ResponseStatus::ACCOUNT_NOT_FOUND);
+            throw new GeneralException($operation,null,ResponseStatus::INVALID_TYPE_FOROPERATION);
         }
     }
 
@@ -330,6 +340,31 @@ class NumberServiceImpl implements NumberService
         if(!$this->passwordHasher->isPasswordValid($account,$commandHeaderDto->PASSWORD)){
             throw new GeneralException($commandHeaderDto->LOGIN,null,ResponseStatus::INVALID_CREDENTIAL);
         }
+    }
+
+
+    /**
+     * @throws GeneralException
+     */
+    public function checkDateFormat(string $date):void
+    {
+        if(!preg_match($_ENV['DATE_REGEX'],$date)){
+            throw new GeneralException(null,null,ResponseStatus::INVALID_DATE_FORMAT);
+        }
+        if(!$this->isValidDate($date, $_ENV['DATE_FORMAT'])){
+            throw new GeneralException(null,null,ResponseStatus::INVALID_DATE_VALUE);
+        }
+    }
+
+    public function isValidDate($date, $format) :bool {
+        $isValid = false;
+        try{
+            $dateTime = DateTime::createFromFormat($format, $date);
+            $isValid = $dateTime && $dateTime->format($format) === $date;
+        }catch (\Throwable $exception){
+
+        }
+        return $isValid;
     }
 
     public function checkCredentials(CommandHeaderDto $header, Transaction $transaction=null): Account
@@ -534,7 +569,18 @@ class NumberServiceImpl implements NumberService
         }
         $this->checkOperation($payAirtimeDto->TYPE,$_ENV['INTERNET_RECHARCHE']);
         $this->checkConnection($header);
-        $account = $this->checkCredentials($header,$transaction);
+        $this->checkCredentials($header,$transaction);
+
+        $undefined = $this->utilService->getUndefinedParams($payAirtimeDto,['TXNID','MSISDN2'],['NOTIFICATION_MSISDN','PASSWORD','EXTCODE']);
+
+        if(!empty($undefined)){
+            $message = sprintf(self::BADPARAMETER_FORMAT,$undefined,"");
+            throw new GeneralException($message,null,ResponseStatus::INVALID_PARAMETER);
+        }
+
+        $this->checkDateFormat($payAirtimeDto->DATE);
+
+
         $searchNumber = $transaction->getMsisdn2();
         $number = $this->numberRepository->findOneBy([Number::MSISDN=> $searchNumber]);
 
@@ -718,6 +764,16 @@ class NumberServiceImpl implements NumberService
         $transaction   = $this->utilService->map($command,Transaction::class);
 
         $account =  $this->checkCredentials($commandHeader,$transaction);
+
+        $undefined = $this->utilService->getUndefinedParams($command,['AMOUNT','ACCOUNTNUM','SELECTOR','LANGUAGE2','LANGUAGE1','TXNID','MSISDN2'],['NOTIFICATION_MSISDN','PASSWORD','EXTCODE']);
+
+        if(!empty($undefined)){
+            $message = sprintf(self::BADPARAMETER_FORMAT,$undefined,"");
+            throw new GeneralException($message,null,ResponseStatus::INVALID_PARAMETER);
+        }
+
+        $this->checkDateFormat($command->DATE);
+
         $txnsid = $this->utilService->generateTransactionId();
         $transaction = $this->buildTransaction($txnsid,OperationNature::BALANCE->value(),$command->TYPE);
         $transaction->setExtrefnum($command->EXTREFNUM);

@@ -184,20 +184,28 @@ class UtilService
 
 
     public const UNDEFINED_TEMPLATE = "%s";
-    public function getUndefinedParams(mixed $object,array $optionalProp=[]) : ?string
+    public function getUndefinedParams(mixed $object,array $optionalProp=[],array $emptyValues=[]) : ?string
     {
         $reflection = new \ReflectionObject($object);
         $properties = $reflection->getProperties();
         $undefinesValues = "";
         foreach ($properties as $property) {
             $propName = $property->getName();
-            if(!$property->isInitialized($object)){
+            $isOptional = is_array($optionalProp)
+                && count($optionalProp) > 0
+                && in_array($propName,$optionalProp);
+//            if($isOptional){
+//                dd($optionalProp);
+//            }
+            $allowEmpty = is_array($emptyValues)
+                && count($emptyValues) > 0
+                && in_array($propName,$emptyValues);
+
+            if(!$property->isInitialized($object) && !$isOptional){
+
                 if (!empty($undefinesValues)) {
                     $undefinesValues .= " or ";
                 }
-                $isOptional = is_array($optionalProp)
-                    && count($optionalProp) > 0
-                    && in_array($propName,$optionalProp);
 
                 if (!$isOptional){
                     $undefinesValues .= sprintf(self::UNDEFINED_TEMPLATE, $propName);
@@ -205,7 +213,8 @@ class UtilService
                 continue;
             }
             $value = $property->getValue($object);
-            if (!$value) {
+            if ($value == null &&  !$allowEmpty && !$isOptional) {
+                if(is_int($value) && $value == 0) continue;
                 if (!empty($undefinesValues)) {
                     $undefinesValues .= " or ";
                 }

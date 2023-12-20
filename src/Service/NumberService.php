@@ -7,6 +7,7 @@ use App\Dto\AccountCreateResultDto;
 use App\Dto\Command;
 use App\Dto\CommandHeaderDto;
 use App\Dto\CommandMessage;
+use App\Dto\ExecuteCommandDto;
 use App\Dto\GenerateNumberDto;
 use App\Dto\GenerateNumberResultDto;
 use App\Dto\PayAirtimeDto;
@@ -36,6 +37,9 @@ interface NumberService
     public function payData(PayDataFullDto $param):CommandResultDto;
 
     public function payInternetData(PayDataDto $payDataDto):CommandResultDto;
+
+
+    public function executeCommand(ExecuteCommandDto $executeCommandDto):CommandResultDto;
 
 
     public function transactionStatus(TransactionStatusFullDto $param):CommandResultDto;

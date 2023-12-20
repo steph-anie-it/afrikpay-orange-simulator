@@ -75,6 +75,12 @@ interface NumberController
     public const ACCOUNT_AIRTIME_LOGIN_METHOD = 'POST';
 
 
+    public const API_EXECUTE_COMMAND_URI="api/execute/command";
+    public const API_EXECUTE_COMMAND_NAME="execute_command";
+    public const API_EXECUTE_COMMAND_DESCRIPTION="Execute a command";
+    public const API_EXECUTE_COMMAND_METHOD="POST";
+
+
     public function createAccount(AccountCreateDto $createDto): AccountAirtimeResponse;
     public function generateNumber(?string $number=null): GenerateAirtimeResponse;
     public function payAirtime(Request $request, \App\Dto\Command $payAirtimeDto):\App\Response\Command;
@@ -93,4 +99,7 @@ interface NumberController
     public function newMessage(CommandMessage $commandMessage):\App\Response\Command;
 
     public function loginAccount(AccountCreateDto $createDto): AccountAirtimeResponse;
+
+    public function executeCommand(Request $request, \App\Dto\Command $payAirtimeDto): \App\Response\Command;
+
 }

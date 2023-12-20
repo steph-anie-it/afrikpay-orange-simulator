@@ -6,6 +6,7 @@ use App\Dto\AccountCreateDto;
 use App\Dto\AccountCreateResultDto;
 use App\Dto\Command;
 use App\Dto\CommandMessage;
+use App\Dto\ExecuteCommandDto;
 use App\Dto\PayAirtimeDto;
 use App\Dto\PayAirtimeFullDto;
 use App\Dto\PayAirtimeResultDto;
@@ -43,6 +44,21 @@ class NumberController extends AbstractController implements INumberController
         );
     }
 
+
+    /**
+     * @throws \ReflectionException
+     */
+    #[Route(self::API_EXECUTE_COMMAND_URI, name: self::API_EXECUTE_COMMAND_NAME, methods: [self::API_EXECUTE_COMMAND_METHOD])]
+    public function executeCommand(Request $request, \App\Dto\Command $payAirtimeDto): \App\Response\Command
+    {
+       return new \App\Response\Command(
+            $this->numberService->executeCommand(
+                new ExecuteCommandDto(
+                    $request->getContent()
+                ,$request->query->all())
+            )
+        );
+    }
 
     #[Route(self::PAY_AIRTIME_URI, name: self::PAY_AIRTIME_NAME, defaults: ["_format"=>"xml/command.dtd"], methods: [self::PAY_AIRTIME_METHOD])]
     public function payAirtime(Request $request,   #[MapRequestPayload] Command $payAirtimeDto): \App\Response\Command
@@ -132,6 +148,9 @@ class NumberController extends AbstractController implements INumberController
             $this->numberService->newMessage($commandMessage)
         );
     }
+
+
+
 
 
     #[Route(self::ACCOUNT_AIRTIME_LOGIN_URI, name: self::ACCOUNT_AIRTIME_LOGIN_NAME , methods: [self::ACCOUNT_AIRTIME_LOGIN_METHOD])]

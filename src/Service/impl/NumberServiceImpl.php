@@ -7,6 +7,7 @@ use App\Dto\AccountCreateResultDto;
 use App\Dto\Command;
 use App\Dto\CommandHeaderDto;
 use App\Dto\CommandMessage;
+use App\Dto\ExecuteCommandDto;
 use App\Dto\GenerateNumberDto;
 use App\Dto\GenerateNumberResultDto;
 use App\Dto\PayAirtimeDto;
@@ -168,103 +169,7 @@ class NumberServiceImpl implements NumberService
     {
         $payAirtimeDto = $payAirtimeFullDto->command;
         $header = $payAirtimeFullDto->commandHeaderDto;
-
-        $this->checkOperation($payAirtimeDto->TYPE,$_ENV['AIRTIME_PAY']);
-
-        $transaction = $this->utilService->map($payAirtimeDto,Transaction::class);
-
-        $account = $this->checkCredentials($header,$transaction);
-
-        $undefined = $this->utilService->getUndefinedParams($payAirtimeDto,['ACCOUNTNUM','TXNID'],['LOGINID','PASSWORD','EXTCODE']);
-
-        if(!empty($undefined)){
-            $message = sprintf(self::BADPARAMETER_FORMAT,$undefined,"");
-            throw new GeneralException($message,null,ResponseStatus::INVALID_PARAMETER);
-        }
-
-        $this->checkDateFormat($payAirtimeDto->DATE);
-
-        if(!isset($payAirtimeDto->AMOUNT)){
-            $message = sprintf(self::BADPARAMETER_FORMAT,Number::AMOUNT,"");
-            throw new GeneralException($message,$transaction,ResponseStatus::INVALID_PARAMETER);
-        }
-
-        $amount = floatval($payAirtimeDto->AMOUNT);
-
-        $this->checkAmount($amount,$transaction);
-
-        $number = $this->numberRepository->findOneBy([Number::MSISDN=> $transaction->getMsisdn2()]);
-
-        if(!$number){
-            throw new GeneralException(null,$transaction,ResponseStatus::INVALID_PHONE_NUMBER);
-        }
-        $transactionId = null;
-        $numberTransaction = null;
-        $type = $transaction->getType();
-        if($number){
-            $balance = $number->getNumberbalance();
-            $oldBalance = $number->getNumbernewbalance() ?? $balance;
-            $cBalance = floatval($oldBalance) + floatval($payAirtimeDto->AMOUNT);
-            if($cBalance >= $_ENV['maxBalance']){
-            }
-
-            $number->setNumbernewbalance(strval($cBalance));
-            $number->setNumberoldbalance(strval($oldBalance));
-            $transactionId = $this->utilService->generateTransactionId();
-            $transaction = $this->buildTransaction($transactionId,
-                OperationNature::CREDIT->value(),
-                $type,
-                $oldBalance,
-                $cBalance);
-            $number =  $this->numberRepository->save($number);
-            $transaction->setMsisdn($number->getMsisdn());
-            $transaction->setMsisdn2($account->getMsisdn());
-            $transaction->setExtrefnum($payAirtimeDto->EXTREFNUM);
-            $numberTransaction = $this->transactionRepository->save($transaction);
-        }
-
-        if($account instanceof Account){
-            $balance = $account->getBalance();
-            $oldBalance  = $account->getNewbalance() ?? $balance;
-            $cBalance = $oldBalance - floatval($payAirtimeDto->AMOUNT);
-            if($cBalance < 0){
-                throw new GeneralException("",$transaction,ResponseStatus::INSUFFICIENT_BALANCE_NUMBER);
-            }
-            $account->setNewbalance($cBalance);
-            $account->setOldbalance($oldBalance);
-
-            $transtation  = $this->buildTransaction($transactionId,
-                OperationNature::DEBIT->value(),
-                $type,
-                $oldBalance,
-                $cBalance
-            );
-            $transtation->setMsisdn($account->getMsisdn());
-            $transtation->setMsisdn2($number->getMsisdn());
-            $transtation->setExtrefnum($payAirtimeDto->EXTREFNUM);
-            $this->transactionRepository->save($transtation);
-            $this->accountRepository->save($account);
-        }
-
-        $result = $this->utilService->map($numberTransaction,CommandResultDto::class,true);
-
-        if($result instanceof CommandResultDto){
-            $message = $this->getMessage($payAirtimeDto->TYPE);
-            $result->DATE = $numberTransaction->getDateEndTransaction()->format('d/m/Y H:i:s');
-            $textMessage = sprintf(
-                $message->getMessage(),
-                $numberTransaction->getTxnid(),
-                $payAirtimeDto->AMOUNT,
-                $account->getCurrency(),
-                $account->getMsisdn(),
-                $payAirtimeDto->MSISDN2,
-                $numberTransaction->getBalanceold(),
-                $numberTransaction->getBalancenew()
-            );
-            $result->MESSAGE = $textMessage;
-        }
-
-        return $result;
+        return $this->performAirtimeCommand($payAirtimeDto,$header);
     }
 
 
@@ -579,109 +484,7 @@ class NumberServiceImpl implements NumberService
     {
         $payAirtimeDto = $payDataDto->command;
         $header = $payDataDto->commandHeaderDto;
-
-
-        $transaction = $this->utilService->map($payAirtimeDto,Transaction::class);
-
-        if($transaction instanceof Transaction){
-            $transaction->setMsisdn2($payAirtimeDto->ACCOUNTNUM);
-        }
-        $this->checkOperation($payAirtimeDto->TYPE,$_ENV['INTERNET_RECHARCHE']);
-        $this->checkConnection($header);
-        $account =  $this->checkCredentials($header,$transaction);
-        $undefined = $this->utilService->getUndefinedParams($payAirtimeDto,['TXNID','MSISDN2'],['NOTIFICATION_MSISDN','PASSWORD','EXTCODE']);
-
-        if(!empty($undefined)){
-            $message = sprintf(self::BADPARAMETER_FORMAT,$undefined,"");
-            throw new GeneralException($message,null,ResponseStatus::INVALID_PARAMETER);
-        }
-
-        $this->checkDateFormat($payAirtimeDto->DATE);
-
-
-        $searchNumber = $transaction->getMsisdn2();
-        $number = $this->numberRepository->findOneBy([Number::MSISDN=> $searchNumber]);
-
-        if(!$number){
-            throw new GeneralException($searchNumber,$transaction,ResponseStatus::INVALID_PHONE_NUMBER);
-        }
-        $transactionId = null;
-        $numberTransaction = null;
-        $type = $transaction->getType();
-        $transactionId = $this->utilService->generateTransactionId();
-
-        $amount = floatval($payAirtimeDto->AMOUNT);
-        $this->checkAmount($amount,$transaction);
-
-
-        if($account instanceof Account){
-            $balance = $account->getDatabalance();
-            $oldBalance  = $account->getDatanewbalance() ?? $balance;
-            $cBalance = $oldBalance - $this->getDataFromAmount($payAirtimeDto->AMOUNT);
-            if($cBalance < 0){
-                throw new GeneralException("",$transaction,ResponseStatus::INSUFFICIENT_BALANCE_NUMBER);
-            }
-            $account->setDatanewbalance($cBalance);
-            $account->setDataoldbalance($oldBalance);
-
-            $transtation  = $this->buildTransaction($transactionId,
-                OperationNature::DEBIT->value(),
-                $type,
-                $oldBalance,
-                $cBalance
-            );
-            $transtation->setMsisdn($account->getMsisdn());
-            $transtation->setMsisdn2($number->getMsisdn());
-            $transtation->setExtrefnum($payAirtimeDto->EXTREFNUM);
-            $this->transactionRepository->save($transtation);
-            $this->accountRepository->save($account);
-        }
-
-        if($number){
-            $balance = $number->getNumberdatabalance() ?? 0;
-            $oldBalance = $number->getNumberdatanewbalance() ?? $balance;
-            $cBalance = floatval($oldBalance) + floatval($payAirtimeDto->AMOUNT);
-            if($cBalance >= $_ENV['maxBalance']){
-            }
-
-            $number->setNumberdatanewbalance(strval($cBalance));
-            $number->setNumberdataoldbalance(strval($oldBalance));
-            $transaction = $this->buildTransaction($transactionId,
-                OperationNature::CREDIT->value(),
-                $type,
-                $oldBalance,
-                $cBalance);
-            $number =  $this->numberRepository->save($number);
-            $transaction->setMsisdn($number->getMsisdn());
-            $transaction->setMsisdn2($account->getMsisdn());
-            $transaction->setExtrefnum($payAirtimeDto->EXTREFNUM);
-            $transaction->setBalancedatanew($number->getNumberdatanewbalance());
-            $transaction->setBalancedataold($number->getNumberdataoldbalance());
-            $numberTransaction = $this->transactionRepository->save($transaction);
-        }
-
-
-
-        $result = $this->utilService->map($numberTransaction,CommandResultDto::class,true);
-
-        if($result instanceof CommandResultDto){
-            $message = $this->getMessage($payAirtimeDto->TYPE);
-            $result->DATE = $numberTransaction->getDateEndTransaction()->format('d/m/Y H:i:s');
-            $dataCurrency = $this->utilService->getDataCurrency();
-            $textMessage = sprintf(
-                $message->getMessage(),
-                $numberTransaction->getTxnid(),
-                $payAirtimeDto->AMOUNT,
-                $dataCurrency,
-                $account->getMsisdn(),
-                $payAirtimeDto->MSISDN2,
-                $numberTransaction->getBalancedataold(),
-                $numberTransaction->getBalancedatanew()
-            );
-            $result->MESSAGE = $textMessage;
-        }
-
-        return $result;
+        return $this->performInternetCommand($payAirtimeDto,$header);
     }
 
 
@@ -697,38 +500,7 @@ class NumberServiceImpl implements NumberService
      */
     public function transactionStatus(TransactionStatusFullDto $param): CommandResultDto
     {
-        $this->checkConnection($param->commandHeaderDto);
-        $this->checkOperation($param->command->TYPE,$_ENV['TRANSACTION_STATUS']);
-//        $commandHeader = $this->utilService->map($param->command,CommandHeaderDto::class,true);
-        $transaction = $this->utilService->map($param->command,Transaction::class);
-        $account =  $this->checkCredentials($param->commandHeaderDto,$transaction);
-        $txnsid = $this->utilService->generateTransactionId();
-        $balance = $account->getBalance() ?? 0;
-        $oldBalance =  $account->getOldbalance() ?? 0;
-        $newBalance = $account->getNewbalance() ?? 0;
-        $ctransaction = $this->buildTransaction(
-            $txnsid,
-            OperationNature::BALANCE->value(),
-            $param->command->TYPE,
-            floatval($oldBalance),
-            floatval($newBalance)
-        );
-        $ctransaction->setExtrefnum($param->command->EXTREFNUM);
-        $ctransaction =  $this->transactionRepository->save($ctransaction);
-        $rTrans =null;
-        if($transaction instanceof Transaction){
-            $rTrans = $this->transactionRepository->findOneBy([Transaction::TXNID => $transaction->getTxnid()]);
-        }
-        $result  = $this->utilService->map($ctransaction,CommandResultDto::class,true);
-
-        if($result instanceof CommandResultDto){
-            $message = $this->getMessage($ctransaction->getType());
-            $result->DATE = $ctransaction->getDateEndTransaction()->format('d/m/Y H:i:s');
-            $result->MESSAGE = sprintf($message->getMessage(),$transaction->getTxnid(),
-            $rTrans?->getTxnStatus() ?? 500
-            );
-        }
-        return $result;
+        return $this->performStatusCommand($param->command,$param->commandHeaderDto);
     }
 
     public function listAccount(): array
@@ -760,23 +532,252 @@ class NumberServiceImpl implements NumberService
     }
 
 
+    public function performInternetCommand(Command $command, CommandHeaderDto $header) : CommandResultDto
+    {
+        $transaction = $this->utilService->map($command,Transaction::class);
+
+        if($transaction instanceof Transaction){
+            $transaction->setMsisdn2($command->ACCOUNTNUM);
+        }
+        $this->checkOperation($command->TYPE,$_ENV['INTERNET_RECHARCHE']);
+        $this->checkConnection($header);
+        $account =  $this->checkCredentials($header,$transaction);
+        $undefined = $this->utilService->getUndefinedParams($command,['TXNID','MSISDN2'],['NOTIFICATION_MSISDN','PASSWORD','EXTCODE']);
+
+        if(!empty($undefined)){
+            $message = sprintf(self::BADPARAMETER_FORMAT,$undefined,"");
+            throw new GeneralException($message,null,ResponseStatus::INVALID_PARAMETER);
+        }
+
+        $this->checkDateFormat($command->DATE);
+
+
+        $searchNumber = $transaction->getMsisdn2();
+        $number = $this->numberRepository->findOneBy([Number::MSISDN=> $searchNumber]);
+
+        if(!$number){
+            throw new GeneralException($searchNumber,$transaction,ResponseStatus::INVALID_PHONE_NUMBER);
+        }
+        $transactionId = null;
+        $numberTransaction = null;
+        $type = $transaction->getType();
+        $transactionId = $this->utilService->generateTransactionId();
+
+        $amount = floatval($command->AMOUNT);
+        $this->checkAmount($amount,$transaction);
+
+
+        if($account instanceof Account){
+            $balance = $account->getDatabalance();
+            $oldBalance  = $account->getDatanewbalance() ?? $balance;
+            $cBalance = $oldBalance - $this->getDataFromAmount($command->AMOUNT);
+            if($cBalance < 0){
+                throw new GeneralException("",$transaction,ResponseStatus::INSUFFICIENT_BALANCE_NUMBER);
+            }
+            $account->setDatanewbalance($cBalance);
+            $account->setDataoldbalance($oldBalance);
+
+            $transtation  = $this->buildTransaction($transactionId,
+                OperationNature::DEBIT->value(),
+                $type,
+                $oldBalance,
+                $cBalance
+            );
+            $transtation->setMsisdn($account->getMsisdn());
+            $transtation->setMsisdn2($number->getMsisdn());
+            $transtation->setExtrefnum($command->EXTREFNUM);
+            $this->transactionRepository->save($transtation);
+            $this->accountRepository->save($account);
+        }
+
+        if($number){
+            $balance = $number->getNumberdatabalance() ?? 0;
+            $oldBalance = $number->getNumberdatanewbalance() ?? $balance;
+            $cBalance = floatval($oldBalance) + floatval($command->AMOUNT);
+            if($cBalance >= $_ENV['maxBalance']){
+            }
+
+            $number->setNumberdatanewbalance(strval($cBalance));
+            $number->setNumberdataoldbalance(strval($oldBalance));
+            $transaction = $this->buildTransaction($transactionId,
+                OperationNature::CREDIT->value(),
+                $type,
+                $oldBalance,
+                $cBalance);
+            $number =  $this->numberRepository->save($number);
+            $transaction->setMsisdn($number->getMsisdn());
+            $transaction->setMsisdn2($account->getMsisdn());
+            $transaction->setExtrefnum($command->EXTREFNUM);
+            $transaction->setBalancedatanew($number->getNumberdatanewbalance());
+            $transaction->setBalancedataold($number->getNumberdataoldbalance());
+            $numberTransaction = $this->transactionRepository->save($transaction);
+        }
+
+        $result = $this->utilService->map($numberTransaction,CommandResultDto::class,true);
+
+        if($result instanceof CommandResultDto){
+            $message = $this->getMessage($command->TYPE);
+            $result->DATE = $numberTransaction->getDateEndTransaction()->format('d/m/Y H:i:s');
+            $dataCurrency = $this->utilService->getDataCurrency();
+            $textMessage = sprintf(
+                $message->getMessage(),
+                $numberTransaction->getTxnid(),
+                $command->AMOUNT,
+                $dataCurrency,
+                $account->getMsisdn(),
+                $command->MSISDN2,
+                $numberTransaction->getBalancedataold(),
+                $numberTransaction->getBalancedatanew()
+            );
+            $result->MESSAGE = $textMessage;
+        }
+        return  $result;
+    }
+
+    public function performAirtimeCommand(Command $command, CommandHeaderDto $commandHeaderDto) : CommandResultDto
+    {
+        $this->checkOperation($command->TYPE,$_ENV['AIRTIME_PAY']);
+
+        $transaction = $this->utilService->map($command,Transaction::class);
+
+        $account = $this->checkCredentials($commandHeaderDto,$transaction);
+
+        $undefined = $this->utilService->getUndefinedParams($command,['ACCOUNTNUM','TXNID'],['LOGINID','PASSWORD','EXTCODE']);
+
+        if(!empty($undefined)){
+            $message = sprintf(self::BADPARAMETER_FORMAT,$undefined,"");
+            throw new GeneralException($message,null,ResponseStatus::INVALID_PARAMETER);
+        }
+
+        $this->checkDateFormat($command->DATE);
+
+        if(!isset($command->AMOUNT)){
+            $message = sprintf(self::BADPARAMETER_FORMAT,Number::AMOUNT,"");
+            throw new GeneralException($message,$transaction,ResponseStatus::INVALID_PARAMETER);
+        }
+
+        $amount = floatval($command->AMOUNT);
+
+        $this->checkAmount($amount,$transaction);
+
+        $number = $this->numberRepository->findOneBy([Number::MSISDN=> $transaction->getMsisdn2()]);
+
+        if(!$number){
+            throw new GeneralException(null,$transaction,ResponseStatus::INVALID_PHONE_NUMBER);
+        }
+        $transactionId = null;
+        $numberTransaction = null;
+        $type = $transaction->getType();
+        if($number){
+            $balance = $number->getNumberbalance();
+            $oldBalance = $number->getNumbernewbalance() ?? $balance;
+            $cBalance = floatval($oldBalance) + floatval($command->AMOUNT);
+            if($cBalance >= $_ENV['maxBalance']){
+            }
+
+            $number->setNumbernewbalance(strval($cBalance));
+            $number->setNumberoldbalance(strval($oldBalance));
+            $transactionId = $this->utilService->generateTransactionId();
+            $transaction = $this->buildTransaction($transactionId,
+                OperationNature::CREDIT->value(),
+                $type,
+                $oldBalance,
+                $cBalance);
+            $number =  $this->numberRepository->save($number);
+            $transaction->setMsisdn($number->getMsisdn());
+            $transaction->setMsisdn2($account->getMsisdn());
+            $transaction->setExtrefnum($command->EXTREFNUM);
+            $numberTransaction = $this->transactionRepository->save($transaction);
+        }
+
+        if($account instanceof Account){
+            $balance = $account->getBalance();
+            $oldBalance  = $account->getNewbalance() ?? $balance;
+            $cBalance = $oldBalance - floatval($command->AMOUNT);
+            if($cBalance < 0){
+                throw new GeneralException("",$transaction,ResponseStatus::INSUFFICIENT_BALANCE_NUMBER);
+            }
+            $account->setNewbalance($cBalance);
+            $account->setOldbalance($oldBalance);
+
+            $transtation  = $this->buildTransaction($transactionId,
+                OperationNature::DEBIT->value(),
+                $type,
+                $oldBalance,
+                $cBalance
+            );
+            $transtation->setMsisdn($account->getMsisdn());
+            $transtation->setMsisdn2($number->getMsisdn());
+            $transtation->setExtrefnum($command->EXTREFNUM);
+            $this->transactionRepository->save($transtation);
+            $this->accountRepository->save($account);
+        }
+
+        $result = $this->utilService->map($numberTransaction,CommandResultDto::class,true);
+
+        if($result instanceof CommandResultDto){
+            $message = $this->getMessage($command->TYPE);
+            $result->DATE = $numberTransaction->getDateEndTransaction()->format('d/m/Y H:i:s');
+            $textMessage = sprintf(
+                $message->getMessage(),
+                $numberTransaction->getTxnid(),
+                $command->AMOUNT,
+                $account->getCurrency(),
+                $account->getMsisdn(),
+                $command->MSISDN2,
+                $numberTransaction->getBalanceold(),
+                $numberTransaction->getBalancenew()
+            );
+            $result->MESSAGE = $textMessage;
+        }
+
+        return $result;
+    }
+
+
     /**
-     * @throws InvalidCredentialsException
-     * @throws AccountNotFoundException
-     * @throws ParameterNotFoundException
-     * @throws InvalidDataException
-     * @throws BadPinNumberException
      * @throws \ReflectionException
+     * @throws InvalidDataException
      * @throws GeneralException
      */
-    public function checkBalance(string $command,array $headers=[]): CommandResultDto
+    public function performStatusCommand(Command $command, CommandHeaderDto $commandHeaderDto) : CommandResultDto
     {
-        $this->checkConnection($headers);
-        $commandXml = simplexml_load_string($command);
-        $commandHeader = $this->utilService->mapArray($headers,CommandHeaderDto::class);
+        $this->checkConnection($commandHeaderDto);
+        $this->checkOperation($command->TYPE,$_ENV['TRANSACTION_STATUS']);
+        $transaction = $this->utilService->map($command,Transaction::class);
+        $account =  $this->checkCredentials($commandHeaderDto,$transaction);
+        $txnsid = $this->utilService->generateTransactionId();
+        $balance = $account->getBalance() ?? 0;
+        $oldBalance =  $account->getOldbalance() ?? 0;
+        $newBalance = $account->getNewbalance() ?? 0;
+        $ctransaction = $this->buildTransaction(
+            $txnsid,
+            OperationNature::BALANCE->value(),
+            $command->TYPE,
+            floatval($oldBalance),
+            floatval($newBalance)
+        );
+        $ctransaction->setExtrefnum($command->EXTREFNUM);
+        $ctransaction =  $this->transactionRepository->save($ctransaction);
+        $rTrans =null;
+        if($transaction instanceof Transaction){
+            $rTrans = $this->transactionRepository->findOneBy([Transaction::TXNID => $transaction->getTxnid()]);
+        }
+        $result  = $this->utilService->map($ctransaction,CommandResultDto::class,true);
 
-        $command = $this->utilService->mapObjectXml($commandXml,Command::class);
+        if($result instanceof CommandResultDto){
+            $message = $this->getMessage($ctransaction->getType());
+            $result->DATE = $ctransaction->getDateEndTransaction()->format('d/m/Y H:i:s');
+            $result->MESSAGE = sprintf($message->getMessage(),$transaction->getTxnid(),
+                $rTrans?->getTxnStatus() ?? 500
+            );
+        }
 
+        return  $result;
+    }
+
+    public function performBalanceCommand(Command $command, CommandHeaderDto $commandHeader) : CommandResultDto
+    {
         $this->checkOperation($command->TYPE,$_ENV['API_BALANCE']);
 
         $transaction   = $this->utilService->map($command,Transaction::class);
@@ -805,6 +806,27 @@ class NumberServiceImpl implements NumberService
             $result->MESSAGE = sprintf($message->getMessage(),$account->getBalance());
         }
         return $result;
+    }
+
+
+    /**
+     * @throws InvalidCredentialsException
+     * @throws AccountNotFoundException
+     * @throws ParameterNotFoundException
+     * @throws InvalidDataException
+     * @throws BadPinNumberException
+     * @throws \ReflectionException
+     * @throws GeneralException
+     */
+    public function checkBalance(string $command,array $headers=[]): CommandResultDto
+    {
+        $this->checkConnection($headers);
+        $commandXml = simplexml_load_string($command);
+        $commandHeader = $this->utilService->mapArray($headers,CommandHeaderDto::class);
+
+        $command = $this->utilService->mapObjectXml($commandXml,Command::class);
+
+        return $this->performBalanceCommand($command,$commandHeader);
     }
 
 
@@ -872,5 +894,41 @@ class NumberServiceImpl implements NumberService
 
         $account =   $this->accountRepository->save($account);
         return $this->map($account,AccountCreateResultDto::class);
+    }
+
+    public function executeCommand(ExecuteCommandDto $executeCommandDto): CommandResultDto
+    {
+        if(!isset($executeCommandDto->command)){
+            throw new GeneralException(null,null,ResponseStatus::INVALID_PARAMETER);
+        }
+        if(!isset($executeCommandDto->commandHeaderDto)){
+            throw new GeneralException(null,null,ResponseStatus::INVALID_PARAMETER);
+        }
+
+        $command = $executeCommandDto->command;
+        $commandHeader = $executeCommandDto->commandHeaderDto;
+        $result = null;
+        switch ($command->TYPE){
+            case $_ENV['API_BALANCE']:{
+                $result =  $this->performBalanceCommand($command,$commandHeader);
+                break;
+            }
+            case $_ENV['INTERNET_RECHARCHE']:{
+                $result = $this->performInternetCommand($command,$commandHeader);
+                break;
+            }
+
+            case $_ENV['AIRTIME_PAY']:{
+                $result = $this->performAirtimeCommand($command,$commandHeader);
+                break;
+            }
+            case $_ENV['TRANSACTION_STATUS']:{
+                $result = $this->performStatusCommand($command,$commandHeader);
+                break;
+            }
+            default:break;
+        }
+
+        return  $result;
     }
 }

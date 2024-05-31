@@ -812,6 +812,7 @@ class NumberServiceImpl implements NumberService
            // $message = $this->getMessage($command->TYPE);
             $result->TYPE = $_ENV['API_RESPONSE'];
             unset($result->MESSAGE);
+            unset($result->TXNID);
             $result->DATE = $transaction->getDateEndTransaction()->format('d/m/Y H:i:s');
             //$result->MESSAGE = sprintf($message->getMessage(),$account->getBalance());
 

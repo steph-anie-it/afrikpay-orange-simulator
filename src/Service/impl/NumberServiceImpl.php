@@ -791,7 +791,7 @@ class NumberServiceImpl implements NumberService
 
         $account =  $this->checkCredentials($commandHeader,$transaction);
 
-        $undefined = $this->utilService->getUndefinedParams($command,['AMOUNT','ACCOUNTNUM','SELECTOR','LANGUAGE2','LANGUAGE1','TXNID','MSISDN2'],['NOTIFICATION_MSISDN','PASSWORD','EXTCODE']);
+        $undefined = $this->utilService->getUndefinedParams($command,['AMOUNT','ACCOUNTNUM','SELECTOR','LANGUAGE2','LANGUAGE1','TXNID','MSISDN2'],['NOTIFICATION_MSISDN','LOGINID','PASSWORD','EXTCODE']);
 
         if(!empty($undefined)){
             $message = sprintf(self::BADPARAMETER_FORMAT,$undefined,"");

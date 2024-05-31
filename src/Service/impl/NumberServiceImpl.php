@@ -318,32 +318,32 @@ class NumberServiceImpl implements NumberService
         }
 
 
-        $account = $this->accountRepository->findOneBy([
-                Account::REQUESTGATEWAYTYPE => $mappedAccount->getRequestgatewaytype()]
-        );
+//        $account = $this->accountRepository->findOneBy([
+//                Account::REQUESTGATEWAYTYPE => $mappedAccount->getRequestgatewaytype()]
+//        );
 
-        if(!$account){
-            $message = sprintf(self::BADPARAMETER_FORMAT,Account::REQUESTGATEWAYTYPE,$mappedAccount->getRequestgatewaytype());
-            throw new ParameterNotFoundException($message,$transaction);
-        }
+//        if(!$account){
+//            $message = sprintf(self::BADPARAMETER_FORMAT,Account::REQUESTGATEWAYTYPE,$mappedAccount->getRequestgatewaytype());
+//            throw new ParameterNotFoundException($message,$transaction);
+//        }
 
-        $account = $this->accountRepository->findOneBy([
-                Account::SERVICEPORT => $mappedAccount->getServiceport()]
-        );
+//        $account = $this->accountRepository->findOneBy([
+//                Account::SERVICEPORT => $mappedAccount->getServiceport()]
+//        );
+//
+//        if(!$account){
+//            $message = sprintf(self::BADPARAMETER_FORMAT,Account::SERVICEPORT,$mappedAccount->getServiceport());
+//            throw new ParameterNotFoundException($message,$transaction);
+//        }
 
-        if(!$account){
-            $message = sprintf(self::BADPARAMETER_FORMAT,Account::SERVICEPORT,$mappedAccount->getServiceport());
-            throw new ParameterNotFoundException($message,$transaction);
-        }
-
-        $account = $this->accountRepository->findOneBy([
-                Account::SOURCETYPE => $mappedAccount->getSourcetype()]
-        );
-
-        if(!$account){
-            $message = sprintf(self::BADPARAMETER_FORMAT,Account::SOURCETYPE,$mappedAccount->getSourcetype());
-            throw new ParameterNotFoundException($message,$transaction);
-        }
+//        $account = $this->accountRepository->findOneBy([
+//                Account::SOURCETYPE => $mappedAccount->getSourcetype()]
+//        );
+//
+//        if(!$account){
+//            $message = sprintf(self::BADPARAMETER_FORMAT,Account::SOURCETYPE,$mappedAccount->getSourcetype());
+//            throw new ParameterNotFoundException($message,$transaction);
+//        }
 
         return $account;
     }

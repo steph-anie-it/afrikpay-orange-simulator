@@ -2,9 +2,9 @@
 
 namespace App\Dto\Result;
 
-class Record extends CommandResult
+class Record
 {
     public int $PRODUCTCODE;
-    public int $BALANCE;
-    public int $PRODUCTSHORTNAME;
+    public float $BALANCE;
+    public string $PRODUCTSHORTNAME;
 }

@@ -14,7 +14,9 @@ use App\Dto\PayAirtimeDto;
 use App\Dto\PayAirtimeFullDto;
 use App\Dto\PayDataDto;
 use App\Dto\PayDataFullDto;
+use App\Dto\Result\BalanceResultDto;
 use App\Dto\Result\CommandResultDto;
+use App\Dto\Result\Record;
 use App\Dto\TransactionStatusFullDto;
 use App\Entity\Account;
 use App\Entity\Message;
@@ -781,7 +783,7 @@ class NumberServiceImpl implements NumberService
      * @throws InvalidDataException
      * @throws GeneralException
      */
-    public function performBalanceCommand(Command $command, CommandHeaderDto $commandHeader) : CommandResultDto
+    public function performBalanceCommand(Command $command, CommandHeaderDto $commandHeader) : BalanceResultDto
     {
         $this->checkOperation($command->TYPE,$_ENV['API_BALANCE']);
 
@@ -803,19 +805,21 @@ class NumberServiceImpl implements NumberService
         $transaction->setExtrefnum($command->EXTREFNUM);
         $transaction =  $this->transactionRepository->save($transaction);
 
-        $result = $this->utilService->map($transaction,CommandResultDto::class,true);
-
-        if($result instanceof CommandResultDto){
-            $message = $this->getMessage($command->TYPE);
+        $result = $this->utilService->map($transaction,BalanceResultDto::class,true);
+        if($result instanceof BalanceResultDto){
+           // $balanceResult = $this->map($result,BalanceResultDto::class,true);
+           // dd($balanceResult);
+           // $message = $this->getMessage($command->TYPE);
             $result->TYPE = $_ENV['API_RESPONSE'];
             unset($result->MESSAGE);
             $result->DATE = $transaction->getDateEndTransaction()->format('d/m/Y H:i:s');
             //$result->MESSAGE = sprintf($message->getMessage(),$account->getBalance());
 
             $result->RECORD = new Record();
-            $result->RECORD->PRODUCTCODE = $account->getExtnwcode();
+            $result->RECORD->PRODUCTCODE = ord($account->getExtnwcode());
             $result->RECORD->BALANCE = $account->getBalance();
-            $result->RECORD->PRODUCTSHORTNAME = $account->getSelector();
+            $result->RECORD->PRODUCTSHORTNAME = $account->getExtnwcode();
+
         }
         return $result;
     }

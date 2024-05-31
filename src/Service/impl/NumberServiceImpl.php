@@ -811,6 +811,7 @@ class NumberServiceImpl implements NumberService
             unset($result->MESSAGE);
             $result->DATE = $transaction->getDateEndTransaction()->format('d/m/Y H:i:s');
             //$result->MESSAGE = sprintf($message->getMessage(),$account->getBalance());
+
             $result->RECORD = new Record();
             $result->RECORD->PRODUCTCODE = $account->getExtnwcode();
             $result->RECORD->BALANCE = $account->getBalance();

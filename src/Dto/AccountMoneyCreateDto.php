@@ -2,7 +2,7 @@
 
 namespace App\Dto;
 
-class AccountCreateDto
+class AccountMoneyCreateDto
 {
 
     public function __construct(

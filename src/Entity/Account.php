@@ -64,6 +64,8 @@ class Account  implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?float $balance = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?string $operationtype = null;
 
     #[ORM\Column(nullable: true)]
     private ?float $newbalance = null;
@@ -443,6 +445,23 @@ class Account  implements UserInterface, PasswordAuthenticatedUserInterface
         $this->dataoldbalance = $dataoldbalance;
 
         return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getOperationType(): ?string
+    {
+        return $this->operationType;
+    }
+
+
+    /**
+     * @param string|null $operationType
+     */
+    public function setOperationType(?string $operationType): void
+    {
+        $this->operationType = $operationType;
     }
 
 }

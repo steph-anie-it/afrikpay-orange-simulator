@@ -41,7 +41,6 @@ class ErrorListener implements EventSubscriberInterface
 
         $txttype = null;
         $extRefNum = null;
-//        dd($throwable);
         $messageFormat  = "Code %s message %s file %s line %s";
         $message = $throwable->getMessage();
         if($throwable instanceof GeneralException){
@@ -61,38 +60,42 @@ class ErrorListener implements EventSubscriberInterface
             $message = $throwable->getResponseStatus()->getMessage($message);
         }
 
-//        $this->logger->info(sprintf($message, $throwable->getCode(), $throwable->getMessage()));
 
 
-        $exceptionEvent->allowCustomResponseCode();
-        $commandResult = new \App\Dto\Result\CommandResultDto();
+        $class = $throwable->getTrace()[2]['class'];
+        if ( in_array($class,["App\Service\impl\MoneyServiceImpl","App\Controller\impl\MoneyController"])){
+        }else{
 
-        if($txnid){
-            $commandResult->TXNID = $txnid;
+            $exceptionEvent->allowCustomResponseCode();
+            $commandResult = new \App\Dto\Result\CommandResultDto();
+
+            if($txnid){
+                $commandResult->TXNID = $txnid;
+            }
+
+            if($txttype){
+                $commandResult->TYPE = $txttype;
+            }
+
+            if($extRefNum){
+                $commandResult->EXTREFNUM = $extRefNum;
+            }
+
+            $commandResult->MESSAGE  = $message;
+
+            $errorMessage = sprintf($messageFormat, $code,
+                $message,
+                $throwable->getFile(),$throwable->getLine());
+
+            $this->logger->critical($errorMessage);
+            $commandResult->TXNSTATUS = $code;
+            $date = new \DateTime();
+            $commandResult->DATE = $date->format('d/m/Y H:i:s');
+            $response = new Command($commandResult);
+            $response->setStatusCode(200);
+            $exceptionEvent->setResponse($response);
         }
-
-        if($txttype){
-            $commandResult->TYPE = $txttype;
-        }
-
-        if($extRefNum){
-            $commandResult->EXTREFNUM = $extRefNum;
-        }
-
-        $commandResult->MESSAGE  = $message;
-
-        $errorMessage = sprintf($messageFormat, $code,
-            $message,
-            $throwable->getFile(),$throwable->getLine());
-
-        $this->logger->critical($errorMessage);
-
-
-        $commandResult->TXNSTATUS = $code;
-        $date = new \DateTime();
-        $commandResult->DATE = $date->format('d/m/Y H:i:s');
-        $response = new Command($commandResult);
-        $response->setStatusCode(200);
-        $exceptionEvent->setResponse($response);
     }
+
+
 }

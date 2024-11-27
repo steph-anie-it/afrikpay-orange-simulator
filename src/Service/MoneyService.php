@@ -9,15 +9,23 @@ use App\Dto\InitMoneyResultDto;
 use App\Dto\PayMoneyDto;
 use App\Dto\PayMoneyResultDto;
 use App\Dto\PayTokenDto;
+use App\Dto\TokenCreateDto;
+use App\Dto\TokenDto;
 
 interface MoneyService
 {
   public const WSO2_AUTHORIZATION  = 'WSO2-Authorization';
   public const X_AUTH_TOKEN = 'X-AUTH-TOKEN';
+  public const AUTHORIZATION = 'authorization';
+
+  public const BASIC = 'Basic ';
+
   public function init(?string $key = null) :InitMoneyResultDto;
   public function pay(PayMoneyDto $payMoneyDto, ?string $key = null):PayMoneyResultDto;
 
   public function generatePayToken(?string $key) : PayTokenDto;
+
+  public function generateToken(TokenCreateDto $tokenCreateDto) : TokenDto;
 
   public function checkCredentials() : void;
 

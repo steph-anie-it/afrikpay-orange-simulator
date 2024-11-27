@@ -12,18 +12,22 @@ use App\Dto\PayAirtimeDto;
 use App\Dto\PayAirtimeResultDto;
 use App\Dto\PayMoneyDto;
 use App\Dto\PayMoneyResultDto;
+use App\Dto\TokenCreateDto;
 use App\Response\AccountAirtimeResponse;
 use App\Response\AccountMoneyResponse;
 use App\Response\GenerateAirtimeResponse;
 use App\Response\MoneyInitResponse;
 use App\Response\MoneyPayResponse;
 use App\Response\PayAirtimeResponse;
+use App\Response\TokenResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 
 interface MoneyController
 {
+    public const MONEY_TOKEN_URI = 'token';
+    public const MONEY_TOKEN_NAME = 'token';
     public const MONEY_ACCOUNT_CASHOUT_CREATE_URI = '/money/account/cashout/create';
     public const MONEY_ACCOUNT_CASHIN_CREATE_URI = '/money/account/cashin/create';
     public const MONEY_ACCOUNT_MP_CREATE_URI = '/money/account/mp/create';
@@ -70,6 +74,7 @@ interface MoneyController
 
     public function createCashinAccount(AccountMoneyCreateDto $accountMoneyCreateDto): AccountMoneyResponse;
 
+    public function generateToken(TokenCreateDto $tokenCreateDto): TokenResponse;
 
 
 }

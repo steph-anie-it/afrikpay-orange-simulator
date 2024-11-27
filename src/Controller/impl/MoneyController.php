@@ -5,9 +5,11 @@ namespace App\Controller\impl;
 use App\Dto\AccountCreateDto;
 use App\Dto\AccountMoneyCreateDto;
 use App\Dto\PayMoneyDto;
+use App\Dto\TokenCreateDto;
 use App\Response\AccountMoneyResponse;
 use App\Response\MoneyInitResponse;
 use App\Response\MoneyPayResponse;
+use App\Response\TokenResponse;
 use App\Service\MoneyService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
@@ -84,7 +86,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
                new AccountCreateDto(
                    $accountMoneyCreateDto->username,
                    $accountMoneyCreateDto->password,
-                   self::MONEY_ACCOUNT_CASHIN_CREATE_NAME
+                   self::CASHIN
                )
             )
         );
@@ -98,7 +100,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
             $this->moneyService->createMoneyAccount(new AccountCreateDto(
                 $accountMoneyCreateDto->username,
                 $accountMoneyCreateDto->password,
-                self::MONEY_ACCOUNT_MP_CREATE_NAME
+                self::CASHOUT
             ))
         );
     }
@@ -110,8 +112,18 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
             $this->moneyService->createMoneyAccount(new AccountCreateDto(
                 $accountMoneyCreateDto->username,
                 $accountMoneyCreateDto->password,
-                self::MONEY_ACCOUNT_CASHOUT_CREATE_NAME
+                self::MP
             ))
+        );
+    }
+
+    #[Route(self::MONEY_TOKEN_URI, name: self::MONEY_TOKEN_NAME,defaults: ["_format"=>"application/x-www-form-urlencoded"], methods: [self::POST_METHOD])]
+    public function generateToken(#[MapRequestPayload] TokenCreateDto $tokenCreateDto): TokenResponse
+    {
+        return new TokenResponse(
+            $this->moneyService->generateToken(
+                $tokenCreateDto
+            )
         );
     }
 }

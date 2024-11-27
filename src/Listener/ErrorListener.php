@@ -4,10 +4,13 @@ namespace App\Listener;
 
 use App\Dto\PayMoneyDataResultDto;
 use App\Dto\PayMoneyResultDto;
+use App\Dto\TokenExceptionDto;
 use App\Exception\GeneralException;
+use App\Exception\InvalidMoneyCredentialsException;
 use App\Exception\MoneyPayException;
 use App\Response\Command;
 use App\Response\MoneyPayResponse;
+use App\Response\TokenResponse;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -76,7 +79,22 @@ class ErrorListener implements EventSubscriberInterface
             $displayMessage = sprintf("%s::%s",$code,$userMessage);
             $payMoneyResultDto =  new PayMoneyResultDto($data,$displayMessage);
             $response = new MoneyPayResponse($payMoneyResultDto);
-        }else{
+        }else if($throwable instanceof InvalidMoneyCredentialsException){
+            $message = $throwable->getMessage();
+            if ($throwable->clearMessage){
+                $message = sprintf("%s %s",$throwable->clearMessage,$throwable->getMessage());
+            }
+            $exceptionEvent->allowCustomResponseCode();
+
+            $tokenErrorDto = new TokenExceptionDto(
+                error_description: $message,
+                error: "invalid_client"
+            );
+
+            $response = new TokenResponse($tokenErrorDto);
+            $response->setStatusCode(401);
+        }
+        else{
             $exceptionEvent->allowCustomResponseCode();
             $commandResult = new \App\Dto\Result\CommandResultDto();
 

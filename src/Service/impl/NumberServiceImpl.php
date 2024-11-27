@@ -412,14 +412,17 @@ class NumberServiceImpl implements NumberService
         }
         $account = $this->buildAccount($createDto);
         $clearApiKey = $this->utilService->generateRandom();
-        $hashApiKey = hash("sha256",$clearApiKey);
+        $hashApiKey =   password_hash($clearApiKey,PASSWORD_BCRYPT);
         $account->setApikey($hashApiKey);
+        $subcriptionKey = $this->utilService->generateRandom(30);
+        $hasSubKey = password_hash($subcriptionKey,PASSWORD_BCRYPT);
+        $account->setSubscriptionkey($hasSubKey);
         $account =   $this->accountRepository->save($account);
         $result = $this->map($account,AccountCreateResultDto::class);
         if($result instanceof AccountCreateResultDto){
             $result->apikey = $clearApiKey;
+            $result->subscriptionkey = $subcriptionKey;
         }
-
         return  $result;
     }
 
@@ -818,7 +821,6 @@ class NumberServiceImpl implements NumberService
         $result = $this->utilService->map($transaction,BalanceResultDto::class,true);
         if($result instanceof BalanceResultDto){
            // $balanceResult = $this->map($result,BalanceResultDto::class,true);
-           // dd($balanceResult);
            // $message = $this->getMessage($command->TYPE);
             $result->TYPE = $_ENV['API_RESPONSE'];
             unset($result->MESSAGE);

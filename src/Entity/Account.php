@@ -89,6 +89,13 @@ class Account  implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255,nullable: true)]
     private ?string $msisdn2 = null;
 
+    #[ORM\Column(length: 255,nullable: true)]
+    private ?string $subscriptionkey = null;
+
+
+    #[ORM\Column(type: Types::TEXT,nullable: true)]
+    private ?string $token = null;
+
     #[ORM\Column(length: 255)]
     private ?string $language1 = null;
 
@@ -450,18 +457,51 @@ class Account  implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return string|null
      */
-    public function getOperationType(): ?string
+    public function getOperationtype(): ?string
     {
-        return $this->operationType;
+        return $this->operationtype;
     }
 
 
     /**
      * @param string|null $operationType
      */
-    public function setOperationType(?string $operationType): void
+    public function setOperationtype(?string $operationType): void
     {
-        $this->operationType = $operationType;
+        $this->operationtype = $operationType;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSubscriptionkey(): ?string
+    {
+        return $this->subscriptionkey;
+    }
+
+
+    /**
+     * @param string|null $subscriptionkey
+     */
+    public function setSubscriptionkey(?string $subscriptionkey): void
+    {
+        $this->subscriptionkey = $subscriptionkey;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    /**
+     * @param string|null $token
+     */
+    public function setToken(?string $token): void
+    {
+        $this->token = $token;
     }
 
 }

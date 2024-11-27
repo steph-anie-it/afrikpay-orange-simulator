@@ -6,6 +6,7 @@ class AccountCreateResultDto
 {
     public string $username;
     public string $apikey;
+    public ?string $subscriptionkey = null;
 
     public string $msisdn;
 

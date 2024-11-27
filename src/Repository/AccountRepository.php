@@ -25,7 +25,7 @@ class AccountRepository extends ServiceEntityRepository
     public function save(Account $account):Account{
         $entityManager =  $this->getEntityManager();
         $entityManager->persist($account);
-        $entityManager->flush();;
+        $entityManager->flush();
         return $account;
     }
 

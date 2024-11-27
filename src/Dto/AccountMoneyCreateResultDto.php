@@ -10,5 +10,5 @@ class AccountMoneyCreateResultDto
     public string $msisdn;
 
     public ?string $pin = null;
-
+    public ?string $subscriptionkey = null;
 }

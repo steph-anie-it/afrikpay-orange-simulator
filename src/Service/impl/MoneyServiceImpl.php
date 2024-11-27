@@ -11,6 +11,8 @@ use App\Dto\PayMoneyDataResultDto;
 use App\Dto\PayMoneyDto;
 use App\Dto\PayMoneyResultDto;
 use App\Dto\PayTokenDto;
+use App\Dto\TokenCreateDto;
+use App\Dto\TokenDto;
 use App\Entity\Account;
 use App\Entity\Number;
 use App\Entity\Transaction;
@@ -26,8 +28,9 @@ use App\Repository\TransactionRepository;
 use App\Service\MoneyService;
 use App\Service\NumberService;
 use App\Service\UtilService;
-use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\HttpFoundation\Request;
+use DateInterval;
+use DateTime;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -36,6 +39,14 @@ class MoneyServiceImpl implements MoneyService
     public const BADPARAMETER_FORMAT="%s,%s";
 
     public const BADTRHREEPARAMETER_FORMAT="%s,%s,%s";
+
+    public const PASSWORD_GRANT_TYPE = 'password';
+    public const START_DATE = 'startDate';
+    public const END_DATE = 'endDate';
+
+    public const USERNAME = 'username';
+
+    public const DATE = 'date';
     public function __construct(
         public RequestStack $requestStack,
         public NumberService $numberService,
@@ -43,50 +54,95 @@ class MoneyServiceImpl implements MoneyService
         protected NumberRepository $numberRepository,
         protected UserPasswordHasherInterface  $passwordHasher,
         protected TransactionRepository $transactionRepository,
+        protected JWTTokenManagerInterface $JWTManager,
         public UtilService $utilService)
     {
 
     }
 
+
     public function checkCredentials() : void
     {
         $request = $this->requestStack->getCurrentRequest();
         $xAuthToken =  $request->headers->get(self::X_AUTH_TOKEN);
+
         if (!$xAuthToken){
-            throw new InvalidCredentialsException();
+            throw new InvalidMoneyCredentialsException(exceptionValues: ExceptionList::INVALID_XAUTH_TOKEN);
         }
         $value = base64_decode($xAuthToken);
         $cred =  explode(':',$value);
         if (sizeof($cred) != 2){
-            throw new InvalidMoneyCredentialsException();
+            throw new InvalidMoneyCredentialsException(
+                $cred[0],
+                exceptionValues: ExceptionList::INVALID_TOKEN_CLIENT_ID
+            );
         }
 
         $username = $cred[0];
-
         $account = $this->accountRepository->findOneBy(['username' => $username]);
         if (!$account){
-            throw new InvalidMoneyCredentialsException();
+            throw new InvalidMoneyCredentialsException(
+                $username,
+                exceptionValues: ExceptionList::UNKNOW_USER
+            );
         }
         $password = $cred[1];
 
         if (!$this->passwordHasher->isPasswordValid($account,$password)){
-            throw new InvalidMoneyCredentialsException();
+            throw new InvalidMoneyCredentialsException(
+                $username,
+                exceptionValues: ExceptionList::INVALID_CREDENTIALS
+            );
         }
-
-        dd($account);
 
         $wsoAutorization = $request->headers->get(self::WSO2_AUTHORIZATION);
 
         if (!$wsoAutorization){
-            dd($wsoAutorization);
+            throw new InvalidMoneyCredentialsException(
+                "",
+                exceptionValues: ExceptionList::INVALID_WSO2_TOKEN
+            );
         }
 
-        dd($xAuthToken,$wsoAutorization);
+        try{
+            $tokenValues = $this->JWTManager->parse($wsoAutorization);
+        }catch (\Throwable $throwable){
+            throw new InvalidMoneyCredentialsException(
+                exceptionValues: ExceptionList::EXPIRY_JWT_TOKEN
+            );
+        }
+
+        if (!array_key_exists(self::USERNAME,$tokenValues)){
+            throw new InvalidMoneyCredentialsException(
+                $username,
+                exceptionValues: ExceptionList::BAD_WSO2_TOKEN
+            );
+        }
+
+        $username = $tokenValues[self::USERNAME];
+        $account = $this->accountRepository->findOneBy(['username' => $username]);
+        if (!$account){
+            throw new InvalidMoneyCredentialsException(
+                $username,
+                exceptionValues: ExceptionList::BAD_WSO2_TOKEN
+            );
+        }
+        if ($account->getToken() != $wsoAutorization){
+            throw new InvalidMoneyCredentialsException(
+                exceptionValues: ExceptionList::INVALID_USER_JWT_TOKEN
+            );
+        }
+
+        if (!array_key_exists(self::START_DATE,$tokenValues)){
+            throw new InvalidMoneyCredentialsException(
+                exceptionValues: ExceptionList::BAD_WSO2_TOKEN
+            );
+        }
     }
 
     public function init(?string $key = null): InitMoneyResultDto
     {
-        //$this->checkCredentials();
+        $this->checkCredentials();
         $payTokenData = $this->generatePayToken($key);
         $transaction = new Transaction();
         $transaction->setMoneytype($key);
@@ -158,6 +214,7 @@ class MoneyServiceImpl implements MoneyService
 
     public function pay(PayMoneyDto $payMoneyDto,?string $key = null): PayMoneyResultDto
     {
+        $this->checkCredentials();
         $payMoneyResultDto = $this->utilService->map($payMoneyDto,PayMoneyDataResultDto::class);
 
         $payMoneyResultDto->createtime = time();
@@ -187,6 +244,15 @@ class MoneyServiceImpl implements MoneyService
                 payMoneyDataResultDto: $payMoneyResultDto
             );
         }
+
+        if ($account->getOperationtype() != $key){
+            throw new MoneyPayException(
+                exceptionValues: ExceptionList::INVALID_ACCOUNT_CHANNEL_JWT_TOKEN,
+                payMoneyDataResultDto: $payMoneyResultDto
+            );
+        }
+
+
         if ($account->getPin() != $payMoneyDto->pin){
             throw new MoneyPayException(
                 exceptionValues: ExceptionList::INVALID_PIN_NUMBER,
@@ -307,6 +373,82 @@ class MoneyServiceImpl implements MoneyService
     {
            $result = $this->numberService->createAirtimeAccount($createDto);
            return $this->utilService->map($result,AccountMoneyCreateResultDto::class);
+    }
+
+    public function checkTokenCredentials(Account $account){
+
+        $request = $this->requestStack->getCurrentRequest();
+
+        $authorization = $request->headers->get(self::AUTHORIZATION);
+        $basicAuth = substr($authorization,strlen(self::BASIC),strlen($authorization));
+        $clear = base64_decode($basicAuth);
+        $credentials = explode(':',$clear);
+        if (sizeof($credentials) != 2){
+            throw new InvalidMoneyCredentialsException(
+                $credentials[0],
+                exceptionValues: ExceptionList::INVALID_TOKEN_CLIENT_ID
+            );
+        }
+        $apiKey = $credentials[0];
+        $subscriptionKey = $credentials[1];
+
+        if (!password_verify($apiKey,$account->getApikey())){
+            throw new InvalidMoneyCredentialsException(
+                $apiKey,
+                exceptionValues: ExceptionList::INVALID_APIKEY_TYPE
+            );
+        }
+
+        if (!password_verify($subscriptionKey,$account->getSubscriptionkey())){
+            throw new InvalidMoneyCredentialsException(
+                $subscriptionKey,
+                exceptionValues: ExceptionList::INVALID_SUBSCRIPTION_KEY_TYPE
+            );
+        }
+    }
+
+
+
+    public function generateToken(TokenCreateDto $tokenCreateDto): TokenDto
+    {
+        if ($tokenCreateDto->grant_type != self::PASSWORD_GRANT_TYPE){
+            throw new InvalidMoneyCredentialsException(
+                exceptionValues: ExceptionList::INVALID_GRANT_TYPE
+            );
+        }
+        $account  = $this->accountRepository->findOneBy(['username' => $tokenCreateDto->username]);
+        if (!$account){
+            throw new InvalidMoneyCredentialsException(
+                $tokenCreateDto->username,
+                exceptionValues: ExceptionList::UNKNOW_USER
+            );
+        }
+
+        $this->checkTokenCredentials($account);
+
+        if(!$this->passwordHasher->isPasswordValid($account,$tokenCreateDto->password)){
+            throw new InvalidMoneyCredentialsException(
+                exceptionValues: ExceptionList::INVALID_CREDENTIALS
+            );
+        }
+
+        $startDate = new \DateTime();
+        $endDate = new \DateTime();
+        $tokenDuration = $_ENV['TOKEN_DURATION'];
+        $endDate->add(DateInterval::createFromDateString(sprintf("%s %s",$tokenDuration,'seconds')));
+        $token =  $this->JWTManager->createFromPayload($account,[self::START_DATE => $startDate,self::END_DATE => $endDate]);
+        $endDate->add(DateInterval::createFromDateString(sprintf("%s %s",$_ENV['REFRESH_TOKEN_DURATION'],'min')));
+        $refreshToken = $this->utilService->guidv4();
+
+        $account->setToken($token);
+
+        $this->accountRepository->save($account);
+
+        return new TokenDto(
+            access_token:  $token,
+            refresh_token: $refreshToken,
+            expires_in: $tokenDuration
+        );
     }
 
 }

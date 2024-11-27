@@ -62,11 +62,11 @@ class Transaction
     #[ORM\Column(length: 500,nullable: true)]
     private ?string $message = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE,nullable: true)]
     private ?\DateTimeInterface $dateTransaction = null;
 
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE,nullable: true)]
     private ?\DateTimeInterface $dateEndTransaction = null;
 
     private ?string $date = null;
@@ -93,7 +93,8 @@ class Transaction
     private ?float $balancedatanew =  null;
 
 
-
+    #[ORM\Column(length: 255,nullable: true)]
+    private ?string $moneytype = null;
 
     #[ORM\Column(length: 255,nullable: true)]
     private ?string $language1 = null;
@@ -459,6 +460,22 @@ class Transaction
     public function setStatus(?string $status): void
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getMoneytype(): ?string
+    {
+        return $this->moneytype;
+    }
+
+    /**
+     * @param string|null $moneytype
+     */
+    public function setMoneytype(?string $moneytype): void
+    {
+        $this->moneytype = $moneytype;
     }
 
 }

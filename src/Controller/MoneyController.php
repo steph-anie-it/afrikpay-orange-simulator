@@ -30,8 +30,9 @@ interface MoneyController
     public const MONEY_ACCOUNT_MP_CREATE_NAME = 'money_account_mp_name';
     public const MONEY_ACCOUNT_CASHIN_CREATE_NAME = 'money_account_cashin_name';
     public const MONEY_ACCOUNT_CASHOUT_CREATE_NAME = 'money_account_cashout_name';
-    public const CASHIN_URI = '/cashin';
-    public const MP_URI = '/mp';
+    public const CASHOUT = 'cashout';
+    public const CASHIN = 'cashin';
+    public const MP = 'mp';
     public const INIT_URI = '/init';
 
 

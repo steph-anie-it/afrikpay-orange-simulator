@@ -27,7 +27,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     {
         return
             new MoneyInitResponse(
-                $this->moneyService->init(self::CASHOUT_INIT)
+                $this->moneyService->init(self::CASHOUT)
             );
     }
 
@@ -36,7 +36,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     {
         return
             new MoneyInitResponse(
-                $this->moneyService->init(self::CASHIN_INIT)
+                $this->moneyService->init(self::CASHIN)
             );
     }
 
@@ -45,7 +45,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     {
         return
             new MoneyInitResponse(
-                $this->moneyService->init(self::MP_INIT)
+                $this->moneyService->init(self::MP)
             );
     }
 
@@ -54,7 +54,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     {
         return
             new MoneyPayResponse(
-                $this->moneyService->pay($payMoneyDto,self::CASHOUT_PAY)
+                $this->moneyService->pay($payMoneyDto,self::CASHOUT)
             );
     }
 
@@ -63,7 +63,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     {
         return
             new MoneyPayResponse(
-                $this->moneyService->pay($payMoneyDto,self::CASHIN_PAY)
+                $this->moneyService->pay($payMoneyDto,self::CASHIN)
             );
     }
 
@@ -72,7 +72,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     {
         return
             new MoneyPayResponse(
-                $this->moneyService->pay($payMoneyDto,self::MP_PAY)
+                $this->moneyService->pay($payMoneyDto,self::MP)
             );
     }
 

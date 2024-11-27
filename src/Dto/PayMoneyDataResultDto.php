@@ -6,7 +6,7 @@ class PayMoneyDataResultDto
 {
     public function __construct(
         public ?string $createtime = null,
-        public ?int $amount = null,
+        public ?float $amount = null,
         public ?string $channelUserMsisdn = null,
         public ?string $inittxnmessage = null,
         public ?string $confirmtxnmessage = null,

@@ -86,31 +86,34 @@ class MoneyServiceImpl implements MoneyService
 
     public function init(?string $key = null): InitMoneyResultDto
     {
-        $this->checkCredentials();
+        //$this->checkCredentials();
         $payTokenData = $this->generatePayToken($key);
         $transaction = new Transaction();
+        $transaction->setMoneytype($key);
         $transaction->setTransactionid($this->utilService->generateTransactionId());
         $transaction->setPaytoken($payTokenData->payToken);
+        $transaction->setStatus(Transaction::PENDING);
         $this->transactionRepository->save($transaction);
         return new InitMoneyResultDto(
            data: $payTokenData
         );
     }
 
+    public const PAY_TOKEN_TEMPLATE = '%s%s%s%s%s';
     public function generatePayToken(?string $key) : PayTokenDto{
         $payTokenPrefix = "";
         switch ($key){
-            case MoneyController::CASHOUT_INIT:
+            case MoneyController::CASHOUT:
                 $payTokenPrefix = 'CO';
                 break;
-            case MoneyController::CASHIN_INIT:
+            case MoneyController::CASHIN:
                 $payTokenPrefix = 'CI';
                 break;
-            case MoneyController::MP_INIT:
+            case MoneyController::MP:
                 $payTokenPrefix =  'MP';
                 break;
         }
-        $payToken = strtoupper(sprintf("%s%s.%s.%s%s",$payTokenPrefix,
+        $payToken = strtoupper(sprintf(self::PAY_TOKEN_TEMPLATE,$payTokenPrefix,
             $this->utilService->generateRandomNumber(6),
             $this->utilService->generateRandomNumber(4),
             $this->utilService->generateRandomString(1),
@@ -139,8 +142,8 @@ class MoneyServiceImpl implements MoneyService
             throw new GeneralException($message,$transaction,ResponseStatus::INVALID_AMOUNT_MIN_MAX);
         }
 
-        $multiple = floatval($_ENV['AMOUNT_MONEY_MUTIPLE']);
-        $this->checkMultiple($amount,$multiple);
+       // $multiple = floatval($_ENV['AMOUNT_MONEY_MUTIPLE']);
+      //  $this->checkMultiple($amount,$multiple);
     }
 
     public function checkMultiple(float $amount, float $multiple):void
@@ -150,6 +153,8 @@ class MoneyServiceImpl implements MoneyService
             throw new GeneralException($message,null,ResponseStatus::BAD_AMOUNT_MULTIPLE);
         }
     }
+
+    public const PAIEMENT_MESSAGE_TEMPLATE = '%s %s %s from %s to %s  Paiment %s done successfully';
 
     public function pay(PayMoneyDto $payMoneyDto,?string $key = null): PayMoneyResultDto
     {
@@ -189,9 +194,6 @@ class MoneyServiceImpl implements MoneyService
             );
         }
 
-
-
-
         $msisdn = $payMoneyDto->subscriberMsisdn;
         if (!$msisdn){
             throw new MoneyPayException(
@@ -200,15 +202,25 @@ class MoneyServiceImpl implements MoneyService
             );
         }
 
-        $user = $this->numberRepository->findOneBy([Number::MSISDN => $msisdn]);
-        if (!$user){
+        $number = $this->numberRepository->findOneBy([Number::MSISDN => $msisdn]);
+        if (!$number){
             throw new MoneyPayException(
                 exceptionValues: ExceptionList::UNKNOWN_MONEY_NUMBER,
                 payMoneyDataResultDto: $payMoneyResultDto
             );
         }
 
-        $transaction = $this->transactionRepository->findOneBy(['payToken' => $payMoneyDto->payToken]);
+        if (!$number->getIsMoney()){
+            throw new MoneyPayException(
+                exceptionValues: ExceptionList::INVALID_MONEY_NUMBER,
+                payMoneyDataResultDto: $payMoneyResultDto
+            );
+        }
+
+        $transaction = $this->transactionRepository->findOneBy(
+            ['paytoken' => $payMoneyDto->payToken,
+             'moneytype' => $key
+            ]);
 
         if (!$transaction){
             throw new MoneyPayException(
@@ -217,18 +229,78 @@ class MoneyServiceImpl implements MoneyService
             );
         }
 
+
         if ($transaction->getStatus() != Transaction::PENDING){
             throw new MoneyPayException(
-                exceptionValues: ExceptionList::INVALID_PAY_TOKEN_NUMBER,
+                exceptionValues: ExceptionList::INVALID_PAY_TOKEN_TRANSACTION_NUMBER,
                 payMoneyDataResultDto: $payMoneyResultDto
             );
         }
 
-        //$this->checkCredentials();
-        //$payToken = $payMoneyDto->payToken;
-        $this->checkAmount($payMoneyDto->amount);
-        $data = new PayMoneyDataResultDto();
-        return new PayMoneyResultDto($data);
+        try{
+            $this->checkAmount($payMoneyDto->amount);
+        }catch (GeneralException $generalException){
+            throw new MoneyPayException(
+                exceptionValues: ExceptionList::INVALID_AMOUNT,
+                payMoneyDataResultDto: $payMoneyResultDto
+            );
+        }
+
+        $amount = $payMoneyDto->amount + $this->getFees($account);
+
+        $balance =  $account->getBalance();
+        if ($transaction->getMoneytype() == MoneyController::CASHOUT)
+        {
+            if ($amount > $balance){
+                throw new MoneyPayException(
+                    exceptionValues: ExceptionList::NOT_ENOUGH_FUND,
+                    payMoneyDataResultDto: $payMoneyResultDto
+                );
+            }
+            $newBalance = $balance - $amount ;
+            $account->setOldbalance($balance);
+            $account->setNewbalance($newBalance);
+            $account->setBalance($newBalance);
+            $this->accountRepository->save($account);
+        }
+
+        $transaction->setAmount($amount);
+        $transaction->setStatus(Transaction::SUCCESS);
+        $inittxnstatus = 'inittxnstatus';
+        $inittxnmessage = 'inittxnmessage';
+        $txnid = 'txnid';
+        $confirmtxnmessage = 'confirmtxnmessage';
+        $confirmtxnstatus = 'confirmtxnstatus';
+        $txnmode = 'txnmode';
+        $txnidValue = $this->utilService->generateTransactionId();
+        $transaction->setTxnid($txnidValue);
+        $transaction->setBalance($account->getBalance());
+        $transaction->setPin($account->getPin());
+        
+        $this->transactionRepository->save($transaction);
+        $payMoneyResultDto->status = $transaction->getStatus();
+        $payMoneyResultDto->$inittxnstatus = "200";
+        $payMoneyResultDto->$txnid = $transaction->getTxnid();
+        $payMoneyResultDto->$confirmtxnmessage = 'Paiement success';
+        $payMoneyResultDto->$inittxnmessage = 'Paiement success';
+        $payMoneyResultDto->$confirmtxnstatus = "200";
+        $payMoneyResultDto->$txnmode = 'SUCCESS';
+        return new PayMoneyResultDto(
+            $payMoneyResultDto,
+            sprintf(self::PAIEMENT_MESSAGE_TEMPLATE,
+                $key,
+                $txnidValue,
+                $payMoneyDto->amount,
+                $account->getMsisdn(),
+                $number->getMsisdn(),
+                $payMoneyDto->payToken
+            )
+        );
+    }
+
+    public function getFees(Account $account) : float
+    {
+        return 0;
     }
 
     public function createMoneyAccount(AccountCreateDto $createDto): AccountMoneyCreateResultDto

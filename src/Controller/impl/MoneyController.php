@@ -100,7 +100,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
             $this->moneyService->createMoneyAccount(new AccountCreateDto(
                 $accountMoneyCreateDto->username,
                 $accountMoneyCreateDto->password,
-                self::CASHOUT
+                self::MP
             ))
         );
     }
@@ -112,7 +112,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
             $this->moneyService->createMoneyAccount(new AccountCreateDto(
                 $accountMoneyCreateDto->username,
                 $accountMoneyCreateDto->password,
-                self::MP
+                self::CASHOUT
             ))
         );
     }

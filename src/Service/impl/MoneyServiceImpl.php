@@ -217,6 +217,13 @@ class MoneyServiceImpl implements MoneyService
         $this->checkCredentials();
         $payMoneyResultDto = $this->utilService->map($payMoneyDto,PayMoneyDataResultDto::class);
 
+        if (!filter_var($payMoneyDto->notifUrl, FILTER_VALIDATE_URL)){
+            throw new MoneyPayException(
+                exceptionValues: ExceptionList::INVALID_URL,
+                payMoneyDataResultDto: $payMoneyResultDto
+            );
+        }
+
         $payMoneyResultDto->createtime = time();
         $orderId = $payMoneyDto->orderId;
 
@@ -351,7 +358,7 @@ class MoneyServiceImpl implements MoneyService
         $payMoneyResultDto->$inittxnmessage = 'Paiement success';
         $payMoneyResultDto->$confirmtxnstatus = "200";
         $payMoneyResultDto->$txnmode = 'SUCCESS';
-        return new PayMoneyResultDto(
+        $result = new PayMoneyResultDto(
             $payMoneyResultDto,
             sprintf(self::PAIEMENT_MESSAGE_TEMPLATE,
                 $key,
@@ -362,6 +369,42 @@ class MoneyServiceImpl implements MoneyService
                 $payMoneyDto->payToken
             )
         );
+
+        try{
+            $this->callBack($result);
+        }catch (\Throwable $throwable){
+
+        }
+
+        return $result;
+    }
+
+    public function callBack(PayMoneyResultDto $payMoneyResultDto){
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $payMoneyResultDto->data->notifUrl,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json'
+            ],
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => json_encode($payMoneyResultDto->data),
+            CURLOPT_SSL_VERIFYPEER => 0,
+            CURLOPT_SSL_VERIFYHOST => 0
+        ));
+
+        $response = curl_exec($curl);
+        if (curl_errno($curl)) {
+            $error_msg = curl_error($curl);
+        }
+        curl_close($curl);
+
+        //echo $response;
     }
 
     public function getFees(Account $account) : float

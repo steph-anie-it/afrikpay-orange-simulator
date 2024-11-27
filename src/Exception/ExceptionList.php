@@ -37,4 +37,5 @@ class ExceptionList
     public  const INVALID_USER_JWT_TOKEN = [ self::CODE => '0083', self::MESSAGE => 'Invalid User JWT token '];
 
     public  const INVALID_ACCOUNT_CHANNEL_JWT_TOKEN = [ self::CODE => '0084', self::MESSAGE => 'Invalid  Account Money channel'];
+    public  const INVALID_URL = [ self::CODE => '0085', self::MESSAGE => 'Invalid  Url'];
 }

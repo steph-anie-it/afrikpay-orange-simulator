@@ -276,7 +276,7 @@ class MoneyServiceImpl implements MoneyService
         $transaction->setTxnid($txnidValue);
         $transaction->setBalance($account->getBalance());
         $transaction->setPin($account->getPin());
-        
+
         $this->transactionRepository->save($transaction);
         $payMoneyResultDto->status = $transaction->getStatus();
         $payMoneyResultDto->$inittxnstatus = "200";

@@ -25,6 +25,7 @@ use App\Model\ResponseStatus;
 use App\Repository\AccountRepository;
 use App\Repository\NumberRepository;
 use App\Repository\TransactionRepository;
+use App\Service\HttpService;
 use App\Service\MoneyService;
 use App\Service\NumberService;
 use App\Service\UtilService;
@@ -55,6 +56,7 @@ class MoneyServiceImpl implements MoneyService
         protected UserPasswordHasherInterface  $passwordHasher,
         protected TransactionRepository $transactionRepository,
         protected JWTTokenManagerInterface $JWTManager,
+        protected HttpService $httpService,
         public UtilService $utilService)
     {
 
@@ -371,7 +373,7 @@ class MoneyServiceImpl implements MoneyService
         );
 
         try{
-            $this->callBack($result);
+            $this->httpService->callBack($result->data);
         }catch (\Throwable $throwable){
 
         }
@@ -379,33 +381,6 @@ class MoneyServiceImpl implements MoneyService
         return $result;
     }
 
-    public function callBack(PayMoneyResultDto $payMoneyResultDto){
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => $payMoneyResultDto->data->notifUrl,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTPHEADER => [
-                'Content-Type: application/json'
-            ],
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => json_encode($payMoneyResultDto->data),
-            CURLOPT_SSL_VERIFYPEER => 0,
-            CURLOPT_SSL_VERIFYHOST => 0
-        ));
-
-        $response = curl_exec($curl);
-        if (curl_errno($curl)) {
-            $error_msg = curl_error($curl);
-        }
-        curl_close($curl);
-
-        //echo $response;
-    }
 
     public function getFees(Account $account) : float
     {

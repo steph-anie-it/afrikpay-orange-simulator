@@ -11,6 +11,7 @@ use App\Exception\MoneyPayException;
 use App\Response\Command;
 use App\Response\MoneyPayResponse;
 use App\Response\TokenResponse;
+use App\Service\HttpService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -25,8 +26,9 @@ class ErrorListener implements EventSubscriberInterface
 {
 
     public function __construct(private RouterInterface   $router,
-                                protected LoggerInterface $logger
-        , protected RequestStack                          $requestStack)
+                                protected LoggerInterface $logger,
+                                protected HttpService $httpService,
+                                protected RequestStack $requestStack)
     {
     }
 
@@ -78,6 +80,7 @@ class ErrorListener implements EventSubscriberInterface
             $data->$status = 'FAILED';
             $displayMessage = sprintf("%s::%s",$code,$userMessage);
             $payMoneyResultDto =  new PayMoneyResultDto($data,$displayMessage);
+            $this->httpService->callBack($data);
             $response = new MoneyPayResponse($payMoneyResultDto);
         }else if($throwable instanceof InvalidMoneyCredentialsException){
             $message = $throwable->getMessage();

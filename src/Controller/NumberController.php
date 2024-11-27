@@ -82,7 +82,8 @@ interface NumberController
 
 
     public function createAccount(AccountCreateDto $createDto): AccountAirtimeResponse;
-    public function generateNumber(?string $number=null): GenerateAirtimeResponse;
+    public function generateNumber(?string $number=null,bool $isMoney = false): GenerateAirtimeResponse;
+
     public function payAirtime(Request $request, \App\Dto\Command $payAirtimeDto):\App\Response\Command;
 
     public function payNumberAirtime(Request $request):\App\Response\Command;

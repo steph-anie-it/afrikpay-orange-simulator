@@ -12,7 +12,7 @@ class PayMoneyDto
       public ?string $orderId = null,
       public ?int $amount = null,
       public ?string $channelUserMsisdn = null,
-      public ?string $notifiUrl = null,
+      public ?string $notifUrl = null,
   )
   {
   }

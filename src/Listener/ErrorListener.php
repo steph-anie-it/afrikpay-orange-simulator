@@ -2,8 +2,12 @@
 
 namespace App\Listener;
 
+use App\Dto\PayMoneyDataResultDto;
+use App\Dto\PayMoneyResultDto;
 use App\Exception\GeneralException;
+use App\Exception\MoneyPayException;
 use App\Response\Command;
+use App\Response\MoneyPayResponse;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -59,13 +63,20 @@ class ErrorListener implements EventSubscriberInterface
             $code = $throwable->getResponseStatus()->code();
             $message = $throwable->getResponseStatus()->getMessage($message);
         }
-
-
-
-        $class = $throwable->getTrace()[2]['class'];
-        if ( in_array($class,["App\Service\impl\MoneyServiceImpl","App\Controller\impl\MoneyController"])){
+        if ($throwable instanceof MoneyPayException){
+            $message = "inittxnmessage";
+            $inittxnstatus = "inittxnstatus";
+            $status = "status";
+            $code = $throwable->messageCode;
+            $userMessage = $throwable->clearMessage;
+            $data = $throwable->payResultDto;
+            $data->$message = $userMessage;
+            $data->$inittxnstatus = $code;
+            $data->$status = 'FAILED';
+            $displayMessage = sprintf("%s::%s",$code,$userMessage);
+            $payMoneyResultDto =  new PayMoneyResultDto($data,$displayMessage);
+            $response = new MoneyPayResponse($payMoneyResultDto);
         }else{
-
             $exceptionEvent->allowCustomResponseCode();
             $commandResult = new \App\Dto\Result\CommandResultDto();
 
@@ -93,8 +104,8 @@ class ErrorListener implements EventSubscriberInterface
             $commandResult->DATE = $date->format('d/m/Y H:i:s');
             $response = new Command($commandResult);
             $response->setStatusCode(200);
-            $exceptionEvent->setResponse($response);
         }
+        $exceptionEvent->setResponse($response);
     }
 
 

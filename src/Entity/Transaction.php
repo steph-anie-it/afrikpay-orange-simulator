@@ -24,6 +24,11 @@ class Transaction
     public const LANGUAGE1="language1";
     public const EXTNWCODE="extnwcode";
 
+    public const PENDING = 'PENDING';
+    public const FAILED = 'FAILED';
+    public const CANCELLED = 'CANCELLED';
+    public const SUCCESS = 'SUCCESS';
+
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -104,6 +109,15 @@ class Transaction
 
     #[ORM\Column(length: 255,nullable: true)]
     private ?string $selector = null;
+
+    #[ORM\Column(length: 255,nullable: true)]
+    private ?string $paytoken;
+
+    #[ORM\Column(length: 255,nullable: true)]
+    private ?string $amount;
+
+    #[ORM\Column(length: 255,nullable: true)]
+    private ?string $status;
 
     public function getId(): ?int
     {
@@ -396,6 +410,55 @@ class Transaction
         $this->balancedatanew = $balancedatanew;
 
         return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPaytoken(): ?string
+    {
+        return $this->paytoken;
+    }
+
+    /**
+     * @param string|null $paytoken
+     */
+    public function setPaytoken(?string $paytoken): void
+    {
+        $this->paytoken = $paytoken;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAmount(): ?string
+    {
+        return $this->amount;
+    }
+
+
+    /**
+     * @param string|null $amount
+     */
+    public function setAmount(?string $amount): void
+    {
+        $this->amount = $amount;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param string|null $status
+     */
+    public function setStatus(?string $status): void
+    {
+        $this->status = $status;
     }
 
 }

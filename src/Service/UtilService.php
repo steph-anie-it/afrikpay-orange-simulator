@@ -130,20 +130,24 @@ class UtilService
     /**
      * @throws \ReflectionException
      */
-    public function map(mixed $sourceClass, string $destinationClass,bool $toUpper=false){
+    public function map(mixed $sourceClass, string $destinationClass,bool $toUpper=false,bool $toLower = false){
         $object = new \ReflectionObject($sourceClass);
         $destination = new $destinationClass();
         $dest = new \ReflectionObject(new $destinationClass());
         $properties = $object->getProperties();
+
         foreach ($properties as $property){
             $property->setAccessible(true);
+            $propertyName = $property->getName();
             if($toUpper){
-                $propertyName = strtoupper($property->getName());
-            }else{
-                $propertyName = strtolower($property->getName());
+                $propertyName = strtoupper($propertyName);
+            }
+            if ($toLower){
+                $propertyName = strtolower($propertyName);
             }
 
             $propertyValue = $property->getValue($sourceClass);
+
             if(!$dest->hasProperty($propertyName)) {
                 continue;
             }

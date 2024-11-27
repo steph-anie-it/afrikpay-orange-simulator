@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\NumberRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: NumberRepository::class)]
@@ -49,6 +50,9 @@ class Number
 
     #[ORM\Column(length: 255,nullable: true)]
     private ?string $numberdataoldbalance = null;
+
+    #[ORM\Column(type: Types::BOOLEAN,nullable: true)]
+    private ?bool $isMoney = null;
 
 
     #[ORM\Column(length: 255,nullable: true)]
@@ -200,5 +204,21 @@ class Number
         $this->numberdatanewbalance = $numberdatanewbalance;
 
         return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getIsMoney(): ?bool
+    {
+        return $this->isMoney;
+    }
+
+    /**
+     * @param bool|null $isMoney
+     */
+    public function setIsMoney(?bool $isMoney): void
+    {
+        $this->isMoney = $isMoney;
     }
 }

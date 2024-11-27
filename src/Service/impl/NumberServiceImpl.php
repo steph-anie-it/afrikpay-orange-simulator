@@ -349,11 +349,15 @@ class NumberServiceImpl implements NumberService
     }
 
     /**
-     * @throws \ReflectionException
+     * @param string|null $number
+     * @param bool|null $isMoney
+     * @return GenerateNumberResultDto
      * @throws GeneralException
+     * @throws \ReflectionException
      */
-    public function generateNumber(?string $number = null): GenerateNumberResultDto
+    public function generateNumber(?string $number = null,?bool $isMoney = false): GenerateNumberResultDto
     {
+
         if($number){
             if(!preg_match($_ENV['PHONE_REGEX'],$number)){
                 throw new GeneralException(null,null,ResponseStatus::INVALID_PHONE_NUMBER);
@@ -364,30 +368,36 @@ class NumberServiceImpl implements NumberService
           }
 
           $numberExists =  $this->numberRepository->findOneBy([Number::MSISDN => $number]);
-          if($numberExists){
+          if($numberExists && !$isMoney){
               throw new GeneralException(null,null,ResponseStatus::NUMBER_ALREADY_EXISTS);
           }
         }
+        if (!isset($numberExists)){
+            $phone = $number ?: $this->utilService->generatePhone();
+            while ($this->accountRepository->findOneBy([Account::ACCOUNT_MSISDN => $phone])){
+                $phone = $this->utilService->generatePhone();
+            }
 
-        $phone = $number ?: $this->utilService->generatePhone();
-        while ($this->accountRepository->findOneBy([Account::ACCOUNT_MSISDN => $phone])){
-            $phone = $this->utilService->generatePhone();
+            $name = $this->utilService->generateCustomerName();
+            $balance = $this->utilService->generateBalance();
+            $generateNumberDto = new GenerateNumberDto();
+            $generateNumberDto->customername = $name;
+            $generateNumberDto->numbernewbalance = $balance;
+            $generateNumberDto->numberphone = $phone;
+
+            $number = $this->map($generateNumberDto,Number::class);
+
+            if($number instanceof Number){
+                $number->setNumberid($this->getUniqueid());
+
+                $number->setAccountNumber($this->utilService->generateAccountNumber());
+                $number->setMsisdn($phone);
+            }
+        }else{
+            $number = $numberExists;
         }
+        $number->setIsMoney($isMoney);
 
-        $name = $this->utilService->generateCustomerName();
-        $balance = $this->utilService->generateBalance();
-        $generateNumberDto = new GenerateNumberDto();
-        $generateNumberDto->customername = $name;
-        $generateNumberDto->numbernewbalance = $balance;
-        $generateNumberDto->numberphone = $phone;
-
-        $number = $this->map($generateNumberDto,Number::class);
-
-        if($number instanceof Number){
-            $number->setNumberid($this->getUniqueid());
-            $number->setAccountNumber($this->utilService->generateAccountNumber());
-            $number->setMsisdn($phone);
-        }
         $number = $this->numberRepository->save($number);
         $result = $this->utilService->map($number,GenerateNumberResultDto::class);
         return $result;

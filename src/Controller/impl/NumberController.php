@@ -37,10 +37,10 @@ class NumberController extends AbstractController implements INumberController
     }
 
     #[Route(self::GENERATE_URI, name: self::GENERATE_NAME, methods: [self::GENERATE_METHOD])]
-    public function generateNumber(#[MapQueryParameter] ?string $number=null): GenerateAirtimeResponse
+    public function generateNumber(#[MapQueryParameter] ?string $number=null,#[MapQueryParameter] ?bool $isMoney = true): GenerateAirtimeResponse
     {
         return new GenerateAirtimeResponse(
-            $this->numberService->generateNumber($number)
+            $this->numberService->generateNumber($number,$isMoney)
         );
     }
 

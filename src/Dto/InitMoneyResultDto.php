@@ -10,7 +10,7 @@ class InitMoneyResultDto
 
     public function __construct(
         public ?PayTokenDto $data = null,
-        public ?string $message = null
+        public ?string $message = "Payment request successfully initiated"
     )
     {
 

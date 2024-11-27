@@ -7,12 +7,22 @@ use App\Dto\AccountCreateDto;
 use App\Dto\AccountCreateResultDto;
 use App\Dto\AccountMoneyCreateResultDto;
 use App\Dto\InitMoneyResultDto;
+use App\Dto\PayMoneyDataResultDto;
 use App\Dto\PayMoneyDto;
 use App\Dto\PayMoneyResultDto;
 use App\Dto\PayTokenDto;
+use App\Entity\Account;
+use App\Entity\Number;
+use App\Entity\Transaction;
+use App\Exception\ExceptionList;
+use App\Exception\GeneralException;
 use App\Exception\InvalidCredentialsException;
 use App\Exception\InvalidMoneyCredentialsException;
+use App\Exception\MoneyPayException;
+use App\Model\ResponseStatus;
 use App\Repository\AccountRepository;
+use App\Repository\NumberRepository;
+use App\Repository\TransactionRepository;
 use App\Service\MoneyService;
 use App\Service\NumberService;
 use App\Service\UtilService;
@@ -23,11 +33,16 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class MoneyServiceImpl implements MoneyService
 {
+    public const BADPARAMETER_FORMAT="%s,%s";
+
+    public const BADTRHREEPARAMETER_FORMAT="%s,%s,%s";
     public function __construct(
         public RequestStack $requestStack,
         public NumberService $numberService,
         protected AccountRepository $accountRepository,
+        protected NumberRepository $numberRepository,
         protected UserPasswordHasherInterface  $passwordHasher,
+        protected TransactionRepository $transactionRepository,
         public UtilService $utilService)
     {
 
@@ -72,8 +87,13 @@ class MoneyServiceImpl implements MoneyService
     public function init(?string $key = null): InitMoneyResultDto
     {
         $this->checkCredentials();
+        $payTokenData = $this->generatePayToken($key);
+        $transaction = new Transaction();
+        $transaction->setTransactionid($this->utilService->generateTransactionId());
+        $transaction->setPaytoken($payTokenData->payToken);
+        $this->transactionRepository->save($transaction);
         return new InitMoneyResultDto(
-           data: $this->generatePayToken($key)
+           data: $payTokenData
         );
     }
 
@@ -102,10 +122,113 @@ class MoneyServiceImpl implements MoneyService
         );
     }
 
+    public function checkAmount(float $amount, ?Transaction $transaction = null): void
+    {
+        $minAmount = floatval($_ENV['MIN_MONEY_TRANSACTION_AMOUNT']);
+
+        $maxAmount = floatval($_ENV['MAX_MONEY_TRANSACTION_AMOUNT']);
+
+        if($amount < $minAmount){
+            $message = sprintf(self::BADTRHREEPARAMETER_FORMAT,strval($amount),strval($minAmount),strval($maxAmount));
+            throw new GeneralException($message,$transaction,ResponseStatus::INVALID_AMOUNT_MIN_MAX);
+        }
+
+
+        if($amount > $maxAmount){
+            $message = sprintf(self::BADTRHREEPARAMETER_FORMAT,strval($amount),strval($minAmount),strval($maxAmount));
+            throw new GeneralException($message,$transaction,ResponseStatus::INVALID_AMOUNT_MIN_MAX);
+        }
+
+        $multiple = floatval($_ENV['AMOUNT_MONEY_MUTIPLE']);
+        $this->checkMultiple($amount,$multiple);
+    }
+
+    public function checkMultiple(float $amount, float $multiple):void
+    {
+        if(fmod($amount , $multiple) != floatval(0)){
+            $message = sprintf(self::BADPARAMETER_FORMAT,strval($amount),strval($multiple));
+            throw new GeneralException($message,null,ResponseStatus::BAD_AMOUNT_MULTIPLE);
+        }
+    }
+
     public function pay(PayMoneyDto $payMoneyDto,?string $key = null): PayMoneyResultDto
     {
-        $this->checkCredentials();
-        // TODO: Implement pay() method.
+        $payMoneyResultDto = $this->utilService->map($payMoneyDto,PayMoneyDataResultDto::class);
+
+        $payMoneyResultDto->createtime = time();
+        $orderId = $payMoneyDto->orderId;
+
+        if (!$orderId){
+            throw new MoneyPayException(
+                exceptionValues: ExceptionList::INVALID_ORDER_ID,
+                payMoneyDataResultDto: $payMoneyResultDto
+            );
+        }
+
+        $channel = $payMoneyResultDto->channelUserMsisdn;
+
+        if (!$channel){
+            throw new MoneyPayException(
+                exceptionValues: ExceptionList::INVALID_CHANNEL_NUMBER,
+                payMoneyDataResultDto: $payMoneyResultDto
+            );
+        }
+
+        $account = $this->accountRepository->findOneBy([Account::ACCOUNT_MSISDN => $channel]);
+
+        if (!$account){
+            throw new MoneyPayException(
+                exceptionValues: ExceptionList::ACCOUNT_NOT_FOUND,
+                payMoneyDataResultDto: $payMoneyResultDto
+            );
+        }
+        if ($account->getPin() != $payMoneyDto->pin){
+            throw new MoneyPayException(
+                exceptionValues: ExceptionList::INVALID_PIN_NUMBER,
+                payMoneyDataResultDto: $payMoneyResultDto
+            );
+        }
+
+
+
+
+        $msisdn = $payMoneyDto->subscriberMsisdn;
+        if (!$msisdn){
+            throw new MoneyPayException(
+                exceptionValues: ExceptionList::INVALID_SUBSCRIBER_NUMBER,
+                payMoneyDataResultDto: $payMoneyResultDto
+            );
+        }
+
+        $user = $this->numberRepository->findOneBy([Number::MSISDN => $msisdn]);
+        if (!$user){
+            throw new MoneyPayException(
+                exceptionValues: ExceptionList::UNKNOWN_MONEY_NUMBER,
+                payMoneyDataResultDto: $payMoneyResultDto
+            );
+        }
+
+        $transaction = $this->transactionRepository->findOneBy(['payToken' => $payMoneyDto->payToken]);
+
+        if (!$transaction){
+            throw new MoneyPayException(
+                exceptionValues: ExceptionList::INVALID_PAY_TOKEN_NUMBER,
+                payMoneyDataResultDto: $payMoneyResultDto
+            );
+        }
+
+        if ($transaction->getStatus() != Transaction::PENDING){
+            throw new MoneyPayException(
+                exceptionValues: ExceptionList::INVALID_PAY_TOKEN_NUMBER,
+                payMoneyDataResultDto: $payMoneyResultDto
+            );
+        }
+
+        //$this->checkCredentials();
+        //$payToken = $payMoneyDto->payToken;
+        $this->checkAmount($payMoneyDto->amount);
+        $data = new PayMoneyDataResultDto();
+        return new PayMoneyResultDto($data);
     }
 
     public function createMoneyAccount(AccountCreateDto $createDto): AccountMoneyCreateResultDto

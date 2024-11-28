@@ -42,7 +42,7 @@ class NumberController extends AbstractController implements INumberController
     #[OA\Response(
         response: 200,
         description: 'Execute command',
-        content: new Model(type: GenerateAirtimeResponse::class)
+//        content: new Model(type: GenerateAirtimeResponse::class)
     )]
     public function generateNumber(#[MapQueryParameter] ?string $number=null,#[MapQueryParameter] ?bool $isMoney = true): GenerateAirtimeResponse
     {
@@ -59,7 +59,7 @@ class NumberController extends AbstractController implements INumberController
     #[OA\Response(
         response: 200,
         description: 'Execute command',
-        content: new Model(type: Command::class)
+//        content: new Model(type: Command::class)
     )]
     public function executeCommand(Request $request, \App\Dto\Command $payAirtimeDto): \App\Response\Command
     {
@@ -76,7 +76,7 @@ class NumberController extends AbstractController implements INumberController
     #[OA\Response(
         response: 200,
         description: 'Pay airtime',
-        content:  new Model(type: Command::class)
+//        content:  new Model(type: Command::class)
     )]
     public function payAirtime(Request $request,   #[MapRequestPayload] Command $payAirtimeDto): \App\Response\Command
     {
@@ -91,7 +91,7 @@ class NumberController extends AbstractController implements INumberController
     #[OA\Response(
         response: 200,
         description: 'Execute command',
-        content: new Model(type: Command::class)
+//        content: new Model(type: Command::class)
     )]
     public function payNumberAirtime(Request $request): \App\Response\Command
     {
@@ -113,7 +113,7 @@ class NumberController extends AbstractController implements INumberController
     #[OA\Response(
         response: 200,
         description: 'Create airtime account',
-        content: new Model(type: AccountAirtimeResponse::class)
+//        content: new Model(type: AccountAirtimeResponse::class)
     )]
     public function createAccount(#[MapRequestPayload] AccountCreateDto $createDto): AccountAirtimeResponse
     {
@@ -127,7 +127,7 @@ class NumberController extends AbstractController implements INumberController
     #[OA\Response(
         response: 200,
         description: 'Pay data',
-        content:  new Model(type: Command::class)
+//        content:  new Model(type: Command::class)
     )]
     public function payData(Request $request): \App\Response\Command
     {
@@ -144,7 +144,7 @@ class NumberController extends AbstractController implements INumberController
     #[OA\Response(
         response: 200,
         description: 'Get transaction status',
-        content:  new Model(type: Command::class)
+//        content:  new Model(type: Command::class)
     )]
     public function transactionStatus(Request $request,\App\Dto\Command $payAirtimeDto): \App\Response\Command
     {
@@ -166,7 +166,7 @@ class NumberController extends AbstractController implements INumberController
     #[OA\Response(
         response: 200,
         description: 'Check balance',
-        content: new Model(type: Command::class)
+//        content: new Model(type: Command::class)
     )]
     public function checkBalance(Request $request): \App\Response\Command
     {

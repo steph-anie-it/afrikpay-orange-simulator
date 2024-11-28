@@ -398,6 +398,7 @@ class MoneyServiceImpl implements MoneyService
         $payMoneyDataResultDto->channelUserMsisdn = $transaction->getAccountnumber();
         $payMoneyDataResultDto->status = $transaction->getStatus();
         $payMoneyDataResultDto->payToken = $transaction->getPaytoken();
+        $payMoneyDataResultDto->notifUrl = $transaction->getNotifUrl();
         $payMoneyDataResultDto->$inittxnstatus = "200";
         $payMoneyDataResultDto->$txnid = $transaction->getTxnid();
         $payMoneyDataResultDto->$confirmtxnmessage = 'Paiement success';

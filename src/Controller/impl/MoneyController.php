@@ -201,7 +201,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     }
 
 
-    #[Route(self::CASHIN_STATUS, name: self::CASHIN_STATUS_NAME, methods: [self::GET_METHOD])]
+    #[Route(self::CASHIN_STATUS, name: self::CASHIN_STATUS_NAME, methods: [self::POST_METHOD])]
     #[OA\Response(
         response: 200,
         description: 'Get paytoken status',
@@ -246,13 +246,15 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
         );
     }
 
+    #[Route(self::MONEY_ACCOUNT_LOGIN_URI, name: self::MONEY_ACCOUNT_LOGIN_NAME, methods: [self::GET_METHOD])]
+
     #[OA\RequestBody(new Model(type: AccountMoneyCreateDto::class))]
     #[OA\Response(
         response: 200,
         description: 'Login an account',
         content: new OA\JsonContent(ref: new Model(type: AccountMoneyResponse::class))
     )]
-    public function loginMoneyAccount(AccountMoneyCreateDto $accountMoneyCreateDto): AccountMoneyResponse
+    public function loginMoneyAccount(#[MapRequestPayload] AccountMoneyCreateDto $accountMoneyCreateDto): AccountMoneyResponse
     {
         return new AccountMoneyResponse(
             $this->moneyService->loginMoneyAccount(

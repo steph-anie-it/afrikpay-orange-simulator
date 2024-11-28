@@ -28,6 +28,8 @@ interface MoneyController
 {
     public const MONEY_TOKEN_URI = 'token';
     public const MONEY_TOKEN_NAME = 'token';
+    public const MONEY_ACCOUNT_LOGIN_URI = '/money/account/login';
+    public const MONEY_ACCOUNT_LOGIN_NAME = 'money_account_login_name';
     public const MONEY_ACCOUNT_CASHOUT_CREATE_URI = '/money/account/cashout/create';
     public const MONEY_ACCOUNT_CASHIN_CREATE_URI = '/money/account/cashin/create';
     public const MONEY_ACCOUNT_MP_CREATE_URI = '/money/account/mp/create';

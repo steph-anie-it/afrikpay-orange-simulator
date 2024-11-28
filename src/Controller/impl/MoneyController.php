@@ -76,6 +76,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     }
 
     #[Route(self::CASHOUT_PAY, name: self::CASHOUT_PAY_NAME, methods: [self::POST_METHOD])]
+    #[OA\RequestBody(new Model(type: PayMoneyDto::class))]
     #[OA\Response(
         response: 200,
         description: 'Pay cashout',
@@ -92,6 +93,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     }
 
     #[Route(self::CASHIN_PAY, name: self::CASHIN_PAY_NAME, methods: [self::POST_METHOD])]
+    #[OA\RequestBody(new Model(type: PayMoneyDto::class))]
     #[OA\Response(
         response: 200,
         description: 'Pay cashin',
@@ -108,6 +110,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     }
 
     #[Route(self::MP_PAY, name: self::MP_PAY_NAME, methods: [self::POST_METHOD])]
+    #[OA\RequestBody(new Model(type: PayMoneyDto::class))]
     #[OA\Response(
         response: 200,
         description: 'Pay merchant payment',
@@ -124,6 +127,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     }
 
     #[Route(self::MONEY_ACCOUNT_CASHIN_CREATE_URI, name: self::MONEY_ACCOUNT_CASHIN_CREATE_NAME, methods: [self::POST_METHOD])]
+    #[OA\RequestBody(new Model(type: AccountMoneyCreateDto::class))]
     #[OA\Response(
         response: 200,
         description: 'Create a cashin account number',
@@ -144,6 +148,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
 
 
     #[Route(self::MONEY_ACCOUNT_MP_CREATE_URI, name: self::MONEY_ACCOUNT_MP_CREATE_NAME, methods: [self::POST_METHOD])]
+    #[OA\RequestBody(new Model(type: AccountMoneyCreateDto::class))]
     #[OA\Response(
         response: 200,
         description: 'Create a cashout account number',
@@ -161,6 +166,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     }
 
     #[Route(self::MONEY_ACCOUNT_CASHOUT_CREATE_URI, name: self::MONEY_ACCOUNT_CASHOUT_CREATE_NAME, methods: [self::POST_METHOD])]
+    #[OA\RequestBody(new Model(type: AccountMoneyCreateDto::class))]
     #[OA\Response(
         response: 200,
         description: 'Create a mp account number',
@@ -178,6 +184,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     }
 
     #[Route(self::MONEY_TOKEN_URI, name: self::MONEY_TOKEN_NAME,defaults: ["_format"=>"application/x-www-form-urlencoded"], methods: [self::POST_METHOD])]
+    #[OA\RequestBody(new Model(type: TokenCreateDto::class))]
     #[OA\Response(
         response: 200,
         description: 'Generate an orange money (cashin, cashout, merchant payment) token number',

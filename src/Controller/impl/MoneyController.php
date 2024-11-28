@@ -199,4 +199,50 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
             )
         );
     }
+
+
+    #[Route(self::CASHIN_STATUS, name: self::CASHIN_STATUS_NAME, methods: [self::GET_METHOD])]
+    #[OA\Response(
+        response: 200,
+        description: 'Get paytoken status',
+        content: new Model(type: MoneyPayResponse::class)
+    )]
+    #[Security(name: self::X_AUTH_TOKEN)]
+    #[Security(name: self::WSO2_Authorization)]
+    public function getStatusCashin(#[OA\QueryParameter] ?string $payToken = null): MoneyPayResponse
+    {
+        return new MoneyPayResponse(
+            $this->moneyService->getStatus(self::CASHIN, $payToken)
+        );
+    }
+
+    #[Route(self::CASHOUT_STATUS, name: self::CASHOUT_STATUS_NAME, methods: [self::GET_METHOD])]
+    #[OA\Response(
+        response: 200,
+        description: 'Get paytoken status',
+        content: new Model(type: MoneyPayResponse::class)
+    )]
+    #[Security(name: self::X_AUTH_TOKEN)]
+    #[Security(name: self::WSO2_Authorization)]
+    public function getStatusCashout(#[OA\QueryParameter] ?string $payToken = null): MoneyPayResponse
+    {
+        return new MoneyPayResponse(
+            $this->moneyService->getStatus(self::CASHOUT, $payToken)
+        );    }
+
+
+    #[Route(self::MP_STATUS, name: self::MP_STATUS_NAME, methods: [self::GET_METHOD])]
+    #[OA\Response(
+        response: 200,
+        description: 'Get paytoken status',
+        content: new Model(type: MoneyPayResponse::class)
+    )]
+    #[Security(name: self::X_AUTH_TOKEN)]
+    #[Security(name: self::WSO2_Authorization)]
+    public function getStatusMp(#[OA\QueryParameter] ?string $payToken = null): MoneyPayResponse
+    {
+        return new MoneyPayResponse(
+            $this->moneyService->getStatus(self::MP, $payToken)
+        );
+    }
 }

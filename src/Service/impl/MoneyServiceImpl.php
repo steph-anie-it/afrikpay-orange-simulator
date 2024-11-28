@@ -21,6 +21,7 @@ use App\Exception\GeneralException;
 use App\Exception\InvalidCredentialsException;
 use App\Exception\InvalidMoneyCredentialsException;
 use App\Exception\MoneyPayException;
+use App\Exception\MoneyStatusException;
 use App\Model\ResponseStatus;
 use App\Repository\AccountRepository;
 use App\Repository\NumberRepository;
@@ -218,31 +219,31 @@ class MoneyServiceImpl implements MoneyService
     public function pay(PayMoneyDto $payMoneyDto,?string $key = null): PayMoneyResultDto
     {
         $this->checkCredentials();
-        $payMoneyResultDto = $this->utilService->map($payMoneyDto,PayMoneyDataResultDto::class);
+        $payMoneyDataResultDto = $this->utilService->map($payMoneyDto,PayMoneyDataResultDto::class);
 
         if (!filter_var($payMoneyDto->notifUrl, FILTER_VALIDATE_URL)){
             throw new MoneyPayException(
                 exceptionValues: ExceptionList::INVALID_URL,
-                payMoneyDataResultDto: $payMoneyResultDto
+                payMoneyDataResultDto: $payMoneyDataResultDto
             );
         }
 
-        $payMoneyResultDto->createtime = time();
+        $payMoneyDataResultDto->createtime = time();
         $orderId = $payMoneyDto->orderId;
 
         if (!$orderId){
             throw new MoneyPayException(
                 exceptionValues: ExceptionList::INVALID_ORDER_ID,
-                payMoneyDataResultDto: $payMoneyResultDto
+                payMoneyDataResultDto: $payMoneyDataResultDto
             );
         }
 
-        $channel = $payMoneyResultDto->channelUserMsisdn;
+        $channel = $payMoneyDataResultDto->channelUserMsisdn;
 
         if (!$channel){
             throw new MoneyPayException(
                 exceptionValues: ExceptionList::INVALID_CHANNEL_NUMBER,
-                payMoneyDataResultDto: $payMoneyResultDto
+                payMoneyDataResultDto: $payMoneyDataResultDto
             );
         }
 
@@ -251,14 +252,14 @@ class MoneyServiceImpl implements MoneyService
         if (!$account){
             throw new MoneyPayException(
                 exceptionValues: ExceptionList::ACCOUNT_NOT_FOUND,
-                payMoneyDataResultDto: $payMoneyResultDto
+                payMoneyDataResultDto: $payMoneyDataResultDto
             );
         }
 
         if ($account->getOperationtype() != $key){
             throw new MoneyPayException(
                 exceptionValues: ExceptionList::INVALID_ACCOUNT_CHANNEL_JWT_TOKEN,
-                payMoneyDataResultDto: $payMoneyResultDto
+                payMoneyDataResultDto: $payMoneyDataResultDto
             );
         }
 
@@ -266,7 +267,7 @@ class MoneyServiceImpl implements MoneyService
         if ($account->getPin() != $payMoneyDto->pin){
             throw new MoneyPayException(
                 exceptionValues: ExceptionList::INVALID_PIN_NUMBER,
-                payMoneyDataResultDto: $payMoneyResultDto
+                payMoneyDataResultDto: $payMoneyDataResultDto
             );
         }
 
@@ -274,7 +275,7 @@ class MoneyServiceImpl implements MoneyService
         if (!$msisdn){
             throw new MoneyPayException(
                 exceptionValues: ExceptionList::INVALID_SUBSCRIBER_NUMBER,
-                payMoneyDataResultDto: $payMoneyResultDto
+                payMoneyDataResultDto: $payMoneyDataResultDto
             );
         }
 
@@ -282,14 +283,14 @@ class MoneyServiceImpl implements MoneyService
         if (!$number){
             throw new MoneyPayException(
                 exceptionValues: ExceptionList::UNKNOWN_MONEY_NUMBER,
-                payMoneyDataResultDto: $payMoneyResultDto
+                payMoneyDataResultDto: $payMoneyDataResultDto
             );
         }
 
         if (!$number->getIsMoney()){
             throw new MoneyPayException(
                 exceptionValues: ExceptionList::INVALID_MONEY_NUMBER,
-                payMoneyDataResultDto: $payMoneyResultDto
+                payMoneyDataResultDto: $payMoneyDataResultDto
             );
         }
 
@@ -301,7 +302,7 @@ class MoneyServiceImpl implements MoneyService
         if (!$transaction){
             throw new MoneyPayException(
                 exceptionValues: ExceptionList::INVALID_PAY_TOKEN_NUMBER,
-                payMoneyDataResultDto: $payMoneyResultDto
+                payMoneyDataResultDto: $payMoneyDataResultDto
             );
         }
 
@@ -309,7 +310,7 @@ class MoneyServiceImpl implements MoneyService
         if ($transaction->getStatus() != Transaction::PENDING){
             throw new MoneyPayException(
                 exceptionValues: ExceptionList::INVALID_PAY_TOKEN_TRANSACTION_NUMBER,
-                payMoneyDataResultDto: $payMoneyResultDto
+                payMoneyDataResultDto: $payMoneyDataResultDto
             );
         }
 
@@ -318,7 +319,7 @@ class MoneyServiceImpl implements MoneyService
         }catch (GeneralException $generalException){
             throw new MoneyPayException(
                 exceptionValues: ExceptionList::INVALID_AMOUNT,
-                payMoneyDataResultDto: $payMoneyResultDto
+                payMoneyDataResultDto: $payMoneyDataResultDto
             );
         }
 
@@ -330,7 +331,7 @@ class MoneyServiceImpl implements MoneyService
             if ($amount > $balance){
                 throw new MoneyPayException(
                     exceptionValues: ExceptionList::NOT_ENOUGH_FUND,
-                    payMoneyDataResultDto: $payMoneyResultDto
+                    payMoneyDataResultDto: $payMoneyDataResultDto
                 );
             }
             $newBalance = $balance - $amount ;
@@ -342,18 +343,52 @@ class MoneyServiceImpl implements MoneyService
 
         $transaction->setAmount($amount);
         $transaction->setStatus(Transaction::SUCCESS);
+        $txnidValue = $this->utilService->generateTransactionId();
+        $transaction->setTxnid($txnidValue);
+        $transaction->setBalance($account->getBalance());
+        $transaction->setPin($account->getPin());
+        $transaction->setAccountnumber($account->getMsisdn());
+        $transaction = $this->transactionRepository->save($transaction);
+        $payMoneyDataResultDto->status = $transaction->getStatus();
+        /*$payMoneyResultDto->$inittxnstatus = "200";
+        $payMoneyResultDto->$txnid = $transaction->getTxnid();
+        $payMoneyResultDto->$confirmtxnmessage = 'Paiement success';
+        $payMoneyResultDto->$inittxnmessage = 'Paiement success';
+        $payMoneyResultDto->$confirmtxnstatus = "200";
+        $payMoneyResultDto->$txnmode = 'SUCCESS';*/
+        $payMoneyDataResultDto = $this->buildPayMoneyResultDto($transaction,$key,$payMoneyDataResultDto);
+//        $result = new PayMoneyResultDto(
+//            $payMoneyDataResultDto,
+//            sprintf(self::PAIEMENT_MESSAGE_TEMPLATE,
+//                $key,
+//                $txnidValue,
+//                $transaction->getAmount(),
+//                $account->getMsisdn(),
+//                $number->getMsisdn(),
+//                $payMoneyDto->payToken
+//            )
+//        );
+
+        try{
+            $this->httpService->callBack($payMoneyDataResultDto->data);
+        }catch (\Throwable $throwable){
+
+        }
+
+        return $payMoneyDataResultDto;
+    }
+
+
+    public function buildPayMoneyResultDto(Transaction $transaction, string $key, ?PayMoneyDataResultDto $payMoneyDataResultDto = null): PayMoneyResultDto
+    {
+        $payMoneyResultDto = new PayMoneyDataResultDto();
         $inittxnstatus = 'inittxnstatus';
         $inittxnmessage = 'inittxnmessage';
         $txnid = 'txnid';
         $confirmtxnmessage = 'confirmtxnmessage';
         $confirmtxnstatus = 'confirmtxnstatus';
         $txnmode = 'txnmode';
-        $txnidValue = $this->utilService->generateTransactionId();
-        $transaction->setTxnid($txnidValue);
-        $transaction->setBalance($account->getBalance());
-        $transaction->setPin($account->getPin());
 
-        $this->transactionRepository->save($transaction);
         $payMoneyResultDto->status = $transaction->getStatus();
         $payMoneyResultDto->$inittxnstatus = "200";
         $payMoneyResultDto->$txnid = $transaction->getTxnid();
@@ -361,27 +396,18 @@ class MoneyServiceImpl implements MoneyService
         $payMoneyResultDto->$inittxnmessage = 'Paiement success';
         $payMoneyResultDto->$confirmtxnstatus = "200";
         $payMoneyResultDto->$txnmode = 'SUCCESS';
-        $result = new PayMoneyResultDto(
+        return new PayMoneyResultDto(
             $payMoneyResultDto,
             sprintf(self::PAIEMENT_MESSAGE_TEMPLATE,
                 $key,
-                $txnidValue,
-                $payMoneyDto->amount,
-                $account->getMsisdn(),
-                $number->getMsisdn(),
-                $payMoneyDto->payToken
+                $transaction->getTxnid(),
+                $transaction->getAmount(),
+                $transaction->getMsisdn(),
+                $transaction->getAccountnumber(),
+                $transaction->getPaytoken()
             )
         );
-
-        try{
-            $this->httpService->callBack($result->data);
-        }catch (\Throwable $throwable){
-
-        }
-
-        return $result;
     }
-
 
     public function getFees(Account $account) : float
     {
@@ -469,5 +495,29 @@ class MoneyServiceImpl implements MoneyService
             expires_in: $tokenDuration
         );
     }
+
+    public function getStatus(string $key ,?string $payToken = null): PayMoneyResultDto
+    {
+        $this->checkCredentials();
+        if (!$payToken){
+            throw new MoneyStatusException(
+                exceptionValues: ExceptionList::PAY_TOKEN_NOT_PROVIDED
+            );
+        }
+        $transaction = $this->transactionRepository->findOneBy(
+            ['paytoken' => $payToken,
+                'moneytype' => $key
+            ]);
+
+        if (!$transaction){
+            throw new MoneyStatusException(
+                exceptionValues: ExceptionList::PAY_TOKEN_NOT_FOUND
+            );
+        }
+
+        return $this->buildPayMoneyResultDto($transaction,$key);
+    }
+
+
 
 }

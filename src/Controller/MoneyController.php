@@ -43,19 +43,24 @@ interface MoneyController
     public const CASHIN_INIT = '/cashin/init';
 
     public const CASHIN_PAY = '/cashin/pay';
+    public const CASHIN_STATUS = '/cashin/status';
     public const CASHIN_INIT_NAME = 'cashin_init_name';
 
     public const CASHIN_PAY_NAME = 'cashin_pay_name';
+    public const CASHIN_STATUS_NAME = 'cashin_status_name';
     public const MP_INIT = '/mp/init';
     public const MP_INIT_NAME = 'mp_init_name';
+    public const MP_STATUS_NAME = 'mp_status_name';
 
     public const CASHOUT_INIT = '/cashout/init';
     public const CASHOUT_INIT_NAME = 'cashout_init_name';
 
     public const CASHOUT_PAY = '/cashout/pay';
     public const CASHOUT_PAY_NAME = 'cashout_pay_name';
+    public const CASHOUT_STATUS_NAME = 'cashout_status_name';
+    public const CASHOUT_STATUS = '/cashout/status';
     public const MP_PAY = '/mp/pay';
-
+    public const MP_STATUS = '/mp/status';
     public const MP_PAY_NAME = 'mp_pay_name';
 
 
@@ -71,6 +76,10 @@ interface MoneyController
     public function payMoneyCashout(PayMoneyDto $payMoneyDto): MoneyPayResponse;
     public function payMoneyCashin(PayMoneyDto $payMoneyDto): MoneyPayResponse;
     public function payMoneyMp(PayMoneyDto $payMoneyDto): MoneyPayResponse;
+
+    public function getStatusMp(?string $payToken = null): MoneyPayResponse;
+    public function getStatusCashin(?string $payToken = null): MoneyPayResponse;
+    public function getStatusCashout(?string $payToken = null): MoneyPayResponse;
 
     public function createMpAccount(AccountMoneyCreateDto $accountMoneyCreateDto): AccountMoneyResponse;
     public function createCashoutAccount(AccountMoneyCreateDto $accountMoneyCreateDto): AccountMoneyResponse;

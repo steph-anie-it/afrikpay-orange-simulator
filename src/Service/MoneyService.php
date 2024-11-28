@@ -24,6 +24,8 @@ interface MoneyService
   public function init(?string $key = null) :InitMoneyResultDto;
   public function pay(PayMoneyDto $payMoneyDto, ?string $key = null):PayMoneyResultDto;
 
+  public function getStatus(string $key ,?string $payToken = null): PayMoneyResultDto;
+
   public function generatePayToken(?string $key) : PayTokenDto;
 
   public function generateToken(TokenCreateDto $tokenCreateDto) : TokenDto;

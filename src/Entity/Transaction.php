@@ -120,6 +120,10 @@ class Transaction
     #[ORM\Column(length: 255,nullable: true)]
     private ?string $status;
 
+
+    #[ORM\Column(length: 255,nullable: true)]
+    private ?string $accountnumber;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -478,4 +482,20 @@ class Transaction
         $this->moneytype = $moneytype;
     }
 
+
+    /**
+     * @return string|null
+     */
+    public function getAccountnumber(): ?string
+    {
+        return $this->accountnumber;
+    }
+
+    /**
+     * @param string|null $accountnumber
+     */
+    public function setAccountnumber(?string $accountnumber): void
+    {
+        $this->accountnumber = $accountnumber;
+    }
 }

@@ -5,9 +5,11 @@ namespace App\Listener;
 use App\Dto\PayMoneyDataResultDto;
 use App\Dto\PayMoneyResultDto;
 use App\Dto\TokenExceptionDto;
+use App\Exception\ExceptionList;
 use App\Exception\GeneralException;
 use App\Exception\InvalidMoneyCredentialsException;
 use App\Exception\MoneyPayException;
+use App\Exception\MoneyStatusException;
 use App\Response\Command;
 use App\Response\MoneyPayResponse;
 use App\Response\TokenResponse;
@@ -96,6 +98,18 @@ class ErrorListener implements EventSubscriberInterface
 
             $response = new TokenResponse($tokenErrorDto);
             $response->setStatusCode(401);
+        }else if ($throwable instanceof MoneyStatusException){
+            $response = $exceptionEvent->getResponse();
+            if (
+                $throwable->messageCode == ExceptionList::PAY_TOKEN_NOT_PROVIDED[ExceptionList::CODE]
+            ){
+                $response->setStatusCode(400);
+            }
+            if (
+                $throwable->messageCode == ExceptionList::PAY_TOKEN_NOT_FOUND[ExceptionList::CODE]
+            ){
+                $response->setStatusCode(404);
+            }
         }
         else{
             $exceptionEvent->allowCustomResponseCode();

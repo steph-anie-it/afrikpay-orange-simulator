@@ -343,7 +343,7 @@ class MoneyServiceImpl implements MoneyService
         $transaction->setMsisdn($payMoneyDto->subscriberMsisdn);
         $transaction->setNotifUrl($payMoneyDto->notifUrl);
         $transaction->setAmount($amount);
-        $transaction->setStatus(Transaction::SUCCESS);
+        $transaction->setStatus('SUCCESSFULL');
         $txnidValue = $this->utilService->generateTransactionId();
         $transaction->setTxnid($txnidValue);
         $transaction->setBalance($account->getBalance());

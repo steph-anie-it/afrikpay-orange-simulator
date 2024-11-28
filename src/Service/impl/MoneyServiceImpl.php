@@ -401,7 +401,7 @@ class MoneyServiceImpl implements MoneyService
         $payMoneyDataResultDto->$confirmtxnstatus = "200";
         $payMoneyDataResultDto->$txnmode = 'SUCCESS';
         return new PayMoneyResultDto(
-            $payMoneyResultDto,
+            $payMoneyDataResultDto,
             sprintf(self::PAIEMENT_MESSAGE_TEMPLATE,
                 $key,
                 $transaction->getTxnid(),

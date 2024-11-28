@@ -15,7 +15,7 @@ monolog:
             type: symfony_mailer
             from_email: 'Orange Simulator <noreply@afrikpay.com>'
             to_email:   ['willy.damtchou@afrikpay.com', 'a.noubissi@afrikpay.com', 't.njipmo@it.afrikpay.com', 'luc.tandoum@it.afrikpay.com', 'p.alhadoum@it.afrikpay.com', 'c.ngaffag@it.afrikpay.com']
-            subject: 'Express Union Simulator Bug! %%message%%'
+            subject: 'Orange Simulator Bug! %%message%%'
             level: critical
             formatter: monolog.formatter.html
             content_type: text/html

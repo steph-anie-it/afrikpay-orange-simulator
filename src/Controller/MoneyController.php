@@ -62,6 +62,9 @@ interface MoneyController
     public const POST_METHOD = 'POST';
     public const GET_METHOD = 'GET';
 
+    public const  X_AUTH_TOKEN = 'X-AUTH-TOKEN';
+    public const  WSO2_Authorization = 'WSO2-Authorization';
+
     public function initCashout(): MoneyInitResponse;
     public function initCashin(): MoneyInitResponse;
     public function initMp(): MoneyInitResponse;

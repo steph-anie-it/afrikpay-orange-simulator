@@ -76,10 +76,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     #[OA\Response(
         response: 200,
         description: 'Pay cashout',
-        content: new OA\JsonContent(
-            type: 'array',
-            items: new OA\Items(ref: new Model(type: PayMoneyDto::class, groups: ['full']))
-        )
+        content: new Model(type: PayMoneyDto::class)
     )]
     #[Security(name: self::X_AUTH_TOKEN)]
     #[Security(name: self::WSO2_Authorization)]
@@ -95,10 +92,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     #[OA\Response(
         response: 200,
         description: 'Pay cashin',
-        content: new OA\JsonContent(
-            type: 'array',
-            items: new OA\Items(ref: new Model(type: PayMoneyDto::class, groups: ['full']))
-        )
+        content: new Model(type: PayMoneyDto::class)
     )]
     #[Security(name: self::X_AUTH_TOKEN)]
     #[Security(name: self::WSO2_Authorization)]
@@ -114,10 +108,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     #[OA\Response(
         response: 200,
         description: 'Pay merchant payment',
-        content: new OA\JsonContent(
-            type: 'array',
-            items: new OA\Items(ref: new Model(type: PayMoneyDto::class, groups: ['full']))
-        )
+        content: new Model(type: PayMoneyDto::class)
     )]
     #[Security(name: self::X_AUTH_TOKEN)]
     #[Security(name: self::WSO2_Authorization)]
@@ -133,10 +124,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     #[OA\Response(
         response: 200,
         description: 'Create a cashin account number',
-        content: new OA\JsonContent(
-            type: 'array',
-            items: new OA\Items(ref: new Model(type: AccountMoneyCreateDto::class, groups: ['full']))
-        )
+        content: new Model(type: PayMoneyDto::class)
     )]
     public function createCashinAccount(#[MapRequestPayload] AccountMoneyCreateDto $accountMoneyCreateDto): AccountMoneyResponse
     {
@@ -156,10 +144,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     #[OA\Response(
         response: 200,
         description: 'Create a cashout account number',
-        content: new OA\JsonContent(
-            type: 'array',
-            items: new OA\Items(ref: new Model(type: AccountMoneyCreateDto::class, groups: ['full']))
-        )
+        content: new Model(type: AccountMoneyCreateDto::class)
     )]
     public function createCashoutAccount(#[MapRequestPayload] AccountMoneyCreateDto $accountMoneyCreateDto): AccountMoneyResponse
     {
@@ -176,10 +161,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     #[OA\Response(
         response: 200,
         description: 'Create a mp account number',
-        content: new OA\JsonContent(
-            type: 'array',
-            items: new OA\Items(ref: new Model(type: AccountMoneyCreateDto::class, groups: ['full']))
-        )
+        content: new Model(type: AccountMoneyCreateDto::class)
     )]
     public function createMpAccount(#[MapRequestPayload] AccountMoneyCreateDto $accountMoneyCreateDto): AccountMoneyResponse
     {
@@ -196,10 +178,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     #[OA\Response(
         response: 200,
         description: 'Generate an orange money (cashin, cashout, merchant payment) token number',
-        content: new OA\JsonContent(
-            type: 'array',
-            items: new OA\Items(ref: new Model(type: TokenCreateDto::class, groups: ['full']))
-        )
+        content: new Model(type: TokenCreateDto::class)
     )]
     #[Security(name: 'Basic')]
     public function generateToken(#[MapRequestPayload] TokenCreateDto $tokenCreateDto): TokenResponse

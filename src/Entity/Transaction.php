@@ -124,6 +124,8 @@ class Transaction
     #[ORM\Column(length: 255,nullable: true)]
     private ?string $accountnumber;
 
+    #[ORM\Column(length: 255,nullable: true)]
+    private ?string $notifUrl;
     public function getId(): ?int
     {
         return $this->id;
@@ -497,5 +499,21 @@ class Transaction
     public function setAccountnumber(?string $accountnumber): void
     {
         $this->accountnumber = $accountnumber;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getNotifUrl(): ?string
+    {
+        return $this->notifUrl;
+    }
+
+    /**
+     * @param string|null $notifUrl
+     */
+    public function setNotifUrl(?string $notifUrl): void
+    {
+        $this->notifUrl = $notifUrl;
     }
 }

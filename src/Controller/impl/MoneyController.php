@@ -4,6 +4,7 @@ namespace App\Controller\impl;
 
 use App\Dto\AccountCreateDto;
 use App\Dto\AccountMoneyCreateDto;
+use App\Dto\AccountMoneyCreateResultDto;
 use App\Dto\PayMoneyDto;
 use App\Dto\TokenCreateDto;
 use App\Response\AccountMoneyResponse;
@@ -12,11 +13,13 @@ use App\Response\MoneyPayResponse;
 use App\Response\TokenResponse;
 use App\Service\MoneyService;
 use Nelmio\ApiDocBundle\Annotation\Security;
+use OpenApi\Annotations\JsonContent;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Annotation\Route;
 use OpenApi\Attributes as OA;
-use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Attribute\Model;
+
 
 class MoneyController extends AbstractController implements \App\Controller\MoneyController
 {
@@ -76,7 +79,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     }
 
     #[Route(self::CASHOUT_PAY, name: self::CASHOUT_PAY_NAME, methods: [self::POST_METHOD])]
-//    #[OA\RequestBody(new Model(type: PayMoneyDto::class))]
+    #[OA\RequestBody(ref: PayMoneyDto::class)]
     #[OA\Response(
         response: 200,
         description: 'Pay cashout',
@@ -127,12 +130,13 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     }
 
     #[Route(self::MONEY_ACCOUNT_CASHIN_CREATE_URI, name: self::MONEY_ACCOUNT_CASHIN_CREATE_NAME, methods: [self::POST_METHOD])]
-//    #[OA\RequestBody(new Model(type: AccountMoneyCreateDto::class))]
+    #[OA\RequestBody(ref: AccountMoneyCreateDto::class)]
     #[OA\Response(
+        ref: AccountMoneyResponse::class,
         response: 200,
-        description: 'Create a cashin account number',
-//        content:  new Model(type: AccountMoneyResponse::class)
-    )]
+        description: 'Create a cashin account number'
+        )
+    ]
     public function createCashinAccount(#[MapRequestPayload] AccountMoneyCreateDto $accountMoneyCreateDto): AccountMoneyResponse
     {
         return new AccountMoneyResponse(
@@ -201,7 +205,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     }
 
 
-    #[Route(self::CASHIN_STATUS, name: self::CASHIN_STATUS_NAME, methods: [self::POST_METHOD])]
+    #[Route(self::CASHIN_STATUS, name: self::CASHIN_STATUS_NAME, methods: [self::GET_METHOD])]
     #[OA\Response(
         response: 200,
         description: 'Get paytoken status',
@@ -246,11 +250,12 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
         );
     }
 
-    #[Route(self::MONEY_ACCOUNT_LOGIN_URI, name: self::MONEY_ACCOUNT_LOGIN_NAME, methods: [self::GET_METHOD])]
+    #[Route(self::MONEY_ACCOUNT_LOGIN_URI, name: self::MONEY_ACCOUNT_LOGIN_NAME, methods: [self::POST_METHOD])]
 //    #[OA\RequestBody(new Model(type: AccountMoneyCreateDto::class))]
     #[OA\Response(
         response: 200,
-        description: 'Login an account',
+        description: 'Login an account'
+
 //        content: new Model(type: AccountMoneyResponse::class)
     )]
     public function loginMoneyAccount(#[MapRequestPayload] AccountMoneyCreateDto $accountMoneyCreateDto): AccountMoneyResponse

@@ -11,4 +11,5 @@ class AccountMoneyCreateResultDto
 
     public ?string $pin = null;
     public ?string $subscriptionkey = null;
+
 }

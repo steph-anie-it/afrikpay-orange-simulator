@@ -28,6 +28,8 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use OpenApi\Attributes as OA;
+use Nelmio\ApiDocBundle\Annotation\Model;
 
 class NumberController extends AbstractController implements INumberController
 {
@@ -49,6 +51,11 @@ class NumberController extends AbstractController implements INumberController
      * @throws \ReflectionException
      */
     #[Route(self::API_EXECUTE_COMMAND_URI, name: self::API_EXECUTE_COMMAND_NAME, methods: [self::API_EXECUTE_COMMAND_METHOD])]
+    #[OA\Response(
+        response: 200,
+        description: 'Execute command',
+        content: new OA\XmlContent(ref: new Model(type: Command::class))
+    )]
     public function executeCommand(Request $request, \App\Dto\Command $payAirtimeDto): \App\Response\Command
     {
        return new \App\Response\Command(
@@ -61,6 +68,11 @@ class NumberController extends AbstractController implements INumberController
     }
 
     #[Route(self::PAY_AIRTIME_URI, name: self::PAY_AIRTIME_NAME, defaults: ["_format"=>"xml/command.dtd"], methods: [self::PAY_AIRTIME_METHOD])]
+    #[OA\Response(
+        response: 200,
+        description: 'Pay airtime',
+        content: new OA\XmlContent(ref: new Model(type: Command::class))
+    )]
     public function payAirtime(Request $request,   #[MapRequestPayload] Command $payAirtimeDto): \App\Response\Command
     {
         return new \App\Response\Command(
@@ -71,6 +83,11 @@ class NumberController extends AbstractController implements INumberController
 
 
     #[Route(self::PAY_NUMBER_AIRTIME_URI, name: self::PAY_NUMBER_AIRTIME_NAME, defaults: ["_format"=>"xml/command.dtd"], methods: [self::PAY_NUMBER_AIRTIME_METHOD])]
+    #[OA\Response(
+        response: 200,
+        description: 'Execute command',
+        content: new OA\XmlContent(ref: new Model(type: Command::class))
+    )]
     public function payNumberAirtime(Request $request): \App\Response\Command
     {
         return new \App\Response\Command(
@@ -88,6 +105,11 @@ class NumberController extends AbstractController implements INumberController
 //    }
 
     #[Route(self::ACCOUNT_AIRTIME_URI, name: self::ACCOUNT_AIRTIME_NAME, methods: [self::ACCOUNT_AIRTIME_METHOD])]
+    #[OA\Response(
+        response: 200,
+        description: 'Create airtime account',
+        content: new OA\JsonContent(ref: new Model(type: AccountAirtimeResponse::class))
+    )]
     public function createAccount(#[MapRequestPayload] AccountCreateDto $createDto): AccountAirtimeResponse
     {
       return new AccountAirtimeResponse(
@@ -97,6 +119,11 @@ class NumberController extends AbstractController implements INumberController
 
 
     #[Route(self::PAY_DATA_URI, name: self::PAY_DATA_NAME, methods: [self::PAY_DATA_METHOD])]
+    #[OA\Response(
+        response: 200,
+        description: 'Pay data',
+        content: new OA\XmlContent(ref: new Model(type: Command::class))
+    )]
     public function payData(Request $request): \App\Response\Command
     {
         return new \App\Response\Command(
@@ -109,6 +136,11 @@ class NumberController extends AbstractController implements INumberController
      * @throws \ReflectionException
      */
     #[Route(self::TRANSACTION_STATUS_URI, name: self::TRANSACTION_STATUS_NAME, methods: [self::TRANSACTION_STATUS_METHOD])]
+    #[OA\Response(
+        response: 200,
+        description: 'Get transaction status',
+        content: new OA\XmlContent(ref: new Model(type: Command::class))
+    )]
     public function transactionStatus(Request $request,\App\Dto\Command $payAirtimeDto): \App\Response\Command
     {
         return new \App\Response\Command(
@@ -126,6 +158,11 @@ class NumberController extends AbstractController implements INumberController
 
 
     #[Route(self::API_BALANCE_URI, name: self::API_BALANCE_NAME, methods: [self::API_BALANCE_METHOD])]
+    #[OA\Response(
+        response: 200,
+        description: 'Check balance',
+        content: new OA\XmlContent(ref: new Model(type: Command::class))
+    )]
     public function checkBalance(Request $request): \App\Response\Command
     {
         return new \App\Response\Command(

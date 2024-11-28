@@ -9,7 +9,7 @@ class TokenDto
        public ?string $refresh_token = null,
        public ?string $scope = "default",
        public ?string $token_type = "Bearer",
-       public ?int $expires_in = 3600
+       public ?int $expires_in = 36000
    )
    {
 

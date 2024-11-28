@@ -12,11 +12,11 @@ use App\Response\MoneyPayResponse;
 use App\Response\TokenResponse;
 use App\Service\MoneyService;
 use Nelmio\ApiDocBundle\Annotation\Security;
-use Nelmio\ApiDocBundle\Model\Model;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Annotation\Route;
 use OpenApi\Attributes as OA;
+use Nelmio\ApiDocBundle\Annotation\Model;
 
 class MoneyController extends AbstractController implements \App\Controller\MoneyController
 {

@@ -315,7 +315,7 @@ class MoneyServiceImpl implements MoneyService
         }
 
         try{
-            $this->checkAmount($payMoneyDto->amount);
+            $this->checkAmount(floatval($payMoneyDto->amount));
         }catch (GeneralException $generalException){
             throw new MoneyPayException(
                 exceptionValues: ExceptionList::INVALID_AMOUNT,
@@ -323,7 +323,7 @@ class MoneyServiceImpl implements MoneyService
             );
         }
 
-        $amount = $payMoneyDto->amount + $this->getFees($account);
+        $amount = floatval($payMoneyDto->amount) + $this->getFees($account);
 
         $balance =  $account->getBalance();
         if ($transaction->getMoneytype() == MoneyController::CASHOUT)

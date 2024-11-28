@@ -10,7 +10,7 @@ class PayMoneyDto
       public ?string $subscriberMsisdn= null,
       public ?string $pin = null,
       public ?string $orderId = null,
-      public ?float $amount = null,
+      public mixed $amount = null,
       public ?string $channelUserMsisdn = null,
       public ?string $notifUrl = null,
   )

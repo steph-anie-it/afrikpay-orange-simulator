@@ -228,7 +228,7 @@ class MoneyServiceImpl implements MoneyService
             );
         }
 
-        $payMoneyDataResultDto->createtime = time();
+
         $orderId = $payMoneyDto->orderId;
 
         if (!$orderId){
@@ -381,21 +381,25 @@ class MoneyServiceImpl implements MoneyService
 
     public function buildPayMoneyResultDto(Transaction $transaction, string $key, ?PayMoneyDataResultDto $payMoneyDataResultDto = null): PayMoneyResultDto
     {
-        $payMoneyResultDto = new PayMoneyDataResultDto();
+        if (!$payMoneyDataResultDto){
+            $payMoneyDataResultDto = new PayMoneyDataResultDto();
+        }
+
         $inittxnstatus = 'inittxnstatus';
         $inittxnmessage = 'inittxnmessage';
         $txnid = 'txnid';
         $confirmtxnmessage = 'confirmtxnmessage';
         $confirmtxnstatus = 'confirmtxnstatus';
         $txnmode = 'txnmode';
-
-        $payMoneyResultDto->status = $transaction->getStatus();
-        $payMoneyResultDto->$inittxnstatus = "200";
-        $payMoneyResultDto->$txnid = $transaction->getTxnid();
-        $payMoneyResultDto->$confirmtxnmessage = 'Paiement success';
-        $payMoneyResultDto->$inittxnmessage = 'Paiement success';
-        $payMoneyResultDto->$confirmtxnstatus = "200";
-        $payMoneyResultDto->$txnmode = 'SUCCESS';
+        $payMoneyDataResultDto->createtime = time();
+        $payMoneyDataResultDto->status = $transaction->getStatus();
+        $payMoneyDataResultDto->payToken = $transaction->getPaytoken();
+        $payMoneyDataResultDto->$inittxnstatus = "200";
+        $payMoneyDataResultDto->$txnid = $transaction->getTxnid();
+        $payMoneyDataResultDto->$confirmtxnmessage = 'Paiement success';
+        $payMoneyDataResultDto->$inittxnmessage = 'Paiement success';
+        $payMoneyDataResultDto->$confirmtxnstatus = "200";
+        $payMoneyDataResultDto->$txnmode = 'SUCCESS';
         return new PayMoneyResultDto(
             $payMoneyResultDto,
             sprintf(self::PAIEMENT_MESSAGE_TEMPLATE,

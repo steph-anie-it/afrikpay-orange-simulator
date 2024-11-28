@@ -340,7 +340,8 @@ class MoneyServiceImpl implements MoneyService
             $account->setBalance($newBalance);
             $this->accountRepository->save($account);
         }
-
+        
+        $transaction->setNotifUrl($payMoneyDto->notifUrl);
         $transaction->setAmount($amount);
         $transaction->setStatus(Transaction::SUCCESS);
         $txnidValue = $this->utilService->generateTransactionId();

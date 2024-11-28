@@ -43,7 +43,7 @@ interface MoneyController
     public const CASHIN_INIT = '/cashin/init';
 
     public const CASHIN_PAY = '/cashin/pay';
-    public const CASHIN_STATUS = '/cashin/status';
+    public const CASHIN_STATUS = '/cashin/status/{{payToken}}';
     public const CASHIN_INIT_NAME = 'cashin_init_name';
 
     public const CASHIN_PAY_NAME = 'cashin_pay_name';
@@ -58,9 +58,9 @@ interface MoneyController
     public const CASHOUT_PAY = '/cashout/pay';
     public const CASHOUT_PAY_NAME = 'cashout_pay_name';
     public const CASHOUT_STATUS_NAME = 'cashout_status_name';
-    public const CASHOUT_STATUS = '/cashout/status';
+    public const CASHOUT_STATUS = '/cashout/status/{{payToken}}';
     public const MP_PAY = '/mp/pay';
-    public const MP_STATUS = '/mp/status';
+    public const MP_STATUS = '/mp/status/{{payToken}}';
     public const MP_PAY_NAME = 'mp_pay_name';
 
 

@@ -209,7 +209,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     )]
     #[Security(name: self::X_AUTH_TOKEN)]
     #[Security(name: self::WSO2_Authorization)]
-    public function getStatusCashin(#[OA\QueryParameter] ?string $payToken = null): MoneyPayResponse
+    public function getStatusCashin(?string $payToken = null): MoneyPayResponse
     {
         return new MoneyPayResponse(
             $this->moneyService->getStatus(self::CASHIN, $payToken)
@@ -224,7 +224,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     )]
     #[Security(name: self::X_AUTH_TOKEN)]
     #[Security(name: self::WSO2_Authorization)]
-    public function getStatusCashout(#[OA\QueryParameter] ?string $payToken = null): MoneyPayResponse
+    public function getStatusCashout(?string $payToken = null): MoneyPayResponse
     {
         return new MoneyPayResponse(
             $this->moneyService->getStatus(self::CASHOUT, $payToken)
@@ -239,7 +239,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     )]
     #[Security(name: self::X_AUTH_TOKEN)]
     #[Security(name: self::WSO2_Authorization)]
-    public function getStatusMp(#[OA\QueryParameter] ?string $payToken = null): MoneyPayResponse
+    public function getStatusMp(?string $payToken = null): MoneyPayResponse
     {
         return new MoneyPayResponse(
             $this->moneyService->getStatus(self::MP, $payToken)

@@ -33,4 +33,6 @@ interface MoneyService
   public function checkCredentials() : void;
 
   public function createMoneyAccount(AccountCreateDto $createDto) : AccountMoneyCreateResultDto;
+
+  public function loginMoneyAccount(AccountCreateDto $createDto) : AccountMoneyCreateResultDto;
 }

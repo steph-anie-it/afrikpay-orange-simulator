@@ -88,5 +88,6 @@ interface MoneyController
 
     public function generateToken(TokenCreateDto $tokenCreateDto): TokenResponse;
 
+    public function loginMoneyAccount(AccountMoneyCreateDto $accountMoneyCreateDto): AccountMoneyResponse;
 
 }

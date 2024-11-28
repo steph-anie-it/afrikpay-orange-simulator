@@ -245,4 +245,23 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
             $this->moneyService->getStatus(self::MP, $payToken)
         );
     }
+
+    #[OA\RequestBody(new Model(type: AccountMoneyCreateDto::class))]
+    #[OA\Response(
+        response: 200,
+        description: 'Login an account',
+        content: new OA\JsonContent(ref: new Model(type: AccountMoneyResponse::class))
+    )]
+    public function loginMoneyAccount(AccountMoneyCreateDto $accountMoneyCreateDto): AccountMoneyResponse
+    {
+        return new AccountMoneyResponse(
+            $this->moneyService->loginMoneyAccount(
+                new AccountCreateDto(
+                    $accountMoneyCreateDto->username,
+                    $accountMoneyCreateDto->password,
+                    self::CASHIN
+                )
+            )
+        );
+    }
 }

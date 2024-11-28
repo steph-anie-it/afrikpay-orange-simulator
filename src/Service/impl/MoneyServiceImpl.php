@@ -33,6 +33,7 @@ use App\Service\UtilService;
 use DateInterval;
 use DateTime;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -58,6 +59,7 @@ class MoneyServiceImpl implements MoneyService
         protected TransactionRepository $transactionRepository,
         protected JWTTokenManagerInterface $JWTManager,
         protected HttpService $httpService,
+        protected LoggerInterface $logger,
         public UtilService $utilService)
     {
 
@@ -351,29 +353,11 @@ class MoneyServiceImpl implements MoneyService
         $transaction->setAccountnumber($account->getMsisdn());
         $transaction = $this->transactionRepository->save($transaction);
         $payMoneyDataResultDto->status = $transaction->getStatus();
-        /*$payMoneyResultDto->$inittxnstatus = "200";
-        $payMoneyResultDto->$txnid = $transaction->getTxnid();
-        $payMoneyResultDto->$confirmtxnmessage = 'Paiement success';
-        $payMoneyResultDto->$inittxnmessage = 'Paiement success';
-        $payMoneyResultDto->$confirmtxnstatus = "200";
-        $payMoneyResultDto->$txnmode = 'SUCCESS';*/
         $payMoneyDataResultDto = $this->buildPayMoneyResultDto($transaction,$key,$payMoneyDataResultDto);
-//        $result = new PayMoneyResultDto(
-//            $payMoneyDataResultDto,
-//            sprintf(self::PAIEMENT_MESSAGE_TEMPLATE,
-//                $key,
-//                $txnidValue,
-//                $transaction->getAmount(),
-//                $account->getMsisdn(),
-//                $number->getMsisdn(),
-//                $payMoneyDto->payToken
-//            )
-//        );
-
         try{
             $this->httpService->callBack($payMoneyDataResultDto->data);
         }catch (\Throwable $throwable){
-
+            $this->logger->critical($throwable->getMessage());
         }
 
         return $payMoneyDataResultDto;

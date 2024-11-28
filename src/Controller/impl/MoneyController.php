@@ -247,7 +247,6 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     }
 
     #[Route(self::MONEY_ACCOUNT_LOGIN_URI, name: self::MONEY_ACCOUNT_LOGIN_NAME, methods: [self::GET_METHOD])]
-
     #[OA\RequestBody(new Model(type: AccountMoneyCreateDto::class))]
     #[OA\Response(
         response: 200,

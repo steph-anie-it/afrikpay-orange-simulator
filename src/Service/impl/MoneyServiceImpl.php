@@ -97,7 +97,7 @@ class MoneyServiceImpl implements MoneyService
             );
         }
 
-        $authorization = $request->headers->get(self::AUTHORIZATION);
+        $authorization = $request->headers->get(self::WSO2_AUTHORIZATION);
         $wsoAutorization = substr($authorization,strlen(self::BEARER),strlen($authorization));
 
         if (!$wsoAutorization){

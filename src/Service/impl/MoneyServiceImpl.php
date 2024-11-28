@@ -393,7 +393,7 @@ class MoneyServiceImpl implements MoneyService
         $confirmtxnstatus = 'confirmtxnstatus';
         $txnmode = 'txnmode';
         $payMoneyDataResultDto->createtime = time();
-        $payMoneyDataResultDto->amount = $transaction->getAmount();
+        $payMoneyDataResultDto->amount = floatval($transaction->getAmount());
         $payMoneyDataResultDto->subscriberMsisdn = $transaction->getMsisdn();
         $payMoneyDataResultDto->channelUserMsisdn = $transaction->getAccountnumber();
         $payMoneyDataResultDto->status = $transaction->getStatus();

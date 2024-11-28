@@ -404,7 +404,7 @@ class MoneyServiceImpl implements MoneyService
         $payMoneyDataResultDto->$confirmtxnmessage = 'Paiement success';
         $payMoneyDataResultDto->$inittxnmessage = 'Paiement success';
         $payMoneyDataResultDto->$confirmtxnstatus = "200";
-        $payMoneyDataResultDto->$txnmode = 'SUCCESS';
+        $payMoneyDataResultDto->$txnmode = 'SUCCESSFULL';
         return new PayMoneyResultDto(
             $payMoneyDataResultDto,
             sprintf(self::PAIEMENT_MESSAGE_TEMPLATE,

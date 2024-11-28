@@ -97,7 +97,8 @@ class MoneyServiceImpl implements MoneyService
             );
         }
 
-        $wsoAutorization = $request->headers->get(self::WSO2_AUTHORIZATION);
+        $authorization = $request->headers->get(self::AUTHORIZATION);
+        $wsoAutorization = substr($authorization,strlen(self::BEARER),strlen($authorization));
 
         if (!$wsoAutorization){
             throw new InvalidMoneyCredentialsException(

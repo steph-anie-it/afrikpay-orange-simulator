@@ -23,7 +23,7 @@ class ExceptionList
      public  const INVALID_TOKEN_CLIENT_ID = [ self::CODE => '0074', self::MESSAGE => 'A valid OAuth client could not be found for client_id'];
 
     public  const UNKNOW_USER = [ self::CODE => '0075', self::MESSAGE => 'Unknown user '];
-    public  const INVALID_WSO2_TOKEN = [ self::CODE => '0076', self::MESSAGE => 'Invalid wso2 token '];
+    public  const INVALID_WSO2_TOKEN = [ self::CODE => '0076', self::MESSAGE => 'Invalid bearer token '];
 
     public  const INVALID_XAUTH_TOKEN = [ self::CODE => '0076', self::MESSAGE => 'Invalid xauth token '];
     public  const INVALID_GRANT_TYPE = [ self::CODE => '0077', self::MESSAGE => 'Invalid grant type '];

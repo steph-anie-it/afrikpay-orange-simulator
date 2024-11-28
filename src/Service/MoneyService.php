@@ -19,6 +19,7 @@ interface MoneyService
   public const AUTHORIZATION = 'authorization';
 
   public const BASIC = 'Basic ';
+  public const BEARER = 'Bearer ';
 
   public function init(?string $key = null) :InitMoneyResultDto;
   public function pay(PayMoneyDto $payMoneyDto, ?string $key = null):PayMoneyResultDto;

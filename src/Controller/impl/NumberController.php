@@ -45,7 +45,7 @@ class NumberController extends AbstractController implements INumberController
         response: 200,
         description: 'Execute command',
         content: new OA\JsonContent(example: new OA\Schema(
-            ref: GenerateNumberResultDto::class,
+            ref: new Model(type: GenerateNumberResultDto::class),
             properties: [
                 new OA\Property(ref: new Model(type: GenerateNumberResultDto::class))
             ],

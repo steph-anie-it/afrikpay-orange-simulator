@@ -130,6 +130,7 @@ class MoneyServiceImpl implements MoneyService
 
         $username = $tokenValues[self::USERNAME];
         $account = $this->accountRepository->findOneBy(['username' => $username]);
+        dd($account);
         if (!$account){
             throw new InvalidMoneyCredentialsException(
                 $username,

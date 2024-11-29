@@ -130,7 +130,7 @@ class MoneyServiceImpl implements MoneyService
 
         $username = $tokenValues[self::USERNAME];
         $account = $this->accountRepository->findOneBy(['username' => $username]);
-        dd($account);
+
         if (!$account){
             throw new InvalidMoneyCredentialsException(
                 $username,
@@ -140,12 +140,6 @@ class MoneyServiceImpl implements MoneyService
         if ($account->getToken() != $wsoAutorization){
             throw new InvalidMoneyCredentialsException(
                 exceptionValues: ExceptionList::INVALID_USER_JWT_TOKEN
-            );
-        }
-
-        if (!array_key_exists(self::START_DATE,$tokenValues)){
-            throw new InvalidMoneyCredentialsException(
-                exceptionValues: ExceptionList::BAD_WSO2_TOKEN
             );
         }
     }

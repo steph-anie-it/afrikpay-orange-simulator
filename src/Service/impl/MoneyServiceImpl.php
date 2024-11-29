@@ -126,7 +126,6 @@ class MoneyServiceImpl implements MoneyService
                 exceptionValues: ExceptionList::BAD_WSO2_TOKEN
             );
         }
-        dd($tokenValues,array_key_exists(self::USERNAME,$tokenValues));
 
         $username = $tokenValues[self::USERNAME];
         $account = $this->accountRepository->findOneBy(['username' => $username]);

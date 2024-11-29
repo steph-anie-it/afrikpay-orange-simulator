@@ -12,6 +12,7 @@ use App\Dto\PayAirtimeFullDto;
 use App\Dto\PayAirtimeResultDto;
 use App\Dto\PayDataDto;
 use App\Dto\PayDataFullDto;
+use App\Dto\Result\CommandResultDto;
 use App\Dto\TransactionStatusFullDto;
 use App\Response\AccountAirtimeResponse;
 use App\Response\GenerateAirtimeResponse;
@@ -91,6 +92,12 @@ class NumberController extends AbstractController implements INumberController
     #[OA\Response(
         response: 200,
         description: 'Execute command',
+        content: new OA\XmlContent(example: new OA\Schema(
+            type: 'object',
+            properties: [
+                new OA\Property(property: 'foo', ref: new Model(type: CommandResultDto::class))
+            ]
+        ))
 //        content: new Model(type: Command::class)
     )]
     public function payNumberAirtime(Request $request): \App\Response\Command

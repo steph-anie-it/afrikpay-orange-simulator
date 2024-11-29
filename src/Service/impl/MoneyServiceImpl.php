@@ -474,8 +474,13 @@ class MoneyServiceImpl implements MoneyService
         $endDate = new \DateTime();
         $tokenDuration = $_ENV['TOKEN_DURATION'];
         $endDate->add(DateInterval::createFromDateString(sprintf("%s %s",$tokenDuration,'seconds')));
-        $token =  $this->JWTManager->createFromPayload($account,[self::START_DATE => $startDate,self::END_DATE => $endDate]);
-        $endDate->add(DateInterval::createFromDateString(sprintf("%s %s",$_ENV['REFRESH_TOKEN_DURATION'],'min')));
+
+        $token =  $this->JWTManager->create($account);
+        $array = $this->JWTManager->parse($token);
+        $expiry = $array['exp'];
+        $start = $array['iat'];
+        $total = $expiry - $start;
+//        dd($total);
         $refreshToken = $this->utilService->guidv4();
 
         $account->setToken($token);
@@ -485,7 +490,7 @@ class MoneyServiceImpl implements MoneyService
         return new TokenDto(
             access_token:  $token,
             refresh_token: $refreshToken,
-            expires_in: $tokenDuration
+            expires_in: $total
         );
     }
 

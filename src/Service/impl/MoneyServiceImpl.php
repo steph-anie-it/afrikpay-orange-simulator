@@ -33,6 +33,7 @@ use App\Service\NumberService;
 use App\Service\UtilService;
 use DateInterval;
 use DateTime;
+use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWSProvider\JWSProviderInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -103,6 +104,7 @@ class MoneyServiceImpl implements MoneyService
             );
         }
 
+
         $authorization = $request->headers->get(self::WSO2_AUTHORIZATION);
         $wsoAutorization = substr($authorization,strlen(self::BEARER),strlen($authorization));
 
@@ -116,9 +118,14 @@ class MoneyServiceImpl implements MoneyService
         try{
             $tokenValues = $this->JWTManager->parse($wsoAutorization);
         }catch (\Throwable $throwable){
-            throw new InvalidMoneyCredentialsException(
-                exceptionValues: ExceptionList::EXPIRY_JWT_TOKEN
-            );
+            if ($throwable instanceof JWTDecodeFailureException){
+               if ($throwable->getReason() != JWTDecodeFailureException::EXPIRED_TOKEN)
+               {
+                   throw new InvalidMoneyCredentialsException(
+                       exceptionValues: ExceptionList::INVALID_USER_JWT_TOKEN
+                   );
+               }
+            }
         }
         /*
         if (!array_key_exists(self::USERNAME,$tokenValues)){

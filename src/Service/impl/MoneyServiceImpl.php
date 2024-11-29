@@ -480,13 +480,9 @@ class MoneyServiceImpl implements MoneyService
         $expiry = $array['exp'];
         $start = $array['iat'];
         $total = $expiry - $start;
-//        dd($total);
         $refreshToken = $this->utilService->guidv4();
-
         $account->setToken($token);
-
         $this->accountRepository->save($account);
-
         return new TokenDto(
             access_token:  $token,
             refresh_token: $refreshToken,

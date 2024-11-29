@@ -8,6 +8,7 @@ use App\Dto\AccountMoneyCreateResultDto;
 use App\Dto\GenerateNumberResultDto;
 use App\Dto\InitMoneyResultDto;
 use App\Dto\PayMoneyDto;
+use App\Dto\PayMoneyResultDto;
 use App\Dto\TokenCreateDto;
 use App\Response\AccountMoneyResponse;
 use App\Response\MoneyInitResponse;
@@ -98,7 +99,10 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     #[OA\Response(
         response: 200,
         description: 'Pay cashout',
-//        content:  new Model(type: MoneyPayResponse::class)
+        content: new OA\JsonContent(
+            ref: new Model(type: PayMoneyResultDto::class),
+            type: 'object'
+        )
     )]
     #[Security(name: self::X_AUTH_TOKEN)]
     #[Security(name: self::WSO2_Authorization)]
@@ -116,7 +120,10 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     #[OA\Response(
         response: 200,
         description: 'Pay cashin',
-//        content:  new Model(type: MoneyPayResponse::class)
+        content: new OA\JsonContent(
+            ref: new Model(type: PayMoneyResultDto::class),
+            type: 'object'
+        )
     )]
     #[Security(name: self::X_AUTH_TOKEN)]
     #[Security(name: self::WSO2_Authorization)]
@@ -134,7 +141,10 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     #[OA\Response(
         response: 200,
         description: 'Pay merchant payment',
-//        content: new Model(type: MoneyPayResponse::class)
+        content: new OA\JsonContent(
+            ref: new Model(type: PayMoneyResultDto::class),
+            type: 'object'
+        )
     )]
     #[Security(name: self::X_AUTH_TOKEN)]
     #[Security(name: self::WSO2_Authorization)]

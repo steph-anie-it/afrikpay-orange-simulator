@@ -29,7 +29,7 @@ interface MoneyController
     public const MONEY_TOKEN_URI = 'token';
     public const MONEY_TOKEN_NAME = 'token';
     public const MONEY_ACCOUNT_LOGIN_URI = '/money/account/login';
-    public const MONEY_ACCOUNT_RESET_KEY_URI = '/money/account/reset/key';
+    public const MONEY_ACCOUNT_RESET_KEY_URI = '/money/account/reset/keys';
     public const MONEY_ACCOUNT_RESET_KEY_NAME = 'money_account_reset_key_name';
     public const MONEY_ACCOUNT_LOGIN_NAME = 'money_account_login_name';
     public const MONEY_ACCOUNT_CASHOUT_CREATE_URI = '/money/account/cashout/create';

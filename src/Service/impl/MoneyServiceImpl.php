@@ -121,7 +121,7 @@ class MoneyServiceImpl implements MoneyService
                 exceptionValues: ExceptionList::EXPIRY_JWT_TOKEN
             );
         }
-        dd(!array_key_exists(self::USERNAME,$tokenValues));
+        dd($tokenValues,!array_key_exists(self::USERNAME,$tokenValues));
         if (!array_key_exists(self::USERNAME,$tokenValues)){
             throw new InvalidMoneyCredentialsException(
                 $username,

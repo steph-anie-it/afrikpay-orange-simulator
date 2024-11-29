@@ -49,7 +49,7 @@ class MoneyServiceImpl implements MoneyService
     public const START_DATE = 'startDate';
     public const END_DATE = 'endDate';
 
-    public const USERNAME = 'username';
+    public const USERNAME = "username";
 
     public const DATE = 'date';
     public function __construct(

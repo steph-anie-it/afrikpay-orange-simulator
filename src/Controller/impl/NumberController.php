@@ -48,7 +48,7 @@ class NumberController extends AbstractController implements INumberController
             properties: [
                 new OA\Property(ref: new Model(type: GenerateNumberResultDto::class))
             ],
-            type: 'object'
+            type: GenerateNumberResultDto::class
         ))
     )]
     public function generateNumber(#[MapQueryParameter] ?string $number=null,#[MapQueryParameter] ?bool $isMoney = true): GenerateAirtimeResponse

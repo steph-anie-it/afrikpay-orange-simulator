@@ -32,6 +32,7 @@ use App\Service\NumberService;
 use App\Service\UtilService;
 use DateInterval;
 use DateTime;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWSProvider\JWSProviderInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -60,6 +61,7 @@ class MoneyServiceImpl implements MoneyService
         protected JWTTokenManagerInterface $JWTManager,
         protected HttpService $httpService,
         protected LoggerInterface $logger,
+        protected JWSProviderInterface $JWSProvider,
         public UtilService $utilService)
     {
 
@@ -470,11 +472,9 @@ class MoneyServiceImpl implements MoneyService
             );
         }
 
-        $startDate = new \DateTime();
         $endDate = new \DateTime();
         $tokenDuration = $_ENV['TOKEN_DURATION'];
         $endDate->add(DateInterval::createFromDateString(sprintf("%s %s",$tokenDuration,'seconds')));
-
         $token =  $this->JWTManager->create($account);
         $array = $this->JWTManager->parse($token);
         $expiry = $array['exp'];

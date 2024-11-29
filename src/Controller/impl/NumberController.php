@@ -106,6 +106,7 @@ class NumberController extends AbstractController implements INumberController
 
 
     #[Route(self::PAY_NUMBER_AIRTIME_URI, name: self::PAY_NUMBER_AIRTIME_NAME, defaults: ["_format"=>"xml/command.dtd"], methods: [self::PAY_NUMBER_AIRTIME_METHOD])]
+    #[OA\Tag(name: 'Airtime')]
     #[OA\Response(
         response: 200,
         description: 'Execute command',
@@ -134,6 +135,7 @@ class NumberController extends AbstractController implements INumberController
 //    }
 
     #[Route(self::ACCOUNT_AIRTIME_URI, name: self::ACCOUNT_AIRTIME_NAME, methods: [self::ACCOUNT_AIRTIME_METHOD])]
+    #[OA\Tag(name: 'Airtime')]
     #[OA\Response(
         response: 200,
         description: 'Create airtime account',
@@ -148,6 +150,8 @@ class NumberController extends AbstractController implements INumberController
 
 
     #[Route(self::PAY_DATA_URI, name: self::PAY_DATA_NAME, methods: [self::PAY_DATA_METHOD])]
+    #[OA\Tag(name: 'Airtime')]
+
     #[OA\Response(
         response: 200,
         description: 'Pay data',
@@ -165,6 +169,7 @@ class NumberController extends AbstractController implements INumberController
      * @throws \ReflectionException
      */
     #[Route(self::TRANSACTION_STATUS_URI, name: self::TRANSACTION_STATUS_NAME, methods: [self::TRANSACTION_STATUS_METHOD])]
+    #[OA\Tag(name: 'Airtime')]
     #[OA\Response(
         response: 200,
         description: 'Get transaction status',
@@ -187,6 +192,7 @@ class NumberController extends AbstractController implements INumberController
 
 
     #[Route(self::API_BALANCE_URI, name: self::API_BALANCE_NAME, methods: [self::API_BALANCE_METHOD])]
+    #[OA\Tag(name: 'Airtime')]
     #[OA\Response(
         response: 200,
         description: 'Check balance',

@@ -6,6 +6,7 @@ use App\Controller\MoneyController;
 use App\Dto\AccountCreateDto;
 use App\Dto\AccountCreateResultDto;
 use App\Dto\AccountMoneyCreateResultDto;
+use App\Dto\AccountMoneyLoginResultDto;
 use App\Dto\InitMoneyResultDto;
 use App\Dto\PayMoneyDataResultDto;
 use App\Dto\PayMoneyDto;
@@ -516,7 +517,7 @@ class MoneyServiceImpl implements MoneyService
     public function loginMoneyAccount(AccountCreateDto $createDto): AccountMoneyCreateResultDto
     {
         $result = $this->numberService->loginAirtimeAccount($createDto);
-        return $this->utilService->map($result,AccountMoneyCreateResultDto::class);
+        return $this->utilService->map($result,AccountMoneyLoginResultDto::class);
     }
 
 

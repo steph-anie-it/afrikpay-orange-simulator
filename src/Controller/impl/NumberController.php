@@ -41,21 +41,14 @@ class NumberController extends AbstractController implements INumberController
     }
 
     #[Route(self::GENERATE_URI, name: self::GENERATE_NAME, methods: [self::GENERATE_METHOD])]
+    #[OA\Tag(name: 'Generator')]
     #[OA\Response(
         response: 200,
-        description: 'Execute command',
+        description: 'Generate a subscriber number',
         content: new OA\JsonContent(
             ref: new Model(type: GenerateNumberResultDto::class),
-            type: 'object',
-            items: new OA\Items(ref: new Model(type: GenerateNumberResultDto::class))
+            type: 'object'
         )
-        /*content: new OA\JsonContent(example: new OA\Schema(
-            ref: new Model(type: GenerateNumberResultDto::class),
-            properties: [
-                new OA\Property(ref: new Model(type: GenerateNumberResultDto::class))
-            ],
-            type: GenerateNumberResultDto::class
-        ))*/
     )]
     public function generateNumber(#[MapQueryParameter] ?string $number=null,#[MapQueryParameter] ?bool $isMoney = true): GenerateAirtimeResponse
     {

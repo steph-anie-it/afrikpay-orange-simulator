@@ -62,6 +62,7 @@ class NumberController extends AbstractController implements INumberController
      * @throws \ReflectionException
      */
     #[Route(self::API_EXECUTE_COMMAND_URI, name: self::API_EXECUTE_COMMAND_NAME, methods: [self::API_EXECUTE_COMMAND_METHOD])]
+    #[OA\Tag(name: 'Airtime')]
     #[OA\Response(
         response: 200,
         description: 'Execute command',
@@ -84,6 +85,7 @@ class NumberController extends AbstractController implements INumberController
     }
 
     #[Route(self::PAY_AIRTIME_URI, name: self::PAY_AIRTIME_NAME, defaults: ["_format"=>"xml/command.dtd"], methods: [self::PAY_AIRTIME_METHOD])]
+    #[OA\Tag(name: 'Airtime')]
     #[OA\Response(
         response: 200,
         description: 'Pay airtime',

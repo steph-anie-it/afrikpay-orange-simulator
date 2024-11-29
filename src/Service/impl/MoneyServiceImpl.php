@@ -326,21 +326,24 @@ class MoneyServiceImpl implements MoneyService
         $amount = floatval($payMoneyDto->amount) + $this->getFees($account);
 
         $balance =  $account->getBalance();
-        if ($transaction->getMoneytype() == MoneyController::CASHOUT)
-        {
-            if ($amount > $balance){
+        if (in_array($transaction->getMoneytype(),[MoneyController::CASHOUT,MoneyController::MP])) {
+            if ($amount > $balance) {
                 throw new MoneyPayException(
                     exceptionValues: ExceptionList::NOT_ENOUGH_FUND,
                     payMoneyDataResultDto: $payMoneyDataResultDto
                 );
             }
             $newBalance = $balance - $amount ;
+        }else{
+            $newBalance = $balance + $amount ;
+        }
+
             $account->setOldbalance($balance);
             $account->setNewbalance($newBalance);
             $account->setBalance($newBalance);
             $transaction->setBalanceold($balance);
-            $this->accountRepository->save($account);
-        }
+            $account = $this->accountRepository->save($account);
+
         $transaction->setMsisdn($payMoneyDto->subscriberMsisdn);
         $transaction->setNotifUrl($payMoneyDto->notifUrl);
         $transaction->setAmount($amount);

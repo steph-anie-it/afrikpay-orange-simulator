@@ -114,7 +114,6 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     }
 
     #[Route(self::CASHIN_PAY, name: self::CASHIN_PAY_NAME, methods: [self::POST_METHOD])]
-//    #[OA\RequestBody(new Model(type: PayMoneyDto::class))]
     #[OA\Tag(name: 'Money')]
     #[OA\Response(
         response: 200,

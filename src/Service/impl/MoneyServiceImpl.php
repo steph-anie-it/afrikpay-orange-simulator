@@ -378,6 +378,9 @@ class MoneyServiceImpl implements MoneyService
         $confirmtxnmessage = 'confirmtxnmessage';
         $confirmtxnstatus = 'confirmtxnstatus';
         $txnmode = 'txnmode';
+        $txnstatus = 'txnstatus';
+        $txnmessage = 'txnmessage';
+
         $payMoneyDataResultDto->createtime = time();
         $payMoneyDataResultDto->amount = floatval($transaction->getAmount());
         $payMoneyDataResultDto->subscriberMsisdn = $transaction->getMsisdn();
@@ -385,6 +388,8 @@ class MoneyServiceImpl implements MoneyService
         $payMoneyDataResultDto->status = $transaction->getStatus();
         $payMoneyDataResultDto->payToken = $transaction->getPaytoken();
         $payMoneyDataResultDto->notifUrl = $transaction->getNotifUrl();
+        $payMoneyDataResultDto->$txnstatus = '200';
+        $payMoneyDataResultDto->$txnmessage = sprintf('Your balance is %s ',$transaction->getBalance());
         $payMoneyDataResultDto->$inittxnstatus = "200";
         $payMoneyDataResultDto->$txnid = $transaction->getTxnid();
         $payMoneyDataResultDto->$confirmtxnmessage = 'Paiement success';

@@ -188,6 +188,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     }
 
     #[Route(self::MONEY_TOKEN_URI, name: self::MONEY_TOKEN_NAME,defaults: ["_format"=>"application/x-www-form-urlencoded"], methods: [self::POST_METHOD])]
+    #[OA\Tag(name: 'Money')]
 //    #[OA\RequestBody(new Model(type: TokenCreateDto::class))]
     #[OA\Response(
         response: 200,
@@ -206,6 +207,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
 
 
     #[Route(self::CASHIN_STATUS, name: self::CASHIN_STATUS_NAME, methods: [self::GET_METHOD])]
+    #[OA\Tag(name: 'Money')]
     #[OA\Response(
         response: 200,
         description: 'Get paytoken status',
@@ -221,6 +223,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     }
 
     #[Route(self::CASHOUT_STATUS, name: self::CASHOUT_STATUS_NAME, methods: [self::GET_METHOD])]
+    #[OA\Tag(name: 'Money')]
     #[OA\Response(
         response: 200,
         description: 'Get paytoken status',
@@ -236,6 +239,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
 
 
     #[Route(self::MP_STATUS, name: self::MP_STATUS_NAME, methods: [self::GET_METHOD])]
+    #[OA\Tag(name: 'Money')]
     #[OA\Response(
         response: 200,
         description: 'Get paytoken status',
@@ -271,6 +275,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     }
 
     #[Route(self::MONEY_ACCOUNT_RESET_KEY_URI, name: self::MONEY_ACCOUNT_RESET_KEY_NAME, methods: [self::POST_METHOD])]
+    #[OA\Tag(name: 'Money')]
     #[OA\Response(
         response: 200,
         description: 'Reset account keys'

@@ -214,7 +214,7 @@ class MoneyServiceImpl implements MoneyService
         }
     }
 
-    public const PAIEMENT_MESSAGE_TEMPLATE = '%s %s %s from %s to %s  Paiment %s done successfully. Old balance %s new balance %s';
+    public const PAIEMENT_MESSAGE_TEMPLATE = '%s %s %s from %s to %s  Payment %s done successfully. Old balance %s new balance %s';
 
     public function pay(PayMoneyDto $payMoneyDto,?string $key = null): PayMoneyResultDto
     {

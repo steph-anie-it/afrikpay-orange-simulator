@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Dto\AccountCreateDto;
 use App\Dto\AccountCreateResultDto;
 use App\Dto\AccountMoneyCreateResultDto;
+use App\Dto\AccountMoneyLoginResultDto;
 use App\Dto\InitMoneyResultDto;
 use App\Dto\PayMoneyDto;
 use App\Dto\PayMoneyResultDto;
@@ -34,5 +35,7 @@ interface MoneyService
 
   public function createMoneyAccount(AccountCreateDto $createDto) : AccountMoneyCreateResultDto;
 
-  public function loginMoneyAccount(AccountCreateDto $createDto) : AccountMoneyCreateResultDto;
+  public function loginMoneyAccount(AccountCreateDto $createDto) : AccountMoneyLoginResultDto;
+
+  public function regenerateKeyAccount(AccountCreateDto $createDto) : AccountMoneyCreateResultDto;
 }

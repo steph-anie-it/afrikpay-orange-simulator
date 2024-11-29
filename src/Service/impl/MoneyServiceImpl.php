@@ -514,11 +514,13 @@ class MoneyServiceImpl implements MoneyService
     }
 
 
-    public function loginMoneyAccount(AccountCreateDto $createDto): AccountMoneyCreateResultDto
+    public function loginMoneyAccount(AccountCreateDto $createDto): AccountMoneyLoginResultDto
     {
         $result = $this->numberService->loginAirtimeAccount($createDto);
         return $this->utilService->map($result,AccountMoneyLoginResultDto::class);
     }
 
+    public function regenerateKeyAccount(AccountCreateDto $createDto) : AccountMoneyCreateResultDto{
 
+    }
 }

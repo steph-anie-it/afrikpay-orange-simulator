@@ -264,8 +264,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
             $this->moneyService->loginMoneyAccount(
                 new AccountCreateDto(
                     $accountMoneyCreateDto->username,
-                    $accountMoneyCreateDto->password,
-                    self::CASHIN
+                    $accountMoneyCreateDto->password
                 )
             )
         );

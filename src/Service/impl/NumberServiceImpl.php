@@ -960,4 +960,26 @@ class NumberServiceImpl implements NumberService
 
         return  $result;
     }
+
+    public function resetAccountKeys(AccountCreateDto $createDto) : AccountCreateResultDto
+    {
+        $account  = $this->accountRepository->findOneBy([Account::USERNAME => $createDto->username]);
+
+        if(!$account){
+            throw new AccountNotFoundException($createDto->username);
+        }
+        $clearApiKey = $this->utilService->generateRandom();
+        $hashApiKey =   password_hash($clearApiKey,PASSWORD_BCRYPT);
+        $account->setApikey($hashApiKey);
+        $subcriptionKey = $this->utilService->generateRandom(30);
+        $hasSubKey = password_hash($subcriptionKey,PASSWORD_BCRYPT);
+        $account->setSubscriptionkey($hasSubKey);
+        $account =   $this->accountRepository->save($account);
+        $result = $this->map($account,AccountCreateResultDto::class);
+        if($result instanceof AccountCreateResultDto){
+            $result->apikey = $clearApiKey;
+            $result->subscriptionkey = $subcriptionKey;
+        }
+        return  $result;
+    }
 }

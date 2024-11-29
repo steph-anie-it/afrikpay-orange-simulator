@@ -269,4 +269,23 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
             )
         );
     }
+
+    #[Route(self::MONEY_ACCOUNT_RESET_KEY_URI, name: self::MONEY_ACCOUNT_RESET_KEY_NAME, methods: [self::POST_METHOD])]
+    #[OA\Response(
+        response: 200,
+        description: 'Reset account keys'
+
+//        content: new Model(type: AccountMoneyResponse::class)
+    )]
+    public function resetAccountKeys(#[MapRequestPayload] AccountMoneyCreateDto $accountMoneyCreateDto): AccountMoneyResponse
+    {
+        return new AccountMoneyResponse(
+            $this->moneyService->regenerateKeyAccount(
+                new AccountCreateDto(
+                    $accountMoneyCreateDto->username,
+                    $accountMoneyCreateDto->password
+                )
+            )
+        );
+    }
 }

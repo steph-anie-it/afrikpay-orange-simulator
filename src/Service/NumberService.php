@@ -56,5 +56,5 @@ interface NumberService
 
     public function checkConnection(mixed $headers):void;
 
-
+    public function resetAccountKeys(AccountCreateDto $createDto) : AccountCreateResultDto;
 }

@@ -521,6 +521,7 @@ class MoneyServiceImpl implements MoneyService
     }
 
     public function regenerateKeyAccount(AccountCreateDto $createDto) : AccountMoneyCreateResultDto{
-
+        $result = $this->numberService->resetAccountKeys($createDto);
+        return $this->utilService->map($result,AccountMoneyCreateResultDto::class);
     }
 }

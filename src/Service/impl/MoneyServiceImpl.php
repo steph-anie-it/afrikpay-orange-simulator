@@ -120,13 +120,13 @@ class MoneyServiceImpl implements MoneyService
                 exceptionValues: ExceptionList::EXPIRY_JWT_TOKEN
             );
         }
-        dd($tokenValues,array_key_exists(self::USERNAME,$tokenValues));
         if (!array_key_exists(self::USERNAME,$tokenValues)){
             throw new InvalidMoneyCredentialsException(
                 $username,
                 exceptionValues: ExceptionList::BAD_WSO2_TOKEN
             );
         }
+        dd($tokenValues,array_key_exists(self::USERNAME,$tokenValues));
 
         $username = $tokenValues[self::USERNAME];
         $account = $this->accountRepository->findOneBy(['username' => $username]);

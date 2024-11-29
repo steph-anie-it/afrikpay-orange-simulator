@@ -5,6 +5,8 @@ namespace App\Controller\impl;
 use App\Dto\AccountCreateDto;
 use App\Dto\AccountMoneyCreateDto;
 use App\Dto\AccountMoneyCreateResultDto;
+use App\Dto\GenerateNumberResultDto;
+use App\Dto\InitMoneyResultDto;
 use App\Dto\PayMoneyDto;
 use App\Dto\TokenCreateDto;
 use App\Response\AccountMoneyResponse;
@@ -18,7 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Annotation\Route;
 use OpenApi\Attributes as OA;
-use Nelmio\ApiDocBundle\Attribute\Model;
+use Nelmio\ApiDocBundle\Annotation\Model;
 
 
 class MoneyController extends AbstractController implements \App\Controller\MoneyController
@@ -31,10 +33,14 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     }
 
     #[Route(self::CASHOUT_INIT, name: self::CASHOUT_INIT_NAME, methods: [self::POST_METHOD])]
+    #[OA\Tag(name: 'Money')]
     #[OA\Response(
         response: 200,
         description: 'Init payment cashout',
-        //content: new Model(type: MoneyInitResponse::class)
+        content: new OA\JsonContent(
+            ref: new Model(type: InitMoneyResultDto::class),
+            type: 'object'
+        )
     )]
     #[Security(name: self::X_AUTH_TOKEN)]
     #[Security(name: self::WSO2_Authorization)]
@@ -47,10 +53,14 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     }
 
     #[Route(self::CASHIN_INIT, name: self::CASHIN_INIT_NAME, methods: [self::POST_METHOD])]
+    #[OA\Tag(name: 'Money')]
     #[OA\Response(
         response: 200,
         description: 'Init payment cashin',
-//        content:  new Model(type: MoneyInitResponse::class)
+        content: new OA\JsonContent(
+            ref: new Model(type: InitMoneyResultDto::class),
+            type: 'object'
+        )
     )]
     #[Security(name: self::X_AUTH_TOKEN)]
     #[Security(name: self::WSO2_Authorization)]
@@ -63,10 +73,14 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     }
 
     #[Route(self::MP_INIT, name: self::MP_INIT_NAME, methods: [self::POST_METHOD])]
+    #[OA\Tag(name: 'Money')]
     #[OA\Response(
         response: 200,
         description: 'Init payment merchant payment',
-//        content:  new Model(type: MoneyInitResponse::class)
+        content: new OA\JsonContent(
+            ref: new Model(type: InitMoneyResultDto::class),
+            type: 'object'
+        )
     )]
     #[Security(name: self::X_AUTH_TOKEN)]
     #[Security(name: self::WSO2_Authorization)]
@@ -79,6 +93,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
     }
 
     #[Route(self::CASHOUT_PAY, name: self::CASHOUT_PAY_NAME, methods: [self::POST_METHOD])]
+    #[OA\Tag(name: 'Money')]
     #[OA\RequestBody(ref: PayMoneyDto::class)]
     #[OA\Response(
         response: 200,
@@ -97,6 +112,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
 
     #[Route(self::CASHIN_PAY, name: self::CASHIN_PAY_NAME, methods: [self::POST_METHOD])]
 //    #[OA\RequestBody(new Model(type: PayMoneyDto::class))]
+    #[OA\Tag(name: 'Money')]
     #[OA\Response(
         response: 200,
         description: 'Pay cashin',
@@ -114,6 +130,7 @@ class MoneyController extends AbstractController implements \App\Controller\Mone
 
     #[Route(self::MP_PAY, name: self::MP_PAY_NAME, methods: [self::POST_METHOD])]
 //    #[OA\RequestBody(new Model(type: PayMoneyDto::class))]
+    #[OA\Tag(name: 'Money')]
     #[OA\Response(
         response: 200,
         description: 'Pay merchant payment',

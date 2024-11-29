@@ -115,7 +115,9 @@ class MoneyServiceImpl implements MoneyService
 
         try{
             $tokenValues = $this->JWTManager->parse($wsoAutorization);
+            dd($tokenValues);
         }catch (\Throwable $throwable){
+            dd($throwable);
             throw new InvalidMoneyCredentialsException(
                 exceptionValues: ExceptionList::EXPIRY_JWT_TOKEN
             );

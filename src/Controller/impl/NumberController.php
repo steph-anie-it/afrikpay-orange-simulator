@@ -7,6 +7,7 @@ use App\Dto\AccountCreateResultDto;
 use App\Dto\Command;
 use App\Dto\CommandMessage;
 use App\Dto\ExecuteCommandDto;
+use App\Dto\GenerateNumberResultDto;
 use App\Dto\PayAirtimeDto;
 use App\Dto\PayAirtimeFullDto;
 use App\Dto\PayAirtimeResultDto;
@@ -43,7 +44,12 @@ class NumberController extends AbstractController implements INumberController
     #[OA\Response(
         response: 200,
         description: 'Execute command',
-//        content: new Model(type: GenerateAirtimeResponse::class)
+        content: new OA\JsonContent(example: new OA\Schema(
+            properties: [
+                new OA\Property(ref: new Model(type: GenerateNumberResultDto::class))
+            ],
+            type: 'object'
+        ))
     )]
     public function generateNumber(#[MapQueryParameter] ?string $number=null,#[MapQueryParameter] ?bool $isMoney = true): GenerateAirtimeResponse
     {
@@ -60,7 +66,12 @@ class NumberController extends AbstractController implements INumberController
     #[OA\Response(
         response: 200,
         description: 'Execute command',
-//        content: new Model(type: Command::class)
+        content: new OA\XmlContent(example: new OA\Schema(
+            type: 'object',
+            properties: [
+                new OA\Property(property: 'foo', ref: new Model(type: CommandResultDto::class))
+            ]
+        ))
     )]
     public function executeCommand(Request $request, \App\Dto\Command $payAirtimeDto): \App\Response\Command
     {
@@ -77,7 +88,12 @@ class NumberController extends AbstractController implements INumberController
     #[OA\Response(
         response: 200,
         description: 'Pay airtime',
-//        content:  new Model(type: Command::class)
+        content: new OA\XmlContent(example: new OA\Schema(
+            type: 'object',
+            properties: [
+                new OA\Property(property: 'foo', ref: new Model(type: CommandResultDto::class))
+            ]
+        ))
     )]
     public function payAirtime(Request $request,   #[MapRequestPayload] Command $payAirtimeDto): \App\Response\Command
     {

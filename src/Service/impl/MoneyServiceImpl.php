@@ -214,7 +214,7 @@ class MoneyServiceImpl implements MoneyService
         }
     }
 
-    public const PAIEMENT_MESSAGE_TEMPLATE = '%s %s %s from %s to %s  Paiment %s done successfully';
+    public const PAIEMENT_MESSAGE_TEMPLATE = '%s %s %s from %s to %s  Paiment %s done successfully. Ancien solde %s nouveau solde %s';
 
     public function pay(PayMoneyDto $payMoneyDto,?string $key = null): PayMoneyResultDto
     {
@@ -338,6 +338,7 @@ class MoneyServiceImpl implements MoneyService
             $account->setOldbalance($balance);
             $account->setNewbalance($newBalance);
             $account->setBalance($newBalance);
+            $transaction->setBalanceold($balance);
             $this->accountRepository->save($account);
         }
         $transaction->setMsisdn($payMoneyDto->subscriberMsisdn);
@@ -395,7 +396,9 @@ class MoneyServiceImpl implements MoneyService
                 $transaction->getAmount(),
                 $transaction->getMsisdn(),
                 $transaction->getAccountnumber(),
-                $transaction->getPaytoken()
+                $transaction->getPaytoken(),
+                $transaction->getBalanceold(),
+                $transaction->getBalance()
             )
         );
     }

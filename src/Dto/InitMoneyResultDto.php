@@ -9,8 +9,8 @@ class InitMoneyResultDto
   //mp MP
 
     public function __construct(
-        public PayMoneyDto $data = new PayMoneyDto(),
-        public ?string     $message = "Payment request successfully initiated"
+        public ?PayTokenDto $data = null,
+        public ?string $message = "Payment request successfully initiated"
     )
     {
 

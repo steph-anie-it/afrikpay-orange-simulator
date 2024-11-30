@@ -4,6 +4,14 @@ nelmio_api_doc:
             title: Orange Simulator
             description: Orange Simulator
             version: 1.0.0
+        securitySchemes:
+            Bearer:
+                type: http
+                scheme: bearer
+            ApiKeyAuth:
+                type: apiKey
+                in: header
+                name: X-API-Key
     areas: # to filter documented areas
         path_patterns:
             - ^/(?!/doc$) # Accepts routes under /api except /api/doc

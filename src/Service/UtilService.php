@@ -151,7 +151,7 @@ class UtilService
 
             $hasPropery = false;
             $toLower = strtolower($propertyName);
-            if ($dest->hasProperty($toLower){
+            if ($dest->hasProperty($toLower)){
                 $destinationName = $toLower;
                 $hasPropery = true;
             }

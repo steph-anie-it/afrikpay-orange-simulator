@@ -800,7 +800,7 @@ class NumberServiceImpl implements NumberService
     {
         $this->checkOperation($command->TYPE,$_ENV['API_BALANCE']);
 
-        $transaction   = $this->utilService->map($command,Transaction::class,toUpper: true);
+        $transaction   = $this->utilService->map($command,Transaction::class,toLower: true);
 
         $account =  $this->checkCredentials($commandHeader,$transaction);
 

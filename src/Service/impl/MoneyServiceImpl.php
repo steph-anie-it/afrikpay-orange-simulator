@@ -135,20 +135,20 @@ class MoneyServiceImpl implements MoneyService
             );
         }*/
 
-        $username = $tokenValues[self::USERNAME];
-        $account = $this->accountRepository->findOneBy(['username' => $username]);
-
-        if (!$account){
-            throw new InvalidMoneyCredentialsException(
-                $username,
-                exceptionValues: ExceptionList::BAD_WSO2_TOKEN
-            );
-        }
-        if ($account->getToken() != $wsoAutorization){
-            throw new InvalidMoneyCredentialsException(
-                exceptionValues: ExceptionList::INVALID_USER_JWT_TOKEN
-            );
-        }
+//        $username = $tokenValues[self::USERNAME];
+//        $account = $this->accountRepository->findOneBy(['username' => $username]);
+//
+//        if (!$account){
+//            throw new InvalidMoneyCredentialsException(
+//                $username,
+//                exceptionValues: ExceptionList::BAD_WSO2_TOKEN
+//            );
+//        }
+//        if ($account->getToken() != $wsoAutorization){
+//            throw new InvalidMoneyCredentialsException(
+//                exceptionValues: ExceptionList::INVALID_USER_JWT_TOKEN
+//            );
+//        }
     }
 
     public function init(?string $key = null): InitMoneyResultDto

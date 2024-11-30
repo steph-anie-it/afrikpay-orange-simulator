@@ -801,7 +801,7 @@ class NumberServiceImpl implements NumberService
         $this->checkOperation($command->TYPE,$_ENV['API_BALANCE']);
 
         $transaction   = $this->utilService->map($command,Transaction::class,toLower: true);
-        dd($transaction,$command);
+
         $account =  $this->checkCredentials($commandHeader,$transaction);
 
         $undefined = $this->utilService->getUndefinedParams($command,['AMOUNT','ACCOUNTNUM','SELECTOR','LANGUAGE2','LANGUAGE1','TXNID','MSISDN2'],['NOTIFICATION_MSISDN','LOGINID','PASSWORD','EXTCODE']);

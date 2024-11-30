@@ -135,23 +135,41 @@ class UtilService
         $destination = new $destinationClass();
         $dest = new \ReflectionObject(new $destinationClass());
         $properties = $object->getProperties();
-
+        $destinationName = "";
         foreach ($properties as $property){
             $property->setAccessible(true);
             $propertyName = $property->getName();
+            /*
             if($toUpper){
-                $propertyName = strtoupper($propertyName);
+                $destinationName = strtoupper($propertyName);
             }
             if ($toLower){
-                $propertyName = strtolower($propertyName);
-            }
+                $destinationName = strtolower($propertyName);
+            }*/
 
             $propertyValue = $property->getValue($sourceClass);
 
-            if(!$dest->hasProperty($propertyName)) {
+            $hasPropery = false;
+            $toLower = strtolower($propertyName);
+            if ($dest->hasProperty($toLower){
+                $destinationName = $toLower;
+                $hasPropery = true;
+            }
+            $toUpper = strtoupper($propertyName);
+            if (!$hasPropery && $dest->hasProperty($toUpper)){
+                $destinationName = $toUpper;
+                $hasPropery = true;
+            }
+
+            if (!$hasPropery && $dest->hasProperty($propertyName)){
+                $destinationName = $propertyName;
+                $hasPropery = true;
+            }
+
+            if(!$hasPropery) {
                 continue;
             }
-            $destProperty = $dest->getProperty($propertyName);
+            $destProperty = $dest->getProperty($destinationName);
             $destProperty->setAccessible(true);
             try{
                 $destProperty->setValue($destination, $propertyValue);

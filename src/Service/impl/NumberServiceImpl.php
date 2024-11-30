@@ -294,7 +294,7 @@ class NumberServiceImpl implements NumberService
         if(!$this->passwordHasher->isPasswordValid($account,$mappedAccount->getPassword())){
             throw new GeneralException("",$transaction,ResponseStatus::INVALID_CREDENTIAL);
         }
-        
+
         if($transaction &&  $account->getPin() != $transaction->getPin()){
             throw new GeneralException("",$transaction,ResponseStatus::BAD_PIN_NUMBER);
         }

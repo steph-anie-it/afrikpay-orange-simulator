@@ -112,20 +112,20 @@ class Transaction
     private ?string $selector = null;
 
     #[ORM\Column(length: 255,nullable: true)]
-    private ?string $paytoken;
+    private ?string $paytoken = null;
 
     #[ORM\Column(length: 255,nullable: true)]
-    private ?string $amount;
+    private ?string $amount = null;
 
     #[ORM\Column(length: 255,nullable: true)]
-    private ?string $status;
+    private ?string $status = null;
 
 
     #[ORM\Column(length: 255,nullable: true)]
-    private ?string $accountnumber;
+    private ?string $accountnumber = null;
 
     #[ORM\Column(length: 255,nullable: true)]
-    private ?string $notifUrl;
+    private ?string $notifUrl = null;
     public function getId(): ?int
     {
         return $this->id;

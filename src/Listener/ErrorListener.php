@@ -2,6 +2,7 @@
 
 namespace App\Listener;
 
+use App\Dto\MoneyCallbackDto;
 use App\Dto\PayMoneyDataResultDto;
 use App\Dto\PayMoneyResultDto;
 use App\Dto\TokenExceptionDto;
@@ -82,7 +83,9 @@ class ErrorListener implements EventSubscriberInterface
             $data->$status = 'FAILED';
             $displayMessage = sprintf("%s::%s",$code,$userMessage);
             $payMoneyResultDto =  new PayMoneyResultDto($data,$displayMessage);
-            $this->httpService->callBack($data);
+            $callBackDto =  new MoneyCallbackDto($data->payToken,"FAILED",MoneyCallbackDto::FAILED_MESSAGE);
+
+            $this->httpService->callBack($callBackDto,$data->notifUrl);
             $response = new MoneyPayResponse($payMoneyResultDto);
         }else if($throwable instanceof InvalidMoneyCredentialsException){
             $message = $throwable->getMessage();

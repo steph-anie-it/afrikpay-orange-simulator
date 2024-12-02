@@ -2,9 +2,9 @@
 
 namespace App\Service;
 
-use App\Dto\PayMoneyDataResultDto;
+use App\Dto\MoneyCallbackDto;
 
 interface HttpService
 {
-    public function callBack(PayMoneyDataResultDto $payMoneyDataResultDto);
+    public function callBack(MoneyCallbackDto $moneyCallbackDto, string $url);
 }

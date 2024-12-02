@@ -149,27 +149,9 @@ class UtilService
 
             $propertyValue = $property->getValue($sourceClass);
 
-            $hasPropery = false;
-            $toLower = strtolower($propertyName);
-            if ($dest->hasProperty($toLower)){
-                $destinationName = $toLower;
-                $hasPropery = true;
-            }
-            $toUpper = strtoupper($propertyName);
-            if (!$hasPropery && $dest->hasProperty($toUpper)){
-                $destinationName = $toUpper;
-                $hasPropery = true;
-            }
 
-            if (!$hasPropery && $dest->hasProperty($propertyName)){
-                $destinationName = $propertyName;
-                $hasPropery = true;
-            }
-
-            if(!$hasPropery) {
-                continue;
-            }
-            $destProperty = $dest->getProperty($destinationName);
+            $destProperty = $this->getClasseProperty($propertyName,$dest);
+            if (!$destProperty) continue;
             $destProperty->setAccessible(true);
             try{
                 $destProperty->setValue($destination, $propertyValue);
@@ -179,6 +161,62 @@ class UtilService
         return $destination;
     }
 
+    public function getClasseProperty(string $propertyName, $objectClass){
+        $hasPropery = false;
+        $toLower = strtolower($propertyName);
+        if ($objectClass->hasProperty($toLower)){
+            $destinationName = $toLower;
+            $hasPropery = true;
+        }
+        $toUpper = strtoupper($propertyName);
+        if (!$hasPropery && $objectClass->hasProperty($toUpper)){
+            $destinationName = $toUpper;
+            $hasPropery = true;
+        }
+
+        if (!$hasPropery && $objectClass->hasProperty($propertyName)){
+            $destinationName = $propertyName;
+            $hasPropery = true;
+        }
+        $destProperty = null;
+        if($hasPropery) {
+            $destProperty = $objectClass->getProperty($destinationName);
+        }
+        return $destProperty;
+    }
+
+    public function mapObjecToArray(mixed $sourceClass, array $destination, array $converter = []){
+        $object = new \ReflectionObject($sourceClass);
+        $mappedArray = [];
+        $sourceKey = null;
+        foreach ($destination as $key => $value){
+            $keyValue = $key;
+            $sourceKey = $key;
+
+            $property = $this->getClasseProperty($sourceKey,$object);
+            if (!$property){
+              $property = $this->getClasseProperty($value,$object);
+              $keyValue = $value;
+              $sourceKey = $value;
+            }
+            $mappedArray[$keyValue] = null;
+            if (sizeof($converter) > 0){
+                if (array_key_exists($keyValue,$converter)){
+                    $sourceKey = $converter[$keyValue];
+                    $property = $this->getClasseProperty($sourceKey,$object);
+                }
+            }
+
+            if (!$property){
+                continue;
+            }
+            if ($object->hasProperty($sourceKey)){
+                $sourceProperty = $object->getProperty($sourceKey);
+                $mappedArray[$keyValue] = $sourceProperty->getValue($sourceClass);
+            }
+        }
+        return $mappedArray;
+    }
 
     public function mapArray(array $source, string $destinationClass,bool $toUpper=true){
         $destination = new $destinationClass();

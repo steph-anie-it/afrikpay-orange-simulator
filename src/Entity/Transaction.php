@@ -28,7 +28,16 @@ class Transaction
     public const FAILED = 'FAILED';
     public const CANCELLED = 'CANCELLED';
     public const SUCCESS = 'SUCCESS';
-
+    public const CUSTOMER_NAME = 'customerName';
+    public const ACCOUNT_NAME = 'accountName';
+    public const AMOUNT = 'amount';
+    public const BALANCE_NEW = 'balancenew';
+    public const BALANCE_OLD = 'balanceold';
+    public const PAY_TOKEN = 'paytoken';
+    public const ACCOUNT_NUMBER = 'accountnumber';
+    public const BALANCE = 'balance' ;
+    public const FEES = 'fees';
+    public const COMMISSION = 'commission';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -83,6 +92,7 @@ class Transaction
     #[ORM\Column(type:Types::FLOAT,nullable: true)]
     private ?float $balancenew =  null;
 
+
     #[ORM\Column(type:Types::FLOAT,nullable: true)]
     private ?float $balancedata = null;
 
@@ -126,6 +136,24 @@ class Transaction
 
     #[ORM\Column(length: 255,nullable: true)]
     private ?string $notifUrl = null;
+
+
+    #[ORM\Column(length: 255,nullable: true)]
+    private ?string $accountName = null;
+
+
+    #[ORM\Column(length: 255,nullable: true)]
+    private ?string $customerName = null;
+
+    #[ORM\Column(length: 255,nullable: true)]
+    private ?string $errorMessage = null;
+
+    #[ORM\Column(length: 255,nullable: true)]
+    private ?string $fees = null;
+
+    #[ORM\Column(length: 255,nullable: true)]
+    private ?string $commission = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -516,4 +544,90 @@ class Transaction
     {
         $this->notifUrl = $notifUrl;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getAccountName(): ?string
+    {
+        return $this->accountName;
+    }
+
+
+    /**
+     * @param string|null $accountName
+     */
+    public function setAccountName(?string $accountName): void
+    {
+        $this->accountName = $accountName;
+    }
+
+
+    /**
+     * @param string|null $customerName
+     */
+    public function setCustomerName(?string $customerName): void
+    {
+        $this->customerName = $customerName;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCustomerName(): ?string
+    {
+        return $this->customerName;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getErrorMessage(): ?string
+    {
+        return $this->errorMessage;
+    }
+
+    /**
+     * @param string|null $errorMessage
+     */
+    public function setErrorMessage(?string $errorMessage): void
+    {
+        $this->errorMessage = $errorMessage;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCommission(): ?string
+    {
+        return $this->commission;
+    }
+
+
+    /**
+     * @param string|null $commission
+     */
+    public function setCommission(?string $commission): void
+    {
+        $this->commission = $commission;
+    }
+
+
+    /**
+     * @param string|null $fees
+     */
+    public function setFees(?string $fees): void
+    {
+        $this->fees = $fees;
+    }
+
+
+    /**
+     * @return string|null
+     */
+    public function getFees(): ?string
+    {
+        return $this->fees;
+    }
+
 }

@@ -357,7 +357,8 @@ class MoneyServiceImpl implements MoneyService
 
         $accountBalance =  $account->getBalance();
         $numberBalance = $number->getNumbernewbalance();
-        if (in_array($transaction->getMoneytype(),[MoneyController::CASHOUT,MoneyController::MP])) {
+        $moneyType = $transaction->getMoneytype();
+        if (in_array($moneyType,[MoneyController::CASHOUT])) {
             if ($amount > $accountBalance) {
                 $transaction->setStatus(Transaction::FAILED);
                 $transaction->setErrorMessage(ExceptionList::NOT_ENOUGH_FUND[ExceptionList::MESSAGE]);
@@ -370,7 +371,23 @@ class MoneyServiceImpl implements MoneyService
             $newAccountBalance = $accountBalance - $amount + $commission ;
             $newNumberBalance = $numberBalance + $amount;
             $balance = $newAccountBalance;
-        }else{
+        }else if(in_array($moneyType,[MoneyController::MP])){
+            $numberBalance = $number->getNumbernewbalance();
+            $newAccountBalance = $accountBalance + $amount ;
+            $newNumberBalance = $numberBalance - $amount;
+
+            if ($amount > $newNumberBalance) {
+                $transaction->setStatus(Transaction::FAILED);
+                $transaction->setErrorMessage(ExceptionList::NOT_ENOUGH_FUND[ExceptionList::MESSAGE]);
+                $this->transactionRepository->save($transaction);
+                throw new MoneyPayException(
+                    exceptionValues: ExceptionList::NOT_ENOUGH_FUND,
+                    payMoneyDataResultDto: $payMoneyDataResultDto
+                );
+            }
+            $balance = $newAccountBalance;
+        }
+        else{
             $numberBalance = $number->getNumbernewbalance();
             $newAccountBalance = $accountBalance + $amount ;
             $newNumberBalance = $numberBalance - $amount;

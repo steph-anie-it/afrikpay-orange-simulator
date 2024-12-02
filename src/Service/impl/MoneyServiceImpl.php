@@ -368,8 +368,8 @@ class MoneyServiceImpl implements MoneyService
                     payMoneyDataResultDto: $payMoneyDataResultDto
                 );
             }
-            $newAccountBalance = $accountBalance - $amount + $commission ;
-            $newNumberBalance = $numberBalance + $amount;
+            $newAccountBalance = $accountBalance + $amount + $commission ;
+            $newNumberBalance = $numberBalance - $amount;
             $balance = $newAccountBalance;
         }else if(in_array($moneyType,[MoneyController::MP])){
             $numberBalance = $number->getNumbernewbalance();

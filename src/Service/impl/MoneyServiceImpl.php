@@ -355,9 +355,10 @@ class MoneyServiceImpl implements MoneyService
 
         $amount = floatval($payMoneyDto->amount) + $fees;
 
-        $balance =  $account->getBalance();
+        $accountBalance =  $account->getBalance();
+        $numberBalance = $number->getNumbernewbalance();
         if (in_array($transaction->getMoneytype(),[MoneyController::CASHOUT,MoneyController::MP])) {
-            if ($amount > $balance) {
+            if ($amount > $accountBalance) {
                 $transaction->setStatus(Transaction::FAILED);
                 $transaction->setErrorMessage(ExceptionList::NOT_ENOUGH_FUND[ExceptionList::MESSAGE]);
                 $this->transactionRepository->save($transaction);
@@ -366,14 +367,32 @@ class MoneyServiceImpl implements MoneyService
                     payMoneyDataResultDto: $payMoneyDataResultDto
                 );
             }
-            $newBalance = $balance - $amount ;
+            $newAccountBalance = $accountBalance - $amount + $commission ;
+            $newNumberBalance = $numberBalance + $amount;
+            $balance = $newAccountBalance;
         }else{
-            $newBalance = $balance + $amount ;
+            $numberBalance = $number->getNumbernewbalance();
+            $newAccountBalance = $accountBalance + $amount ;
+            $newNumberBalance = $numberBalance - $amount;
+            if ($amount > $newNumberBalance){
+                $transaction->setStatus(Transaction::FAILED);
+                $transaction->setErrorMessage(ExceptionList::NOT_ENOUGH_FUND[ExceptionList::MESSAGE]);
+                $this->transactionRepository->save($transaction);
+                throw new MoneyPayException(
+                    exceptionValues: ExceptionList::NOT_ENOUGH_FUND,
+                    payMoneyDataResultDto: $payMoneyDataResultDto
+                );
+            }
+            $balance = $newNumberBalance;
         }
 
-            $account->setOldbalance($balance);
-            $account->setNewbalance($newBalance);
-            $account->setBalance($newBalance);
+            $account->setOldbalance($accountBalance);
+            $account->setNewbalance($newAccountBalance);
+            $account->setBalance($newAccountBalance);
+
+            $number->setNumberbalance($newNumberBalance);
+            $number->setNumbernewbalance($newNumberBalance);
+
             $transaction->setBalanceold($balance);
             $transaction->setFees($fees);
             $transaction->setCommission($commission);
@@ -391,8 +410,9 @@ class MoneyServiceImpl implements MoneyService
         $transaction->setAccountnumber($account->getMsisdn());
         $transaction->setAccountName($account->getUsername());
         $transaction = $this->transactionRepository->save($transaction);
+        $number = $this->numberRepository->save($number);
         $payMoneyDataResultDto->status = $transaction->getStatus();
-        $payMoneyDataResultDto = $this->buildPayMoneyResultDto($transaction,$key,$payMoneyDataResultDto,$number,$account);
+        $payMoneyDataResultDto = $this->buildPayMoneyResultDto($transaction,$key,$payMoneyDataResultDto);
         try{
             $callBackDto = $this->utilService->map($payMoneyDataResultDto->data,MoneyCallbackDto::class);
             $this->httpService->callBack($callBackDto,$payMoneyDto->notifUrl);
@@ -403,7 +423,7 @@ class MoneyServiceImpl implements MoneyService
     }
 
 
-    public function buildPayMoneyResultDto(Transaction $transaction, string $key, ?PayMoneyDataResultDto $payMoneyDataResultDto = null,?Number $number = null, ?Account $account = null): PayMoneyResultDto
+    public function buildPayMoneyResultDto(Transaction $transaction, string $key, ?PayMoneyDataResultDto $payMoneyDataResultDto = null): PayMoneyResultDto
     {
         if (!$payMoneyDataResultDto){
             $payMoneyDataResultDto = new PayMoneyDataResultDto();
@@ -434,7 +454,7 @@ class MoneyServiceImpl implements MoneyService
         $confirmmessage = "";
         $initmessage = "";
         if ($key == MoneyController::CASHOUT || $key == MoneyController::MP){
-            $message = $this->getConfirmTransactionMessage($key,$transaction,$number,$account);
+            $message = $this->getConfirmTransactionMessage($key,$transaction);
             $initmessage = $this->getInitTransactionMessage($key,$transaction);
             $payMoneyDataResultDto->$confirmtxnmessage = $message;
             $payMoneyDataResultDto->$inittxnmessage = $initmessage;
@@ -480,7 +500,7 @@ class MoneyServiceImpl implements MoneyService
     }
 
 
-    public function getConfirmTransactionMessage(string $key , Transaction $transaction,?Number $number = null, ?Account $account = null):?string{
+    public function getConfirmTransactionMessage(string $key , Transaction $transaction):?string{
         $messageTemplate = "";
         $converter = [];
         switch ($key){
@@ -496,7 +516,6 @@ class MoneyServiceImpl implements MoneyService
                     self::NET_AMOUNT => Transaction::AMOUNT
                 ];
                 $messageTemplate = $_ENV['MP_CONFIRM_MESSAGE'];
-                $transaction->setBalance($account->getBalance());
                 break;
             }
             case MoneyController::CASHOUT:{
@@ -511,7 +530,6 @@ class MoneyServiceImpl implements MoneyService
                     self::NET_AMOUNT => Transaction::AMOUNT
                 ];
                 $messageTemplate = $_ENV['CASHOUT_CONFIRM_MESSAGE'];
-                $transaction->setBalance(floatval($number->getNumberbalance()));
                 break;
             }
         }

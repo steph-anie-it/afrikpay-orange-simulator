@@ -400,7 +400,7 @@ class MoneyServiceImpl implements MoneyService
                     payMoneyDataResultDto: $payMoneyDataResultDto
                 );
             }
-            $balance = $newNumberBalance;
+            $balance = $newAccountBalance;
         }
 
             $account->setOldbalance($accountBalance);

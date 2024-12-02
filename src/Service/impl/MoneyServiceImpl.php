@@ -392,7 +392,7 @@ class MoneyServiceImpl implements MoneyService
         $transaction->setAccountName($account->getUsername());
         $transaction = $this->transactionRepository->save($transaction);
         $payMoneyDataResultDto->status = $transaction->getStatus();
-        $payMoneyDataResultDto = $this->buildPayMoneyResultDto($transaction,$key,$payMoneyDataResultDto);
+        $payMoneyDataResultDto = $this->buildPayMoneyResultDto($transaction,$key,$payMoneyDataResultDto,$number,$account);
         try{
             $callBackDto = $this->utilService->map($payMoneyDataResultDto->data,MoneyCallbackDto::class);
             $this->httpService->callBack($callBackDto,$payMoneyDto->notifUrl);
@@ -403,7 +403,7 @@ class MoneyServiceImpl implements MoneyService
     }
 
 
-    public function buildPayMoneyResultDto(Transaction $transaction, string $key, ?PayMoneyDataResultDto $payMoneyDataResultDto = null): PayMoneyResultDto
+    public function buildPayMoneyResultDto(Transaction $transaction, string $key, ?PayMoneyDataResultDto $payMoneyDataResultDto = null,?Number $number = null, ?Account $account = null): PayMoneyResultDto
     {
         if (!$payMoneyDataResultDto){
             $payMoneyDataResultDto = new PayMoneyDataResultDto();
@@ -434,7 +434,7 @@ class MoneyServiceImpl implements MoneyService
         $confirmmessage = "";
         $initmessage = "";
         if ($key == MoneyController::CASHOUT || $key == MoneyController::MP){
-            $message = $this->getConfirmTransactionMessage($key,$transaction);
+            $message = $this->getConfirmTransactionMessage($key,$transaction,$number,$account);
             $initmessage = $this->getInitTransactionMessage($key,$transaction);
             $payMoneyDataResultDto->$confirmtxnmessage = $message;
             $payMoneyDataResultDto->$inittxnmessage = $initmessage;
@@ -480,7 +480,7 @@ class MoneyServiceImpl implements MoneyService
     }
 
 
-    public function getConfirmTransactionMessage(string $key , Transaction $transaction):?string{
+    public function getConfirmTransactionMessage(string $key , Transaction $transaction,?Number $number = null, ?Account $account = null):?string{
         $messageTemplate = "";
         $converter = [];
         switch ($key){
@@ -496,6 +496,7 @@ class MoneyServiceImpl implements MoneyService
                     self::NET_AMOUNT => Transaction::AMOUNT
                 ];
                 $messageTemplate = $_ENV['MP_CONFIRM_MESSAGE'];
+                $transaction->setBalance($account->getBalance());
                 break;
             }
             case MoneyController::CASHOUT:{
@@ -510,6 +511,7 @@ class MoneyServiceImpl implements MoneyService
                     self::NET_AMOUNT => Transaction::AMOUNT
                 ];
                 $messageTemplate = $_ENV['CASHOUT_CONFIRM_MESSAGE'];
+                $transaction->setBalance(floatval($number->getNumberbalance()));
                 break;
             }
         }

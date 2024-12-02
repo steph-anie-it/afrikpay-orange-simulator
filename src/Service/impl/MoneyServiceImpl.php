@@ -359,15 +359,7 @@ class MoneyServiceImpl implements MoneyService
         $numberBalance = $number->getNumbernewbalance();
         $moneyType = $transaction->getMoneytype();
         if (in_array($moneyType,[MoneyController::CASHOUT])) {
-            if ($amount > $accountBalance) {
-                $transaction->setStatus(Transaction::FAILED);
-                $transaction->setErrorMessage(ExceptionList::NOT_ENOUGH_FUND[ExceptionList::MESSAGE]);
-                $this->transactionRepository->save($transaction);
-                throw new MoneyPayException(
-                    exceptionValues: ExceptionList::NOT_ENOUGH_FUND,
-                    payMoneyDataResultDto: $payMoneyDataResultDto
-                );
-            }
+            $this->checkBalance($amount,$accountBalance,$transaction,$payMoneyDataResultDto);
             $newAccountBalance = $accountBalance + $amount + $commission ;
             $newNumberBalance = $numberBalance - $amount;
             $balance = $newAccountBalance;
@@ -375,31 +367,14 @@ class MoneyServiceImpl implements MoneyService
             $numberBalance = $number->getNumbernewbalance();
             $newAccountBalance = $accountBalance + $amount ;
             $newNumberBalance = $numberBalance - $amount;
-
-            if ($amount > $newNumberBalance) {
-                $transaction->setStatus(Transaction::FAILED);
-                $transaction->setErrorMessage(ExceptionList::NOT_ENOUGH_FUND[ExceptionList::MESSAGE]);
-                $this->transactionRepository->save($transaction);
-                throw new MoneyPayException(
-                    exceptionValues: ExceptionList::NOT_ENOUGH_FUND,
-                    payMoneyDataResultDto: $payMoneyDataResultDto
-                );
-            }
+            $this->checkBalance($amount,$numberBalance,$transaction,$payMoneyDataResultDto);
             $balance = $newAccountBalance;
         }
         else{
             $numberBalance = $number->getNumbernewbalance();
             $newAccountBalance = $accountBalance + $amount ;
             $newNumberBalance = $numberBalance - $amount;
-            if ($amount > $newNumberBalance){
-                $transaction->setStatus(Transaction::FAILED);
-                $transaction->setErrorMessage(ExceptionList::NOT_ENOUGH_FUND[ExceptionList::MESSAGE]);
-                $this->transactionRepository->save($transaction);
-                throw new MoneyPayException(
-                    exceptionValues: ExceptionList::NOT_ENOUGH_FUND,
-                    payMoneyDataResultDto: $payMoneyDataResultDto
-                );
-            }
+            $this->checkBalance($amount,$newNumberBalance,$transaction,$payMoneyDataResultDto);
             $balance = $newAccountBalance;
         }
 
@@ -439,6 +414,19 @@ class MoneyServiceImpl implements MoneyService
         return $payMoneyDataResultDto;
     }
 
+
+    public function checkBalance(float $amount, float $balance, Transaction $transaction,PayMoneyDataResultDto $payMoneyDataResultDto)
+    {
+        if ($amount > $balance){
+            $transaction->setStatus(Transaction::FAILED);
+            $transaction->setErrorMessage(ExceptionList::NOT_ENOUGH_FUND[ExceptionList::MESSAGE]);
+            $this->transactionRepository->save($transaction);
+            throw new MoneyPayException(
+                exceptionValues: ExceptionList::NOT_ENOUGH_FUND,
+                payMoneyDataResultDto: $payMoneyDataResultDto
+            );
+        }
+    }
 
     public function buildPayMoneyResultDto(Transaction $transaction, string $key, ?PayMoneyDataResultDto $payMoneyDataResultDto = null): PayMoneyResultDto
     {

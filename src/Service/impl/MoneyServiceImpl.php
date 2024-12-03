@@ -400,6 +400,11 @@ class MoneyServiceImpl implements MoneyService
         $transaction->setPin($account->getPin());
         $transaction->setAccountnumber($account->getMsisdn());
         $transaction->setAccountName($account->getUsername());
+        $transaction->setAmount($payMoneyDto->amount);
+        $transaction->setMsisdn($payMoneyDto->subscriberMsisdn);
+        $transaction->setAccountnumber($payMoneyDto->channelUserMsisdn);
+        $transaction->setAccountName($account->getUsername());
+        $transaction->setNotifUrl($payMoneyDto->notifUrl);
         $transaction = $this->transactionRepository->save($transaction);
         $number = $this->numberRepository->save($number);
         $payMoneyDataResultDto->status = $transaction->getStatus();

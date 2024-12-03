@@ -85,9 +85,9 @@ class ErrorListener implements EventSubscriberInterface
             $payMoneyResultDto =  new PayMoneyResultDto($data,$displayMessage);
             $callBackDto =  new MoneyCallbackDto($data->payToken,"FAILED",MoneyCallbackDto::FAILED_MESSAGE);
             $exceptionEvent->allowCustomResponseCode();
-            $response->setStatusCode(200);
             $this->httpService->callBack($callBackDto,$data->notifUrl);
             $response = new MoneyPayResponse($payMoneyResultDto);
+            $response->setStatusCode(200);
         }else if($throwable instanceof InvalidMoneyCredentialsException){
             $message = $throwable->getMessage();
             if ($throwable->clearMessage){

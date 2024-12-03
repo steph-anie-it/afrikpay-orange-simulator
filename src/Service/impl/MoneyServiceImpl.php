@@ -211,14 +211,13 @@ class MoneyServiceImpl implements MoneyService
         $minAmount = floatval($_ENV['MIN_MONEY_TRANSACTION_AMOUNT']);
 
         $maxAmount = floatval($_ENV['MAX_MONEY_TRANSACTION_AMOUNT']);
-
-        if($amount < $minAmount){
+        if(($amount < $minAmount)){
             $message = sprintf(self::BADTRHREEPARAMETER_FORMAT,strval($amount),strval($minAmount),strval($maxAmount));
             throw new GeneralException($message,$transaction,ResponseStatus::INVALID_AMOUNT_MIN_MAX);
         }
 
 
-        if($amount > $maxAmount){
+        if(($amount > $maxAmount)){
             $message = sprintf(self::BADTRHREEPARAMETER_FORMAT,strval($amount),strval($minAmount),strval($maxAmount));
             throw new GeneralException($message,$transaction,ResponseStatus::INVALID_AMOUNT_MIN_MAX);
         }

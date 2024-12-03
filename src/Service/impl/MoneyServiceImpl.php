@@ -472,7 +472,7 @@ class MoneyServiceImpl implements MoneyService
         $payMoneyDataResultDto->$inittxnstatus = 200;
         $payMoneyDataResultDto->$txnid = $transaction->getTxnid();
 
-        $payMoneyDataResultDto->$confirmtxnstatus = "SUCCESSFULL";
+        $payMoneyDataResultDto->$confirmtxnstatus = 200;
         $payMoneyDataResultDto->$txnmode = 'SUCCESSFULL';
         return new PayMoneyResultDto(
             $payMoneyDataResultDto,

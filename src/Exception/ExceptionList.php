@@ -13,7 +13,7 @@ class ExceptionList
      public  const UNKNOWN_MONEY_NUMBER = [  self::CODE => '0064' , self::MESSAGE => 'Unknown mobile money number'];
 
     public  const INVALID_MONEY_NUMBER = [  self::CODE => '0065' , self::MESSAGE => 'Invalid mobile money number'];
-     public  const INVALID_PIN_NUMBER = [ self::CODE => '0068', self::MESSAGE => 'Pin number'];
+     public  const INVALID_PIN_NUMBER = [ self::CODE => '0068', self::MESSAGE => 'Wrong Pin number'];
      public  const INVALID_PAY_TOKEN_NUMBER = [ self::CODE => '0069', self::MESSAGE => 'Invalid paytoken'];
      public  const INVALID_ORDER_ID = [ self::CODE => '0070', self::MESSAGE => 'Invalid Order id'];
      public  const INVALID_PAY_TOKEN_TRANSACTION_NUMBER = [ self::CODE => '0071', self::MESSAGE => 'Invalid transaction paytoken'];

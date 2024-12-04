@@ -15,7 +15,10 @@ class MoneyPayException extends  GeneralException
     {
         $this->payResultDto = $payMoneyDataResultDto;
         $this->messageCode = $exceptionValues[ExceptionList::CODE];
-        $this->clearMessage = $exceptionValues[ExceptionList::MESSAGE];
+        $messageValue = $exceptionValues[ExceptionList::MESSAGE];
+        $this->clearMessage = !empty($message) ?
+            sprintf($messageValue,$message)
+            : $messageValue;
         parent::__construct($message,null,ResponseStatus::UNKNOW_ERROR,$code);
     }
 }

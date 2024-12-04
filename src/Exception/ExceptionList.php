@@ -37,7 +37,7 @@ class ExceptionList
     public  const INVALID_USER_JWT_TOKEN = [ self::CODE => '0083', self::MESSAGE => 'Invalid User JWT token '];
 
     public  const INVALID_ACCOUNT_CHANNEL_JWT_TOKEN = [ self::CODE => '0084', self::MESSAGE => 'Invalid  Account Money channel'];
-    public  const INVALID_URL = [ self::CODE => '0085', self::MESSAGE => 'Invalid  Url'];
+    public  const INVALID_URL = [ self::CODE => '0085', self::MESSAGE => 'Invalid  Url %s'];
 
     public  const PAY_TOKEN_NOT_FOUND = [ self::CODE => '0086', self::MESSAGE => 'Pay token not found'];
     public  const PAY_TOKEN_NOT_PROVIDED = [ self::CODE => '0087', self::MESSAGE => 'Pay token not provided'];

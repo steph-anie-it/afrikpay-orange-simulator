@@ -241,7 +241,7 @@ class MoneyServiceImpl implements MoneyService
         $this->checkCredentials();
         $payMoneyDataResultDto = $this->utilService->map($payMoneyDto,PayMoneyDataResultDto::class);
 
-        if (!preg_match($_ENV['URL_REGEX'],$payMoneyDto->notifUrl){
+        if (!preg_match($_ENV['URL_REGEX'],$payMoneyDto->notifUrl)){
             throw new MoneyPayException(
                 message: $payMoneyDto->notifUrl,
                 exceptionValues: ExceptionList::INVALID_URL,

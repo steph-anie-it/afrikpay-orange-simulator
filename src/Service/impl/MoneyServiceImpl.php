@@ -240,7 +240,7 @@ class MoneyServiceImpl implements MoneyService
     {
         $this->checkCredentials();
         $payMoneyDataResultDto = $this->utilService->map($payMoneyDto,PayMoneyDataResultDto::class);
-
+        dd(preg_match($_ENV['URL_REGEX'],$payMoneyDto->notifUrl));
         if (preg_match($_ENV['URL_REGEX'],$payMoneyDto->notifUrl) != 1){
             throw new MoneyPayException(
                 message: $payMoneyDto->notifUrl,

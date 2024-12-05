@@ -462,12 +462,16 @@ class MoneyServiceImpl implements MoneyService
         }
         $confirmmessage = "";
         $initmessage = "";
-        if ($key == MoneyController::CASHOUT || $key == MoneyController::MP){
-            $message = $this->getConfirmTransactionMessage($key,$transaction);
-            $initmessage = $this->getInitTransactionMessage($key,$transaction);
-            $payMoneyDataResultDto->$confirmtxnmessage = $message;
-            $payMoneyDataResultDto->$inittxnmessage = $initmessage;
-        }
+//        if ($key == MoneyController::CASHOUT || $key == MoneyController::MP){
+//            $message = $this->getConfirmTransactionMessage($key,$transaction);
+//            $initmessage = $this->getInitTransactionMessage($key,$transaction);
+//            $payMoneyDataResultDto->$confirmtxnmessage = $message;
+//            $payMoneyDataResultDto->$inittxnmessage = $initmessage;
+//        }
+        $message = $this->getConfirmTransactionMessage($key,$transaction);
+        $initmessage = $this->getInitTransactionMessage($key,$transaction);
+        $payMoneyDataResultDto->$confirmtxnmessage = $message;
+        $payMoneyDataResultDto->$inittxnmessage = $initmessage;
 
         $payMoneyDataResultDto->$inittxnstatus = 200;
         $payMoneyDataResultDto->$txnid = $transaction->getTxnid();

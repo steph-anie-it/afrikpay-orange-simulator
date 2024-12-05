@@ -89,7 +89,7 @@ class ErrorListener implements EventSubscriberInterface
             $exceptionEvent->allowCustomResponseCode();
             $this->httpService->callBack($callBackDto,$data->notifUrl);
 
-            $moneyErrorDto = new MoneyErrorDto(code:$code,message: $message,description: $message);
+            $moneyErrorDto = new MoneyErrorDto(code:$code,message: $displayMessage,description: $displayMessage);
 
             $response = new MoneyErrorResponse($moneyErrorDto);
             $response->setStatusCode(200);

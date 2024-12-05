@@ -459,19 +459,18 @@ class MoneyServiceImpl implements MoneyService
         if ($key == MoneyController::CASHIN){
            $message = $this->getTransactionMessage($key,$transaction);
            $payMoneyDataResultDto->$txnmessage = $message;
+           $payMoneyDataResultDto->$confirmtxnmessage = $message;
+           $payMoneyDataResultDto->$inittxnmessage = $message;
         }
         $confirmmessage = "";
         $initmessage = "";
-//        if ($key == MoneyController::CASHOUT || $key == MoneyController::MP){
-//            $message = $this->getConfirmTransactionMessage($key,$transaction);
-//            $initmessage = $this->getInitTransactionMessage($key,$transaction);
-//            $payMoneyDataResultDto->$confirmtxnmessage = $message;
-//            $payMoneyDataResultDto->$inittxnmessage = $initmessage;
-//        }
-        $message = $this->getConfirmTransactionMessage($key,$transaction);
-        $initmessage = $this->getInitTransactionMessage($key,$transaction);
-        $payMoneyDataResultDto->$confirmtxnmessage = $message;
-        $payMoneyDataResultDto->$inittxnmessage = $initmessage;
+        if ($key == MoneyController::CASHOUT || $key == MoneyController::MP){
+            $message = $this->getConfirmTransactionMessage($key,$transaction);
+            $initmessage = $this->getInitTransactionMessage($key,$transaction);
+            $payMoneyDataResultDto->$confirmtxnmessage = $message;
+            $payMoneyDataResultDto->$inittxnmessage = $initmessage;
+        }
+
 
         $payMoneyDataResultDto->$inittxnstatus = 200;
         $payMoneyDataResultDto->$txnid = $transaction->getTxnid();

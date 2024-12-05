@@ -454,7 +454,7 @@ class MoneyServiceImpl implements MoneyService
         $payMoneyDataResultDto->status = $transaction->getStatus();
         $payMoneyDataResultDto->payToken = $transaction->getPaytoken();
         $payMoneyDataResultDto->notifUrl = $transaction->getNotifUrl();
-        $payMoneyDataResultDto->$txnstatus = 'SUCCESSFULL';
+        $payMoneyDataResultDto->$txnstatus = 200;
         $message = "";
         if ($key == MoneyController::CASHIN){
            $message = $this->getTransactionMessage($key,$transaction);

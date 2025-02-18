@@ -1,30 +1,48 @@
 pipeline {
     agent any
+
     environment {
-        ENV_FILES = " "
+        COMPOSE_FILE = 'docker-compose.yml'
     }
+
     stages {
-        stage ('deploy') {
+        stage('Checkout') {
             steps {
-                sshagent(credentials : ['ssh-new-prod-server-ssh']) {
-                    sh '''
-                        ssh -o StrictHostKeyChecking=no -t $USERNAME@$SSH_PROD_HOST  "
-                        cd /var/www/AfrikPaySimulator && sudo rm -R afrikpay-com-orange-simulator-cr || true &&
-                        git clone -b qa https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/afrikpay/afrikpay-com-orange-simulator-cr.git &&
-                        cd afrikpay-com-orange-simulator-cr && rm *.lock && sudo mkdir var/ var/log var/cache var/cache/prod var/cache/dev &&
-                        sudo chmod -R 777 var/ var/log/  var/cache var/cache/prod var/cache/dev  && composer install && sudo chmod -R 777 var/ && sudo rm -rf var/cache/prod var/cache/dev && php bin/console d:s:u -f --complete
-                        "
-                    '''
-                }
+                git branch: 'main', url: 'https://github.com/steph-anie-it/afrikpay-orange-simulator.git'
             }
-          post{
-            always{
-               deleteDir()
-               emailext to: "$RECIPIENTS",
-               subject: "${env.JOB_NAME}:${currentBuild.currentResult}",
-               body: "${currentBuild.currentResult}: Job ${env.JOB_NAME} is ${currentBuild.currentResult}."
+        }
+
+        stage('Build Docker') {
+            steps {
+                echo 'Construction des conteneurs Docker...'
+                sh 'docker-compose build'
             }
-         }
+        }
+
+        stage('Démarrage des Conteneurs') {
+            steps {
+                echo 'Démarrage des services Docker...'
+                sh 'docker-compose up -d'
+            }
+        }
+
+        stage('Migrations & Cache') {
+            steps {
+                echo 'Exécution des migrations et clear cache...'
+                sh 'docker-compose exec php php bin/console doctrine:migrations:migrate --no-interaction'
+                sh 'docker-compose exec php php bin/console cache:clear'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Déploiement réussi !'
+        }
+        failure {
+            echo 'Échec du pipeline !'
         }
     }
 }
+
+

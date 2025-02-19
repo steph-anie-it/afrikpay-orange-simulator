@@ -1,42 +1,50 @@
-# Utilise l'image officielle PHP avec Apache
-FROM php:8.1.14-apache
+FROM composer:2.4.2 as composer
 
-# Mise à jour et installation des dépendances
-RUN apt-get update && apt-get install -y \
+# Utilise l'image officielle PHP avec Apache
+FROM php:8.1-fpm-alpine3.16
+
+# Installation des paquets système et des extensions PHP
+RUN apk add --no-cache \
+    bash \
+    git \
+    icu-dev \
+    autoconf \
     libzip-dev \
     unzip \
+    build-base \
     libxml2-dev \
-    libonig-dev \
-    libpq-dev \
-    && docker-php-ext-install \
+    oniguruma-dev 
+
+# Installation des extensions PHP nécessaires
+RUN docker-php-ext-install \
     pdo_mysql \
+    mbstring \
     zip \
-    && a2enmod rewrite \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    intl
 
 # Installe APCu pour la mise en cache
-RUN pecl install apcu && docker-php-ext-enable apcu
-
-# Ajoute le ServerName dans la configuration Apache
-RUN echo "ServerName localhost" > /etc/apache2/conf-available/servername.conf \
-    && a2enconf servername
-
-# Installe Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+RUN pecl install apcu \
+    && docker-php-ext-enable apcu \
+    && rm -rf /tmp/pear
 
 # Définit le répertoire de travail
-WORKDIR /var/www/html/
+WORKDIR /usr/src/app
 
-# Copie les fichiers de l'application Symfony
-COPY . /var/www/html/
+# Copie des fichiers composer pour optimiser le cache Docker
+COPY composer.json composer.lock /usr/src/app/
 
-# Ajuste les droits
-RUN chown -R www-data:www-data /var/www/html/ \
-    && chmod -R 775 /var/www/html/var \
-    && chmod -R 775 /var/www/html/public
+# Copie de Composer depuis l'image temporaire
+COPY --from=composer /usr/bin/composer /usr/bin/composer
 
-# Expose le port 8000
-EXPOSE 8000
+# Ajout de vendor/bin au PATH pour exécuter Symfony et Composer
+ENV PATH="/usr/src/app/vendor/bin:${PATH}"
 
-# Lancement d'Apache
-CMD ["apache2-foreground"]
+# Installation des dépendances PHP avec Composer
+RUN composer install --no-scripts --no-dev --optimize-autoloader
+
+# Copie du reste du projet après installation des dépendances (optimisation du cache)
+COPY . /usr/src/app/
+
+# Ajuste les droits et passe à un utilisateur non-root pour plus de sécurité
+RUN chown -R 1000:1000 /usr/src/app
+USER 1000:1000

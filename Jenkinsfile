@@ -11,7 +11,7 @@ pipeline {
         stage('Build application') {
             steps {
                 sh 'composer install'
-                sh 'symfony.exe server:start -d'
+                sh 'symfony server:start -d'
             }
         }
     }

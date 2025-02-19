@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_COMPOSE_FILE = "docker-compose.yml"  // Chemin vers ton fichier Docker Compose
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/steph-anie-it/afrikpay-orange-simulator.git'
+            }
+        }
+
+        stage('Build et démarrage des conteneurs') {
+            steps {
+                sh 'docker compose down'  // Arrête les anciens conteneurs (si existants)
+                sh 'docker compose build' // Build des images Docker
+                sh 'docker compose up -d' // Démarrage en arrière-plan
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Déploiement réussi !'
+        }
+        failure {
+            echo 'Échec du déploiement !'
+            sh 'docker compose logs'
+        }
+    }
+}

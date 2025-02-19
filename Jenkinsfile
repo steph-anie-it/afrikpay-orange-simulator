@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        MAIL_RECIPIENTS = "junior.kuate@afrikpay.com"  // 📧 Adresse email pour recevoir le baseline PHPStan
+        MAIL_RECIPIENTS = "stephanietakam@it.afrikpay.com"  // 📧 Adresse email pour recevoir le baseline PHPStan
     }
 
     stages {
@@ -36,7 +36,7 @@ pipeline {
                 expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
             }
             steps {
-                sh 'symfony server:start' // 🔄 Remplace par ta commande de déploiement
+                sh 'symfony server:start --daemon' // 🔄 Remplace par ta commande de déploiement
             }
         }
 

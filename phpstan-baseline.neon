@@ -1,0 +1,1261 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Parameter \#1 \$content of class Symfony\\Component\\HttpFoundation\\Response constructor expects string\|null, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/impl/NumberController.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: src/DependencyInjection/JsonEnvVarLoader.php
+
+		-
+			message: '#^Method App\\Dto\\ExecuteCommandDto\:\:__construct\(\) has parameter \$header with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Dto/ExecuteCommandDto.php
+
+		-
+			message: '#^Method App\\Dto\\PayAirtimeFullDto\:\:__construct\(\) has parameter \$header with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Dto/PayAirtimeFullDto.php
+
+		-
+			message: '#^Property App\\Dto\\PayAirtimeTransactionResultDto\:\:\$completed_on has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Dto/PayAirtimeTransactionResultDto.php
+
+		-
+			message: '#^Property App\\Dto\\PayAirtimeTransactionResultDto\:\:\$requested_on has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Dto/PayAirtimeTransactionResultDto.php
+
+		-
+			message: '#^Method App\\Dto\\PayDataDto\:\:__construct\(\) has parameter \$header with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Dto/PayDataDto.php
+
+		-
+			message: '#^Method App\\Dto\\PayDataFullDto\:\:__construct\(\) has parameter \$header with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Dto/PayDataFullDto.php
+
+		-
+			message: '#^Method App\\Dto\\TransactionStatusFullDto\:\:__construct\(\) has parameter \$header with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Dto/TransactionStatusFullDto.php
+
+		-
+			message: '#^Method App\\Entity\\Account\:\:getUserIdentifier\(\) should return string but returns string\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Entity/Account.php
+
+		-
+			message: '#^Property App\\Entity\\Account\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Account.php
+
+		-
+			message: '#^Property App\\Entity\\Message\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Message.php
+
+		-
+			message: '#^Property App\\Entity\\Number\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Number.php
+
+		-
+			message: '#^Method App\\Entity\\Transaction\:\:getTxnStatus\(\) should return string\|null but returns int\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Entity/Transaction.php
+
+		-
+			message: '#^Property App\\Entity\\Transaction\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Transaction.php
+
+		-
+			message: '#^Property App\\Entity\\Transaction\:\:\$txnStatus \(int\|null\) does not accept string\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Entity/Transaction.php
+
+		-
+			message: '#^Property App\\Entity\\Transaction\:\:\$txnStatus \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Transaction.php
+
+		-
+			message: '#^Parameter \#3 \$responseStatus of method App\\Exception\\GeneralException\:\:__construct\(\) expects App\\Model\\ResponseStatus, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Exception/AccountNotFoundException.php
+
+		-
+			message: '#^Parameter \#4 \$code of method App\\Exception\\GeneralException\:\:__construct\(\) expects int, Throwable\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Exception/AccountNotFoundException.php
+
+		-
+			message: '#^Call to sprintf contains 0 placeholders, 1 value given\.$#'
+			identifier: argument.sprintf
+			count: 1
+			path: src/Exception/BadPinNumberException.php
+
+		-
+			message: '#^Constructor of class App\\Exception\\BadPinNumberException has an unused parameter \$previous\.$#'
+			identifier: constructor.unusedParameter
+			count: 1
+			path: src/Exception/BadPinNumberException.php
+
+		-
+			message: '#^Parameter \#3 \$responseStatus of method App\\Exception\\GeneralException\:\:__construct\(\) expects App\\Model\\ResponseStatus, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Exception/InsufficientBalanceException.php
+
+		-
+			message: '#^Parameter \#4 \$code of method App\\Exception\\GeneralException\:\:__construct\(\) expects int, Throwable\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Exception/InsufficientBalanceException.php
+
+		-
+			message: '#^Parameter \#3 \$responseStatus of method App\\Exception\\GeneralException\:\:__construct\(\) expects App\\Model\\ResponseStatus, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Exception/InvalidAccountPhoneNumberException.php
+
+		-
+			message: '#^Parameter \#4 \$code of method App\\Exception\\GeneralException\:\:__construct\(\) expects int, Throwable\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Exception/InvalidAccountPhoneNumberException.php
+
+		-
+			message: '#^Parameter \#3 \$responseStatus of method App\\Exception\\GeneralException\:\:__construct\(\) expects App\\Model\\ResponseStatus, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Exception/InvalidApiKeyException.php
+
+		-
+			message: '#^Parameter \#4 \$code of method App\\Exception\\GeneralException\:\:__construct\(\) expects int, Throwable\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Exception/InvalidApiKeyException.php
+
+		-
+			message: '#^Parameter \#3 \$responseStatus of method App\\Exception\\GeneralException\:\:__construct\(\) expects App\\Model\\ResponseStatus, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Exception/InvalidCredentialsException.php
+
+		-
+			message: '#^Parameter \#4 \$code of method App\\Exception\\GeneralException\:\:__construct\(\) expects int, Throwable\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Exception/InvalidCredentialsException.php
+
+		-
+			message: '#^Call to sprintf contains 0 placeholders, 1 value given\.$#'
+			identifier: argument.sprintf
+			count: 1
+			path: src/Exception/InvalidDataException.php
+
+		-
+			message: '#^Parameter \#3 \$responseStatus of method App\\Exception\\GeneralException\:\:__construct\(\) expects App\\Model\\ResponseStatus, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Exception/InvalidDataException.php
+
+		-
+			message: '#^Parameter \#4 \$code of method App\\Exception\\GeneralException\:\:__construct\(\) expects int, Throwable\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Exception/InvalidDataException.php
+
+		-
+			message: '#^Method App\\Exception\\InvalidMoneyCredentialsException\:\:__construct\(\) has parameter \$exceptionValues with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Exception/InvalidMoneyCredentialsException.php
+
+		-
+			message: '#^Property App\\Exception\\InvalidMoneyCredentialsException\:\:\$clearMessage has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Exception/InvalidMoneyCredentialsException.php
+
+		-
+			message: '#^Property App\\Exception\\InvalidMoneyCredentialsException\:\:\$messageCode has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Exception/InvalidMoneyCredentialsException.php
+
+		-
+			message: '#^Parameter \#3 \$responseStatus of method App\\Exception\\GeneralException\:\:__construct\(\) expects App\\Model\\ResponseStatus, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Exception/InvalidPhoneNumberException.php
+
+		-
+			message: '#^Parameter \#4 \$code of method App\\Exception\\GeneralException\:\:__construct\(\) expects int, Throwable\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Exception/InvalidPhoneNumberException.php
+
+		-
+			message: '#^Method App\\Exception\\MoneyPayException\:\:__construct\(\) has parameter \$exceptionValues with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Exception/MoneyPayException.php
+
+		-
+			message: '#^Property App\\Exception\\MoneyPayException\:\:\$clearMessage has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Exception/MoneyPayException.php
+
+		-
+			message: '#^Property App\\Exception\\MoneyPayException\:\:\$messageCode has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Exception/MoneyPayException.php
+
+		-
+			message: '#^Property App\\Exception\\MoneyPayException\:\:\$payResultDto has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Exception/MoneyPayException.php
+
+		-
+			message: '#^Method App\\Exception\\MoneyStatusException\:\:__construct\(\) has parameter \$exceptionValues with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Exception/MoneyStatusException.php
+
+		-
+			message: '#^Property App\\Exception\\MoneyStatusException\:\:\$clearMessage has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Exception/MoneyStatusException.php
+
+		-
+			message: '#^Property App\\Exception\\MoneyStatusException\:\:\$messageCode has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Exception/MoneyStatusException.php
+
+		-
+			message: '#^Comparison operation "\>" between int\<1, max\> and 0 is always true\.$#'
+			identifier: greater.alwaysTrue
+			count: 1
+			path: src/Exception/ParameterNotFoundException.php
+
+		-
+			message: '#^Parameter \#3 \$responseStatus of method App\\Exception\\GeneralException\:\:__construct\(\) expects App\\Model\\ResponseStatus, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Exception/ParameterNotFoundException.php
+
+		-
+			message: '#^Parameter \#4 \$code of method App\\Exception\\GeneralException\:\:__construct\(\) expects int, Throwable\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Exception/ParameterNotFoundException.php
+
+		-
+			message: '#^Parameter \#3 \$responseStatus of method App\\Exception\\GeneralException\:\:__construct\(\) expects App\\Model\\ResponseStatus, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Exception/UnableToGeneratePhoneException.php
+
+		-
+			message: '#^Parameter \#4 \$code of method App\\Exception\\GeneralException\:\:__construct\(\) expects int, Throwable\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Exception/UnableToGeneratePhoneException.php
+
+		-
+			message: '#^Parameter \#3 \$responseStatus of method App\\Exception\\GeneralException\:\:__construct\(\) expects App\\Model\\ResponseStatus, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Exception/UnspecifedParameterException.php
+
+		-
+			message: '#^Parameter \#4 \$code of method App\\Exception\\GeneralException\:\:__construct\(\) expects int, Throwable\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Exception/UnspecifedParameterException.php
+
+		-
+			message: '#^Cannot call method setStatusCode\(\) on Symfony\\Component\\HttpFoundation\\Response\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Listener/ErrorListener.php
+
+		-
+			message: '#^Method App\\Listener\\ErrorListener\:\:onKernelException\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Listener/ErrorListener.php
+
+		-
+			message: '#^Parameter \#1 \$response of method Symfony\\Component\\HttpKernel\\Event\\RequestEvent\:\:setResponse\(\) expects Symfony\\Component\\HttpFoundation\\Response, Symfony\\Component\\HttpFoundation\\Response\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Listener/ErrorListener.php
+
+		-
+			message: '#^Property App\\Listener\\ErrorListener\:\:\$router is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: src/Listener/ErrorListener.php
+
+		-
+			message: '#^Match arm comparison between \$this\(App\\Model\\OperationNature\) and App\\Model\\OperationNature\:\:BALANCE is always false\.$#'
+			identifier: match.alwaysFalse
+			count: 1
+			path: src/Model/OperationNature.php
+
+		-
+			message: '#^Match expression does not handle remaining value\: App\\Model\\OperationNature\:\:STATUS$#'
+			identifier: match.unhandled
+			count: 1
+			path: src/Model/OperationNature.php
+
+		-
+			message: '#^Match expression does not handle remaining value\: App\\Model\\ResponseStatus\:\:INVALID_KEY$#'
+			identifier: match.unhandled
+			count: 2
+			path: src/Model/ResponseStatus.php
+
+		-
+			message: '#^Class App\\Repository\\AccountRepository has PHPDoc tag @method for method findBy\(\) parameter \#1 \$criteria with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Repository/AccountRepository.php
+
+		-
+			message: '#^Class App\\Repository\\AccountRepository has PHPDoc tag @method for method findBy\(\) parameter \#2 \$orderBy with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Repository/AccountRepository.php
+
+		-
+			message: '#^Class App\\Repository\\AccountRepository has PHPDoc tag @method for method findOneBy\(\) parameter \#1 \$criteria with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Repository/AccountRepository.php
+
+		-
+			message: '#^Class App\\Repository\\AccountRepository has PHPDoc tag @method for method findOneBy\(\) parameter \#2 \$orderBy with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Repository/AccountRepository.php
+
+		-
+			message: '#^Class App\\Repository\\MessageRepository has PHPDoc tag @method for method findBy\(\) parameter \#1 \$criteria with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Repository/MessageRepository.php
+
+		-
+			message: '#^Class App\\Repository\\MessageRepository has PHPDoc tag @method for method findBy\(\) parameter \#2 \$orderBy with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Repository/MessageRepository.php
+
+		-
+			message: '#^Class App\\Repository\\MessageRepository has PHPDoc tag @method for method findOneBy\(\) parameter \#1 \$criteria with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Repository/MessageRepository.php
+
+		-
+			message: '#^Class App\\Repository\\MessageRepository has PHPDoc tag @method for method findOneBy\(\) parameter \#2 \$orderBy with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Repository/MessageRepository.php
+
+		-
+			message: '#^Class App\\Repository\\NumberRepository has PHPDoc tag @method for method findBy\(\) parameter \#1 \$criteria with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Repository/NumberRepository.php
+
+		-
+			message: '#^Class App\\Repository\\NumberRepository has PHPDoc tag @method for method findBy\(\) parameter \#2 \$orderBy with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Repository/NumberRepository.php
+
+		-
+			message: '#^Class App\\Repository\\NumberRepository has PHPDoc tag @method for method findOneBy\(\) parameter \#1 \$criteria with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Repository/NumberRepository.php
+
+		-
+			message: '#^Class App\\Repository\\NumberRepository has PHPDoc tag @method for method findOneBy\(\) parameter \#2 \$orderBy with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Repository/NumberRepository.php
+
+		-
+			message: '#^Class App\\Repository\\TransactionRepository has PHPDoc tag @method for method findBy\(\) parameter \#1 \$criteria with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Repository/TransactionRepository.php
+
+		-
+			message: '#^Class App\\Repository\\TransactionRepository has PHPDoc tag @method for method findBy\(\) parameter \#2 \$orderBy with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Repository/TransactionRepository.php
+
+		-
+			message: '#^Class App\\Repository\\TransactionRepository has PHPDoc tag @method for method findOneBy\(\) parameter \#1 \$criteria with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Repository/TransactionRepository.php
+
+		-
+			message: '#^Class App\\Repository\\TransactionRepository has PHPDoc tag @method for method findOneBy\(\) parameter \#2 \$orderBy with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Repository/TransactionRepository.php
+
+		-
+			message: '#^Method App\\Response\\AccountAirtimeResponse\:\:__construct\(\) has parameter \$headers with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Response/AccountAirtimeResponse.php
+
+		-
+			message: '#^Method App\\Response\\AccountMoneyResponse\:\:__construct\(\) has parameter \$headers with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Response/AccountMoneyResponse.php
+
+		-
+			message: '#^Method App\\Response\\Command\:\:__construct\(\) has parameter \$headers with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Response/Command.php
+
+		-
+			message: '#^Method App\\Response\\ErrorResponse\:\:__construct\(\) has parameter \$headers with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Response/ErrorResponse.php
+
+		-
+			message: '#^Method App\\Response\\GenerateAirtimeResponse\:\:__construct\(\) has parameter \$headers with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Response/GenerateAirtimeResponse.php
+
+		-
+			message: '#^Method App\\Response\\MoneyErrorResponse\:\:__construct\(\) has parameter \$headers with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Response/MoneyErrorResponse.php
+
+		-
+			message: '#^Method App\\Response\\MoneyInitResponse\:\:__construct\(\) has parameter \$headers with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Response/MoneyInitResponse.php
+
+		-
+			message: '#^Method App\\Response\\MoneyPayResponse\:\:__construct\(\) has parameter \$headers with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Response/MoneyPayResponse.php
+
+		-
+			message: '#^Constructor of class App\\Response\\PayAirtimeResponse has an unused parameter \$json\.$#'
+			identifier: constructor.unusedParameter
+			count: 1
+			path: src/Response/PayAirtimeResponse.php
+
+		-
+			message: '#^Method App\\Response\\PayAirtimeResponse\:\:__construct\(\) has parameter \$headers with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Response/PayAirtimeResponse.php
+
+		-
+			message: '#^Method App\\Response\\TokenResponse\:\:__construct\(\) has parameter \$headers with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Response/TokenResponse.php
+
+		-
+			message: '#^Method App\\Service\\HttpService\:\:callBack\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/HttpService.php
+
+		-
+			message: '#^Method App\\Service\\NumberService\:\:check\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/NumberService.php
+
+		-
+			message: '#^Method App\\Service\\NumberService\:\:checkBalance\(\) has parameter \$headers with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/NumberService.php
+
+		-
+			message: '#^Method App\\Service\\NumberService\:\:listAccount\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/NumberService.php
+
+		-
+			message: '#^Method App\\Service\\NumberService\:\:payNumberAirtime\(\) has parameter \$headers with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/NumberService.php
+
+		-
+			message: '#^Argument of an invalid type list\<string\>\|false supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 2
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Call to an undefined method App\\Service\\UtilService\:\:mapFullArray\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Call to function is_array\(\) with array will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 2
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Instantiated class App\\Service\\SimpleXMLElement not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Loose comparison using \=\= between 0 and 0 will always evaluate to true\.$#'
+			identifier: equal.alwaysTrue
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:arrayToXml\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:arrayToXml\(\) has parameter \$array with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:arrayToXml\(\) has parameter \$entryRootElement with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:arrayToXml\(\) has parameter \$previous with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:arrayToXml\(\) has parameter \$xml with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:dismount\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:dismount\(\) has parameter \$object with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:generateAccountNumber\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:generateBalance\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:generateCustomerName\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:generatePhone\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:generateRandom\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:generateRandomNumber\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:generateRandomRangeNumber\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:generateRandomString\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:generateSelector\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:generateTransactionId\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:generateUnique\(\) should return int but returns float\|int\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:getClasseProperty\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:getClasseProperty\(\) has parameter \$objectClass with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:getPhone\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:getUndefinedParams\(\) has parameter \$emptyValues with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:getUndefinedParams\(\) has parameter \$optionalProp with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:guidv4\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:guidv4\(\) has parameter \$data with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:map\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:mapArray\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:mapArray\(\) has parameter \$source with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:mapObjecToArray\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:mapObjecToArray\(\) has parameter \$converter with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:mapObjecToArray\(\) has parameter \$destination with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:mapObjectXml\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:mapWithUnder\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:mapWithUnderscore\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:object_to_array\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:object_to_array\(\) has parameter \$obj with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\UtilService\:\:randomName\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Negated boolean expression is always true\.$#'
+			identifier: booleanNot.alwaysTrue
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Parameter \#1 \$json of function json_decode expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Parameter \#1 \$objectOrClass of class ReflectionClass constructor expects class\-string\<object\>\|object, class\-string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Parameter \#3 \$limit of function preg_split expects int, null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between non\-falsy\-string and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Variable \$destinationName might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: src/Service/UtilService.php
+
+		-
+			message: '#^Method App\\Service\\impl\\HttpServiceImpl\:\:callBack\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/impl/HttpServiceImpl.php
+
+		-
+			message: '#^Access to an undefined property App\\Dto\\PayMoneyDataResultDto\:\:\$txnmessage\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Service/impl/MoneyServiceImpl.php
+
+		-
+			message: '#^Access to an undefined property App\\Dto\\PayMoneyDataResultDto\:\:\$txnstatus\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Service/impl/MoneyServiceImpl.php
+
+		-
+			message: '#^Binary operation "\-" between string\|null and float results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 3
+			path: src/Service/impl/MoneyServiceImpl.php
+
+		-
+			message: '#^Cannot access property \$headers on Symfony\\Component\\HttpFoundation\\Request\|null\.$#'
+			identifier: property.nonObject
+			count: 3
+			path: src/Service/impl/MoneyServiceImpl.php
+
+		-
+			message: '#^Method App\\Service\\impl\\MoneyServiceImpl\:\:buildMessage\(\) has parameter \$converter with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/impl/MoneyServiceImpl.php
+
+		-
+			message: '#^Method App\\Service\\impl\\MoneyServiceImpl\:\:checkBalance\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/impl/MoneyServiceImpl.php
+
+		-
+			message: '#^Method App\\Service\\impl\\MoneyServiceImpl\:\:checkTokenCredentials\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/impl/MoneyServiceImpl.php
+
+		-
+			message: '#^Parameter \#1 \$amount of method App\\Entity\\Transaction\:\:setAmount\(\) expects string\|null, float given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/MoneyServiceImpl.php
+
+		-
+			message: '#^Parameter \#1 \$amount of method App\\Entity\\Transaction\:\:setAmount\(\) expects string\|null, float\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/MoneyServiceImpl.php
+
+		-
+			message: '#^Parameter \#1 \$balance of method App\\Entity\\Transaction\:\:setBalance\(\) expects float, float\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/MoneyServiceImpl.php
+
+		-
+			message: '#^Parameter \#1 \$commission of method App\\Entity\\Transaction\:\:setCommission\(\) expects string\|null, float given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/MoneyServiceImpl.php
+
+		-
+			message: '#^Parameter \#1 \$fees of method App\\Entity\\Transaction\:\:setFees\(\) expects string\|null, float given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/MoneyServiceImpl.php
+
+		-
+			message: '#^Parameter \#1 \$interval of method DateTime\:\:add\(\) expects DateInterval, DateInterval\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/MoneyServiceImpl.php
+
+		-
+			message: '#^Parameter \#1 \$message of class App\\Exception\\InvalidMoneyCredentialsException constructor expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/MoneyServiceImpl.php
+
+		-
+			message: '#^Parameter \#1 \$pin of method App\\Entity\\Transaction\:\:setPin\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/MoneyServiceImpl.php
+
+		-
+			message: '#^Parameter \#1 \$string of function strlen expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Service/impl/MoneyServiceImpl.php
+
+		-
+			message: '#^Parameter \#1 \$string of function substr expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Service/impl/MoneyServiceImpl.php
+
+		-
+			message: '#^Parameter \#2 \$balance of method App\\Service\\impl\\MoneyServiceImpl\:\:checkBalance\(\) expects float, float\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/MoneyServiceImpl.php
+
+		-
+			message: '#^Parameter \#2 \$balance of method App\\Service\\impl\\MoneyServiceImpl\:\:checkBalance\(\) expects float, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/MoneyServiceImpl.php
+
+		-
+			message: '#^Parameter \#2 \$hash of function password_verify expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Service/impl/MoneyServiceImpl.php
+
+		-
+			message: '#^Parameter \#2 \$key of method App\\Service\\impl\\MoneyServiceImpl\:\:buildPayMoneyResultDto\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/MoneyServiceImpl.php
+
+		-
+			message: '#^Parameter \#2 \$plainPassword of method Symfony\\Component\\PasswordHasher\\Hasher\\UserPasswordHasherInterface\:\:isPasswordValid\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/MoneyServiceImpl.php
+
+		-
+			message: '#^Parameter \#2 \$subject of function preg_match expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/MoneyServiceImpl.php
+
+		-
+			message: '#^Parameter \#2 \$url of method App\\Service\\HttpService\:\:callBack\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/MoneyServiceImpl.php
+
+		-
+			message: '#^Parameter \$message of class App\\Exception\\MoneyPayException constructor expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/MoneyServiceImpl.php
+
+		-
+			message: '#^Property App\\Dto\\PayMoneyDataResultDto\:\:\$confirmtxnstatus \(string\|null\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Service/impl/MoneyServiceImpl.php
+
+		-
+			message: '#^Property App\\Dto\\PayMoneyDataResultDto\:\:\$createtime \(string\|null\) does not accept int\<1, max\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Service/impl/MoneyServiceImpl.php
+
+		-
+			message: '#^Property App\\Dto\\PayMoneyDataResultDto\:\:\$inittxnstatus \(string\|null\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Service/impl/MoneyServiceImpl.php
+
+		-
+			message: '#^Access to an undefined property App\\Dto\\CommandHeaderDto\:\:\$LOGINID\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Call to sprintf contains 2 placeholders, 1 value given\.$#'
+			identifier: argument.sprintf
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Cannot call method format\(\) on DateTimeInterface\|null\.$#'
+			identifier: method.nonObject
+			count: 4
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^If condition is always true\.$#'
+			identifier: if.alwaysTrue
+			count: 2
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Instanceof between App\\Entity\\Account and App\\Entity\\Account will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 2
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Method App\\Service\\impl\\NumberServiceImpl\:\:check\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Method App\\Service\\impl\\NumberServiceImpl\:\:checkBalance\(\) has parameter \$headers with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Method App\\Service\\impl\\NumberServiceImpl\:\:executeCommand\(\) should return App\\Dto\\Result\\CommandResultDto but returns App\\Dto\\Result\\CommandResultDto\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Method App\\Service\\impl\\NumberServiceImpl\:\:generatePhone\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Method App\\Service\\impl\\NumberServiceImpl\:\:isValidDate\(\) has parameter \$date with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Method App\\Service\\impl\\NumberServiceImpl\:\:isValidDate\(\) has parameter \$format with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Method App\\Service\\impl\\NumberServiceImpl\:\:listAccount\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Method App\\Service\\impl\\NumberServiceImpl\:\:payNumberAirtime\(\) has parameter \$headers with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Parameter \#1 \$amount of method App\\Service\\impl\\NumberServiceImpl\:\:getDataFromAmount\(\) expects float, float\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Parameter \#1 \$balancedatanew of method App\\Entity\\Transaction\:\:setBalancedatanew\(\) expects float\|null, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Parameter \#1 \$balancedataold of method App\\Entity\\Transaction\:\:setBalancedataold\(\) expects float\|null, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Parameter \#1 \$character of function ord expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Parameter \#1 \$command of method App\\Service\\impl\\NumberServiceImpl\:\:performAirtimeCommand\(\) expects App\\Dto\\Command, App\\Dto\\Command\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Parameter \#1 \$command of method App\\Service\\impl\\NumberServiceImpl\:\:performInternetCommand\(\) expects App\\Dto\\Command, App\\Dto\\Command\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Parameter \#1 \$command of method App\\Service\\impl\\NumberServiceImpl\:\:performStatusCommand\(\) expects App\\Dto\\Command, App\\Dto\\Command\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Parameter \#1 \$date of method App\\Service\\impl\\NumberServiceImpl\:\:checkDateFormat\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 3
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Parameter \#1 \$format of function sprintf expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 3
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Parameter \#1 \$languageid of method App\\Entity\\Message\:\:setLanguageid\(\) expects string, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Parameter \#1 \$login of method App\\Entity\\Account\:\:setLogin\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Parameter \#1 \$message of class App\\Exception\\AccountNotFoundException constructor expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Parameter \#1 \$message of class App\\Exception\\NonUniqueAccountNameException constructor expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Parameter \#1 \$message of class App\\Exception\\UnableToGeneratePhoneException constructor expects string, int\<1, max\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Parameter \#1 \$numberid of method App\\Entity\\Number\:\:setNumberid\(\) expects string, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Parameter \#1 \$operation of method App\\Service\\impl\\NumberServiceImpl\:\:checkOperation\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 4
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Parameter \#1 \$transactionid of method App\\Entity\\Transaction\:\:setTransactionid\(\) expects string, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Parameter \#1 \$type of method App\\Service\\impl\\NumberServiceImpl\:\:getMessage\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 3
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Parameter \#2 \$commandHeaderDto of method App\\Service\\impl\\NumberServiceImpl\:\:performAirtimeCommand\(\) expects App\\Dto\\CommandHeaderDto, App\\Dto\\CommandHeaderDto\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Parameter \#2 \$commandHeaderDto of method App\\Service\\impl\\NumberServiceImpl\:\:performStatusCommand\(\) expects App\\Dto\\CommandHeaderDto, App\\Dto\\CommandHeaderDto\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Parameter \#2 \$header of method App\\Service\\impl\\NumberServiceImpl\:\:performInternetCommand\(\) expects App\\Dto\\CommandHeaderDto, App\\Dto\\CommandHeaderDto\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Parameter \#2 \$plainPassword of method Symfony\\Component\\PasswordHasher\\Hasher\\UserPasswordHasherInterface\:\:hashPassword\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Parameter \#2 \$plainPassword of method Symfony\\Component\\PasswordHasher\\Hasher\\UserPasswordHasherInterface\:\:isPasswordValid\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Parameter \#4 \$oldBalance of method App\\Service\\impl\\NumberServiceImpl\:\:buildTransaction\(\) expects float, float\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Parameter \#4 \$oldBalance of method App\\Service\\impl\\NumberServiceImpl\:\:buildTransaction\(\) expects float, int\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Parameter \#4 \$oldBalance of method App\\Service\\impl\\NumberServiceImpl\:\:buildTransaction\(\) expects float, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Property App\\Dto\\PayAirtimeDto\:\:\$msisdn \(string\) in isset\(\) is not nullable\.$#'
+			identifier: isset.property
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Property App\\Dto\\Result\\CommandResultDto\:\:\$TXNSTATUS \(string\|null\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Property App\\Dto\\Result\\Record\:\:\$BALANCE \(float\) does not accept float\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php
+
+		-
+			message: '#^Property App\\Dto\\Result\\Record\:\:\$PRODUCTSHORTNAME \(string\) does not accept string\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Service/impl/NumberServiceImpl.php

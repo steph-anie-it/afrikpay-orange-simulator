@@ -31,6 +31,8 @@
         "symfony/yaml": "6.4.*"
     },
     "require-dev": {
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^10.5",
         "symfony/maker-bundle": "^1.51"
     },
     "config": {

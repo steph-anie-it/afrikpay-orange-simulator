@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        MAIL_RECIPIENTS = "stephanietakam@it.afrikpay.com"  // 📧 Adresse email pour recevoir le baseline PHPStan
+        MAIL_RECIPIENTS = "stephanietakam1@gmail.com"  // 📧 Adresse email pour recevoir le baseline PHPStan
     }
 
     stages {

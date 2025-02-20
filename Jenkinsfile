@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        MAIL_RECIPIENTS = "stephanietakam1@gmail.com"  // 📧 Adresse email pour recevoir le baseline PHPStan
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -12,46 +8,45 @@ pipeline {
             }
         }
 
-        stage('Build application') {
+        stage('Installation des dependances') {
             steps {
                 sh 'composer install  --no-interaction --prefer-dist'
             }
         }
 
-        stage('Analyse') {
+        stage('Analyse du code') {
             steps{
-                sh 'vendor/bin/phpstan analyse src --configuration=phpstan.dist.neon || true'
-                sh 'vendor/bin/phpstan analyse src --generate-baseline'
+                sh '''
+                if [ ! -f vendor/bin/phpstan ]; then
+                    composer require --dev phpstan/phpstan
+                else
+                    vendor/bin/phpstan analyse --memory-limit=1G --generate-baseline
+                fi
+                '''
             }
         }
 
-        stage('Test') {
+        stage('Lancement des Tests') {
             steps{
-                sh 'vendor/bin/phpunit --filter GenerateNumberTest'
+                sh '''
+                if [ ! -f vendor/bin/phpunit ]; then
+                    error "Aucun test trouvé ! Échec du déploiement."
+                else
+                    vendor/bin/phpunit
+                fi
+                '''
             }
         }
 
-        stage('Deploy') {
+        stage('Deploiement') {
             when {
-                expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
+                expression { currentBuild.result == 'SUCCESS' }
             }
             steps {
-                sh 'symfony server:start --daemon' // 🔄 Remplace par ta commande de déploiement
-            }
-        }
-
-    }
-
-    post {
-        always {
-            script {
-                if (fileExists('phpstan-baseline.neon')) {
-                    emailext (
-                        to: "${MAIL_RECIPIENTS}",
-                        subject: "PHPStan Baseline - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                        body: "Bonjour,\n\nVoici le fichier PHPStan Baseline du dernier build Jenkins.\n\nCordialement,\nJenkins",
-                        attachmentsPattern: 'phpstan-baseline.neon'
-                    )
+                steps {
+                    sh 'docker compose down'
+                    sh 'docker compose build'
+                    sh 'docker compose up -d'
                 }
             }
         }

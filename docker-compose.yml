@@ -3,14 +3,14 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: symfony_php2
+    container_name: symfony_php
     volumes:
       - .:/usr/src/app
     ports:
       - '8000:80'
     environment:
       - APP_ENV=dev
-      - DATABASE_URL=mysql://orangeairtimesimulator:orangeairtimesimulator@symfony_mysql2:3306/orangeairtimesimulator?serverVersion=8.0&charset=utf8
+      - DATABASE_URL=mysql://orangeairtimesimulator:orangeairtimesimulator@symfony_mysql:3306/orangeairtimesimulator?serverVersion=8.0&charset=utf8
     env_file:
       - .env
     user: 1000:1000
@@ -20,7 +20,7 @@ services:
   mysql:
     image: mysql:8.0
     restart: always
-    container_name: symfony_mysql2
+    container_name: symfony_mysql
     environment:
       MYSQL_ROOT_PASSWORD: orangeairtimesimulator
       MYSQL_DATABASE: orangeairtimesimulator

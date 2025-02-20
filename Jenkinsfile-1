@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_COMPOSE_FILE = "docker-compose.yml"  // Chemin vers ton fichier Docker Compose
-    }
-
     stages {
         stage('Checkout') {
             steps {

@@ -47,7 +47,7 @@ pipeline {
 
     post {
         always {
-            powershell '''
+            sh '''
             Start-Process notepad.exe ${env.WORKSPACE}/phpstan-baseline.neon
             Start-Process chrome.exe ${env.WORKSPACE}/coverage-report/index.html
             '''

@@ -47,9 +47,9 @@ pipeline {
 
     post {
         always {
-            sh '''
-            start chrome.exe $WORKSPACE\coverage-report/index.html
-            start notepad.exe $WORKSPACE/phpstan-baseline.neon
+            she '''
+            start $WORKSPACE/coverage-report/index.html
+            start $WORKSPACE/phpstan-baseline.neon
             '''
         }
         success {

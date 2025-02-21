@@ -27,8 +27,6 @@ RUN pecl install apcu \
     && docker-php-ext-enable apcu \
     && rm -rf /tmp/pear
 
-RUN pecl install xdebug && docker-php-ext-enable xdebug
-
 # Définit le répertoire de travail
 WORKDIR /usr/src/app
 

@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        COVERAGE_REPORT_DIR = "$WORKSPACE/coverage-report"
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -32,9 +36,10 @@ pipeline {
                 if [ ! -f vendor/bin/phpunit ]; then
                     error "Aucun test trouvé ! Échec du déploiement."
                 else
-                    vendor/bin/phpunit
+                    vendor/bin/phpunit --coverage-html ${COVERAGE_REPORT_DIR} --coverage-text
                 fi
                 '''
+                archiveArtifacts artifacts: 'coverage-report/**', fingerprint: true
             }
         }
 

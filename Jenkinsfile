@@ -36,7 +36,7 @@ pipeline {
                 if [ ! -f vendor/bin/phpunit ]; then
                     error "Aucun test trouvé ! Échec du déploiement."
                 else
-                    vendor/bin/phpunit --coverage-html ${COVERAGE_REPORT_DIR} --coverage-text
+                    vendor/bin/phpunit --coverage-html coverage-report --coverage-text --whitelist src/
                 fi
                 '''
                 archiveArtifacts artifacts: 'coverage-report/**', fingerprint: true

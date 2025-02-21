@@ -48,8 +48,8 @@ pipeline {
     post {
         always {
             sh '''
-            start $WORKSPACE/phpstan-baseline.neon
-            start $WORKSPACE/coverage-report/index.html
+            start $WORKSPACE\coverage-report\index.html
+            start $WORKSPACE\phpstan-baseline.neon
             '''
         }
     }

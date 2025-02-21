@@ -57,16 +57,10 @@ pipeline {
 
     post {
         always {
-            script {
-                if (fileExists('phpstan-baseline.neon')) {
-                    emailext (
-                        to: "${MAIL_RECIPIENTS}",
-                        subject: "RAPPORT D'ANALYSE - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                        body: "Bonjour,\n\nVoici le fichier PHPStan Baseline du dernier build Jenkins.\n\nCordialement,\nJenkins",
-                        attachmentsPattern: 'phpstan-baseline.neon'
-                    )
-                }
-            }
+            bat '''
+            start ${env.WORKSPACE}/phpstan-baseline.neon
+            start ${env.WORKSPACE}/coverage-report/index.html
+            '''
         }
     }
 }

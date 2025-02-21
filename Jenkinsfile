@@ -48,9 +48,27 @@ pipeline {
     post {
         always {
             sh '''
-            start $WORKSPACE\\\coverage-report\\\index.html
-            start $WORKSPACE\\phpstan-baseline.neon
+            start chrome.exe $WORKSPACE/coverage-report/index.html
+            start notepad.exe $WORKSPACE/phpstan-baseline.neon
             '''
+        }
+        success {
+            sh "git rev-parse HEAD > last_successful_commit.txt"
+        }
+        failure {
+            script {
+                def lastCommit = sh(script: "cat last_successful_commit.txt", returnStdout: true).trim()
+                if (lastCommit) {
+                    echo "⚠️ Build failed! Rolling back to last successful commit: ${lastCommit}"
+                    sh "git reset --hard ${lastCommit}"
+                    sh "git clean -fd"  // Supprime les fichiers non suivis pour éviter les conflits
+                    sh "git checkout ${lastCommit}"
+                    echo "✅ Rebuild starting..."
+                    build job: env.JOB_NAME, wait: false  // Relance le pipeline
+                } else {
+                    error "Aucun commit stable trouvé !"
+                }
+            }
         }
     }
 }

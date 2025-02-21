@@ -48,8 +48,8 @@ pipeline {
     post {
         always {
             sh '''
-            Start-Process notepad.exe ${env.WORKSPACE}/phpstan-baseline.neon
-            Start-Process chrome.exe ${env.WORKSPACE}/coverage-report/index.html
+            Start-Process notepad.exe $WORKSPACE/phpstan-baseline.neon
+            Start-Process chrome.exe $WORKSPACE/coverage-report/index.html
             '''
         }
     }

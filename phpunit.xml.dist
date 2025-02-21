@@ -23,11 +23,11 @@
         </testsuite>
     </testsuites>
 
-    <coverage>
-        <whitelist>
-            <directory>src/</directory>
-        </whitelist>
-    </coverage>
+    <source>
+        <include>
+            <directory>./src</directory>
+        </include>
+    </source>
 
     <extensions>
     </extensions>

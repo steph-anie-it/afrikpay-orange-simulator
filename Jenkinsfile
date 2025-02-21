@@ -43,23 +43,13 @@ pipeline {
             }
         }
 
-        stage('Deploiement') {
-            when {
-                expression {  currentBuild.result == null || currentBuild.result == 'SUCCESS' }
-            }
-            steps {
-                sh 'docker compose down'
-                sh 'docker compose build'
-                sh 'docker compose up -d'
-            }
-        }
     }
 
     post {
         always {
-            bat '''
-            start ${env.WORKSPACE}/phpstan-baseline.neon
-            start ${env.WORKSPACE}/coverage-report/index.html
+            powershell '''
+            Start-Process notepad.exe ${env.WORKSPACE}/phpstan-baseline.neon
+            Start-Process chrome.exe ${env.WORKSPACE}/coverage-report/index.html
             '''
         }
     }

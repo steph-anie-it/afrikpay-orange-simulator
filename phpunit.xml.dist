@@ -24,9 +24,11 @@
     </testsuites>
 
     <coverage>
-        <include>
-            <directory>src</directory>
-        </include>
+        <filter>
+            <whitelist>
+                <directory>src/</directory>
+            </whitelist>
+        </filter>
     </coverage>
 
     <extensions>

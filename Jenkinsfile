@@ -48,7 +48,7 @@ pipeline {
     post {
         always {
             sh '''
-            start $WORKSPACE\\coverage-report\\index.html
+            start $WORKSPACE\\\coverage-report\\\index.html
             start $WORKSPACE\\phpstan-baseline.neon
             '''
         }

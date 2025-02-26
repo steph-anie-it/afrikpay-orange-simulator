@@ -44,29 +44,21 @@ pipeline {
             }
         }
 
-        stage('Deploiement') {
-            when {
-                expression {  currentBuild.result == null || currentBuild.result == 'SUCCESS' }
+        stage('Send mail') {
+            steps{
+                emailext(
+                    to: "stephaniesanders044@gmail.com",
+                    subject: "${env.JOB_NAME}",
+                    body: "Ceci est un test personnaliser \nVous pouvez consultez les logs depuis cette adresse: https://f3f5-154-72-169-33.ngrok-free.app/afrikpay-orange-simulator/ \nCredentials: \n Username: Steph-Anie \n Password: jscompany",
+                    from: 'stephanietakam1@gmail.com',
+                    mimeType: 'text/plain'
+                )
             }
-            steps {
-                sh 'docker compose down'
-                sh 'docker compose build'
-                sh 'docker compose up -d'
-            }
-        }
+        }
 
     }
 
     post {
-        always{
-            emailext(
-                to: "stephaniesanders044@gmail.com",
-                subject: "${env.JOB_NAME}",
-                body: "Ceci est un test personnaliser \nVous pouvez consultez les logs depuis cette adresse: https://f3f5-154-72-169-33.ngrok-free.app/afrikpay-orange-simulator/ \nCredentials: \n Username: Steph-Anie \n Password: jscompany",
-                from: 'stephanietakam1@gmail.com',
-                mimeType: 'text/plain'
-                )
-        }
         success {
             sh "git rev-parse HEAD > last_successful_commit.txt"
         }

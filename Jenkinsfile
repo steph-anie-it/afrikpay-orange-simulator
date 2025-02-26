@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        MAIL_RECIPIENTS = "stephanietakam@it.afrikpay.com"  // 📧 Adresse email pour recevoir le baseline PHPStan
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -31,17 +27,33 @@ pipeline {
         }
 
         stage('Lancement des Tests') {
-            steps{
-                sh '''
-                if [ ! -f vendor/bin/phpunit ]; then
-                    error "Aucun test trouvé ! Échec du déploiement."
-                else
-                    vendor/bin/phpunit --coverage-html coverage-report --coverage-text
-                fi
-                '''
+            steps {
+                script {
+                    def testExists = sh(script: "[ -f vendor/bin/phpunit ] && echo 'exists'", returnStdout: true).trim()
+                    if (testExists != 'exists') {
+                        error "❌ Aucun test trouvé ! Échec du déploiement."
+                    } else {
+                        def testResult = sh(script: "vendor/bin/phpunit --coverage-html coverage-report --coverage-text --log-junit test-results.xml", returnStatus: true)
+                        if (testResult != 0) {
+                            error "❌ Tests échoués ! Arrêt du pipeline."
+                        }
+                    }
+                }
+                junit 'test-results.xml'  // Intégration avec Test Results Analyzer
                 archiveArtifacts artifacts: 'coverage-report/**', fingerprint: true
             }
         }
+
+        stage('Deploiement') {
+            when {
+                expression {  currentBuild.result == null || currentBuild.result == 'SUCCESS' }
+            }
+            steps {
+                sh 'docker compose down'
+                sh 'docker compose build'
+                sh 'docker compose up -d'
+            }
+        }
 
     }
 

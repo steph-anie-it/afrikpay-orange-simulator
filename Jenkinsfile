@@ -41,11 +41,8 @@ pipeline {
                 junit 'test-results.xml'  // Intégration avec Test Results Analyzer
             }
         }
-        
+
         stage('Deploiement') {
-            when {
-                expression {  currentBuild.result == null || currentBuild.result == 'SUCCESS' }
-            }
             steps {
                 sh 'docker compose down'
                 sh 'docker compose build'

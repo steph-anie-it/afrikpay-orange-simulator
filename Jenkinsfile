@@ -19,10 +19,9 @@ pipeline {
                 sh '''
                 if [ ! -f vendor/bin/phpstan ]; then
                     composer require --dev phpstan/phpstan
-                else
-                    vendor/bin/phpstan analyse --memory-limit=1G --generate-baseline
                 fi
                 '''
+                sh 'vendor/bin/phpstan analyse --memory-limit=1G --generate-baseline'
             }
         }
 
@@ -40,7 +39,6 @@ pipeline {
                     }
                 }
                 junit 'test-results.xml'  // Intégration avec Test Results Analyzer
-                archiveArtifacts artifacts: 'coverage-report/**', fingerprint: true
             }
         }
 
@@ -49,7 +47,7 @@ pipeline {
                 emailext(
                     to: "stephaniesanders044@gmail.com",
                     subject: "${env.JOB_NAME}",
-                    body: "Ceci est un test personnaliser \nVous pouvez consultez les logs depuis cette adresse: https://f3f5-154-72-169-33.ngrok-free.app/afrikpay-orange-simulator/ \nCredentials: \n Username: Steph-Anie \n Password: jscompany",
+                    body: "Ceci est un test personnaliser \nVous pouvez consultez les logs depuis cette adresse: https://af5c-2c0f-2a80-37-a010-41a3-206f-3e63-7df7.ngrok-free.app/afrikpay-orange-simulator/ \nCredentials: \n Username: Steph-Anie \n Password: jscompany",
                     from: 'stephanietakam1@gmail.com',
                     mimeType: 'text/plain'
                 )

@@ -60,8 +60,8 @@ pipeline {
                     subject: "${env.JOB_NAME}",
                     body: "Ceci est un test personnaliser \nVous pouvez consultez les logs depuis cette adresse: https://af5c-2c0f-2a80-37-a010-41a3-206f-3e63-7df7.ngrok-free.app/afrikpay-orange-simulator/ \nCredentials: \n Username: Steph-Anie \n Password: jscompany",
                     from: 'stephanietakam1@gmail.com',
-                    mimeType: 'text/plain'
-                    attachmentsPattern: 'test-results.xml'
+                    mimeType: 'text/plain',
+                    attachmentsPattern: 'phpstan-baseline.neon'
                 )
             }
         }

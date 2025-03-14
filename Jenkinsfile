@@ -17,11 +17,11 @@ pipeline {
         stage('Analyse du code') {
             steps{
                 sh '''
-                if [ ! -f vendor/bin/phpstan ]; then
-                    composer require --dev phpstan/phpstan
-                fi
-                    vendor/bin/phpstan analyse --memory-limit=1G --generate-baseline
-                '''
+                    if [ ! -f vendor/bin/phpstan ]; then
+                        composer require --dev phpstan/phpstan
+                    fi
+                        vendor/bin/phpstan analyse --memory-limit=1G --generate-baseline
+                    '''
             }
         }
 

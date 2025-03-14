@@ -42,21 +42,12 @@ pipeline {
             }
         }
 
-        stage('Deploiement') {
-            when {
-                expression {  currentBuild.result == null || currentBuild.result == 'SUCCESS' }
-            }
-            steps {
-                sh 'docker compose down'
-                sh 'docker compose build'
-                sh 'docker compose up -d'
-            }
-        }
+        
 
         stage('Send mail') {
             steps{
                 emailext(
-                    to: "stephaniesanders044@gmail.com",
+                    to: "stephanietakam@it.afrikpay.com",
                     subject: "${env.JOB_NAME}",
                     body: "Ceci est un test personnaliser \nVous pouvez consultez les logs depuis cette adresse: https://af5c-2c0f-2a80-37-a010-41a3-206f-3e63-7df7.ngrok-free.app/afrikpay-orange-simulator/ \nCredentials: \n Username: Steph-Anie \n Password: jscompany",
                     from: 'stephanietakam1@gmail.com',

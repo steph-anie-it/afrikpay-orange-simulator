@@ -17,11 +17,11 @@ pipeline {
         stage('Analyse du code') {
             steps{
                 sh '''
-                    if [ ! -f vendor/bin/phpstan ]; then
-                        composer require --dev phpstan/phpstan
-                    fi
-                        vendor/bin/phpstan analyse --memory-limit=1G --generate-baseline
-                    '''
+                if [ ! -f vendor/bin/phpstan ]; then
+                    composer require --dev phpstan/phpstan
+                fi
+                vendor/bin/phpstan analyse --memory-limit=1G --generate-baseline
+                '''
             }
         }
 
@@ -58,7 +58,7 @@ pipeline {
                 emailext(
                     to: "stephaniesanders044@gmail.com",
                     subject: "${env.JOB_NAME}",
-                    body: "Ceci est un test personnaliser \nVous pouvez consultez les logs depuis cette adresse: https://f3f5-154-72-169-33.ngrok-free.app/afrikpay-orange-simulator/ \nCredentials: \n Username: Steph-Anie \n Password: jscompany",
+                    body: "Ceci est un test personnaliser \nVous pouvez consultez les logs depuis cette adresse: https://af5c-2c0f-2a80-37-a010-41a3-206f-3e63-7df7.ngrok-free.app/afrikpay-orange-simulator/ \nCredentials: \n Username: Steph-Anie \n Password: jscompany",
                     from: 'stephanietakam1@gmail.com',
                     mimeType: 'text/plain'
                 )

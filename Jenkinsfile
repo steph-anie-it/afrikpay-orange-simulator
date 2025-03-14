@@ -19,9 +19,8 @@ pipeline {
                 sh '''
                 if [ ! -f vendor/bin/phpstan ]; then
                     composer require --dev phpstan/phpstan
-                else
-                    vendor/bin/phpstan analyse --memory-limit=1G --generate-baseline
                 fi
+                    vendor/bin/phpstan analyse --memory-limit=1G --generate-baseline
                 '''
             }
         }
@@ -40,9 +39,19 @@ pipeline {
                     }
                 }
                 junit 'test-results.xml'  // Intégration avec Test Results Analyzer
-                archiveArtifacts artifacts: 'coverage-report/**', fingerprint: true
             }
         }
+
+        stage('Deploiement') {
+            when {
+                expression {  currentBuild.result == null || currentBuild.result == 'SUCCESS' }
+            }
+            steps {
+                sh 'docker compose down'
+                sh 'docker compose build'
+                sh 'docker compose up -d'
+            }
+        }
 
         stage('Send mail') {
             steps{

@@ -1,30 +1,60 @@
 pipeline {
     agent any
 
+    environment {
+        // Configuration des destinataires des e-mails
+        EMAIL_RECIPIENTS = 'stephanietakam@it.afrikpay.com, stephaniesanders044@gmail.com, slovanieslovanie@gmail.com'
+        // Seuil de couverture de code (ex : 80 %)
+        COVERAGE_THRESHOLD = 80
+    }
+
     stages {
+        // Étape 1 : Checkout du code
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/steph-anie-it/afrikpay-orange-simulator.git'
             }
         }
 
+        // Étape 2 : Installation des dépendances
         stage('Installation des dependances') {
             steps {
-                sh 'composer install  --no-interaction --prefer-dist'
+                sh 'composer install --no-interaction --prefer-dist'
             }
         }
 
+        // Étape 3 : Analyse de code avec PHPStan
         stage('Analyse du code') {
-            steps{
-                sh '''
-                if [ ! -f vendor/bin/phpstan ]; then
-                    composer require --dev phpstan/phpstan
-                fi
-                '''
-                sh 'vendor/bin/phpstan analyse --memory-limit=1G --generate-baseline'
+            steps {
+                script {
+                    try {
+                        sh '''
+                        if [ ! -f vendor/bin/phpstan ]; then
+                            composer require --dev phpstan/phpstan
+                        fi
+                        '''
+                        sh 'vendor/bin/phpstan analyse --memory-limit=1G --error-format=json > phpstan-results.json'
+                    } catch (Exception e) {
+                        // En cas d'échec, envoyer un e-mail avec le fichier phpstan-baseline.neon
+                        emailext (
+                            to: "${env.EMAIL_RECIPIENTS}",
+                            subject: "Échec du build : Analyse de code PHPStan",
+                            body: """
+                                L'analyse de code PHPStan a détecté des erreurs.
+                                Raison de l'échec : ${e.getMessage()}
+                                Veuillez consulter le fichier phpstan-baseline.neon joint.
+                            """,
+                            attachmentsPattern: 'phpstan-baseline.neon',
+                            from: 'stepanietakam1@gmail.com',
+                            mimeType: 'text/plain'
+                        )
+                        error "❌ Analyse de code PHPStan échouée. Consultez l'e-mail pour plus de détails."
+                    }
+                }
             }
         }
 
+        // Étape 4 : Exécution des tests
         stage('Lancement des Tests') {
             steps {
                 script {
@@ -32,9 +62,21 @@ pipeline {
                     if (testExists != 'exists') {
                         error "❌ Aucun test trouvé ! Échec du déploiement."
                     } else {
-                        def testResult = sh(script: "vendor/bin/phpunit --coverage-html coverage-report --coverage-text --log-junit test-results.xml", returnStatus: true)
-                        if (testResult != 0) {
-                            error "❌ Tests échoués ! Arrêt du pipeline."
+                        try {
+                            sh 'vendor/bin/phpunit --coverage-html coverage-report --coverage-text --log-junit test-results.xml'
+                        } catch (Exception e) {
+                            // En cas d'échec, envoyer un e-mail avec la raison
+                            emailext (
+                                to: "${env.EMAIL_RECIPIENTS}",
+                                subject: "Échec du build : Tests échoués",
+                                body: """
+                                    Les tests ont échoué.
+                                    Raison de l'échec : ${e.getMessage()}
+                                """,
+                                from: 'stephanietakam1@gmail.com',
+                                mimeType: 'text/plain'
+                            )
+                            error "❌ Tests échoués. Consultez l'e-mail pour plus de détails."
                         }
                     }
                 }
@@ -42,9 +84,38 @@ pipeline {
             }
         }
 
+        // Étape 5 : Vérification de la couverture de code
+        stage('Vérification de la couverture de code') {
+            steps {
+                script {
+                    // Lire le rapport de couverture de code
+                    def coverageReport = readFile('coverage-report/index.html')
+                    def coveragePercentage = (coverageReport =~ /(\d+(\.\d+)?%)/)[0][0].replace('%', '').toInteger()
+
+                    if (coveragePercentage < env.COVERAGE_THRESHOLD.toInteger()) {
+                        // En cas de couverture insuffisante, envoyer un e-mail avec le lien vers le rapport
+                        emailext (
+                            to: "${env.EMAIL_RECIPIENTS}",
+                            subject: "Échec du build : Couverture de code insuffisante",
+                            body: """
+                                La couverture de code est insuffisante.
+                                Couverture actuelle : ${coveragePercentage}%
+                                Seuil requis : ${env.COVERAGE_THRESHOLD}%
+                                Consultez le rapport de couverture : ${env.BUILD_URL}artifact/coverage-report/index.html
+                            """,
+                            from: 'stephanietakam1@gmail.com',
+                            mimeType: 'text/plain'
+                        )
+                        error "❌ Couverture de code insuffisante. Consultez l'e-mail pour plus de détails."
+                    }
+                }
+            }
+        }
+
+        // Étape 6 : Déploiement
         stage('Deploiement') {
             when {
-                expression {  currentBuild.result == null || currentBuild.result == 'SUCCESS' }
+                expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
             }
             steps {
                 sh 'docker compose down'
@@ -52,27 +123,27 @@ pipeline {
                 sh 'docker compose up -d'
             }
         }
-
-        stage('Send mail') {
-            steps{
-                emailext(
-                    to: "stephanietakam@it.afrikpay.com",
-                    subject: "${env.JOB_NAME}",
-                    body: "Ceci est un test personnaliser \nVous pouvez consultez les logs depuis cette adresse: https://af5c-2c0f-2a80-37-a010-41a3-206f-3e63-7df7.ngrok-free.app/afrikpay-orange-simulator/ \nCredentials: \n Username: Steph-Anie \n Password: jscompany",
-                    from: 'stephanietakam1@gmail.com',
-                    mimeType: 'text/plain',
-                    attachmentsPattern: 'phpstan-baseline.neon'
-                )
-            }
-        }
-
     }
 
+    // Post-actions
     post {
         success {
+            // Envoyer un e-mail en cas de succès
+            emailext (
+                to: "${env.EMAIL_RECIPIENTS}",
+                subject: "Succès du build",
+                body: """
+                    Le build a réussi.
+                    Consultez les détails du build : ${env.BUILD_URL}
+                """,
+                from: 'stephanietakam1@gmail.com',
+                mimeType: 'text/plain'
+            )
             sh "git rev-parse HEAD > last_successful_commit.txt"
         }
         failure {
+            // En cas d'échec, un e-mail a déjà été envoyé dans les étapes précédentes
+            echo "Build échoué. Consultez les e-mails pour plus de détails."
             script {
                 def lastCommit = sh(script: "cat last_successful_commit.txt", returnStdout: true).trim()
                 if (lastCommit) {

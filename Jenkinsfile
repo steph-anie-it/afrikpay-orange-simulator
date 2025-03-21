@@ -12,7 +12,10 @@ pipeline {
         // Étape 1 : Checkout du code
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/steph-anie-it/afrikpay-orange-simulator.git'
+                checkout scmGit(branches: [[name: 'main']],
+                userRemoteConfigs: [
+                    [ url: 'https://github.com/steph-anie-it/afrikpay-orange-simulator.git' ]
+                ])
             }
         }
 

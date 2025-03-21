@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // Configuration des destinataires des e-mails
-        EMAIL_RECIPIENTS = 'stephanietakam@it.afrikpay.com, stephaniesanders044@gmail.com, slovanieslovanie@gmail.com'
+        EMAIL_RECIPIENTS = 'stephanietakam@it.afrikpay.com, stephaniesanders044@gmail.com'
         // Seuil de couverture de code (ex : 80 %)
         COVERAGE_THRESHOLD = 80
     }

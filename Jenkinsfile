@@ -82,7 +82,7 @@ pipeline {
                                 La couverture de code est insuffisante.
                                 Couverture actuelle : ${coveragePercentage}%
                                 Seuil requis : ${env.COVERAGE_THRESHOLD}%
-                                Consultez le rapport de couverture : ${env.BUILD_URL}artifact/coverage-report/index.html
+                                Consultez le rapport de couverture : https://cf19-2c0f-2a80-37-a010-d50f-79d9-5aa1-7929.ngrok-free.app/jenkins/job/${env.JOB_NAME}/${env.BUILD_NUMBER}/artifact/coverage-report/index.html
                             """,
                             from: 'stephanietakam1@gmail.com',
                             mimeType: 'text/plain'

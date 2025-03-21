@@ -71,9 +71,9 @@ pipeline {
                 script {
                     // Lire le rapport de couverture de code
                     def coverageReport = readFile('coverage-report/index.html')
-                    def coveragePercentage = (coverageReport =~ /(\d+(\.\d+)?%)/)[0][1].replace('%', '').toInteger()
+                    def coveragePercentage = (coverageReport =~ /(\d+(\.\d+)?%)/)[0][1].replace('%', '').toDouble()
 
-                    if (coveragePercentage < env.COVERAGE_THRESHOLD.toInteger()) {
+                    if (coveragePercentage < env.COVERAGE_THRESHOLD.toDouble()) {
                         // En cas de couverture insuffisante, envoyer un e-mail avec le lien vers le rapport
                         emailext (
                             to: "${env.EMAIL_RECIPIENTS}",

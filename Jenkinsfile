@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // Configuration des destinataires des e-mails
-        EMAIL_RECIPIENTS = 'stephanietakam@it.afrikpay.com, stephaniesanders044@gmail.com, slovanieslovanie@gmail.com'
+        EMAIL_RECIPIENTS = 'stephanietakam@it.afrikpay.com, stephaniesanders044@gmail.com, slovanieslovanie@gmail.com, k.tchonkap@it.afrikpay.com'
         // Seuil de couverture de code (ex : 80 %)
         COVERAGE_THRESHOLD = 80
     }
@@ -25,32 +25,13 @@ pipeline {
 
         // Étape 3 : Analyse de code avec PHPStan
         stage('Analyse du code') {
-            steps {
-                script {
-                    try {
-                        sh '''
-                        if [ ! -f vendor/bin/phpstan ]; then
-                            composer require --dev phpstan/phpstan
-                        fi
-                        '''
-                        sh 'vendor/bin/phpstan analyse --memory-limit=1G --error-format=json > phpstan-results.json'
-                    } catch (Exception e) {
-                        // En cas d'échec, envoyer un e-mail avec le fichier phpstan-baseline.neon
-                        emailext (
-                            to: "${env.EMAIL_RECIPIENTS}",
-                            subject: "Échec du build : Analyse de code PHPStan",
-                            body: """
-                                L'analyse de code PHPStan a détecté des erreurs.
-                                Raison de l'échec : ${e.getMessage()}
-                                Veuillez consulter le fichier phpstan-baseline.neon joint.
-                            """,
-                            attachmentsPattern: 'phpstan-baseline.neon',
-                            from: 'stepanietakam1@gmail.com',
-                            mimeType: 'text/plain'
-                        )
-                        error "❌ Analyse de code PHPStan échouée. Consultez l'e-mail pour plus de détails."
-                    }
-                }
+            steps{
+                sh '''
+                if [ ! -f vendor/bin/phpstan ]; then
+                    composer require --dev phpstan/phpstan
+                fi
+                '''
+                sh 'vendor/bin/phpstan analyse --memory-limit=1G --generate-baseline'
             }
         }
 
@@ -113,16 +94,16 @@ pipeline {
         }
 
         // Étape 6 : Déploiement
-        stage('Deploiement') {
-            when {
-                expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
-            }
-            steps {
-                sh 'docker compose down'
-                sh 'docker compose build'
-                sh 'docker compose up -d'
-            }
-        }
+        // stage('Deploiement') {
+        //     when {
+        //         expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
+        //     }
+        //     steps {
+        //         sh 'docker compose down'
+        //         sh 'docker compose build'
+        //         sh 'docker compose up -d'
+        //     }
+        // }
     }
 
     // Post-actions

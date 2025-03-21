@@ -102,7 +102,7 @@ pipeline {
                 expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
             }
             steps {
-                sh 'docker compose down'
+                sh 'docker compose down '
                 sh 'docker compose build'
                 sh 'docker compose up -d'
             }

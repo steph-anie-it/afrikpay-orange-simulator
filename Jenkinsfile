@@ -97,16 +97,16 @@ pipeline {
         }
 
         // Étape 6 : Déploiement
-        // stage('Deploiement') {
-        //     when {
-        //         expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
-        //     }
-        //     steps {
-        //         sh 'docker compose down'
-        //         sh 'docker compose build'
-        //         sh 'docker compose up -d'
-        //     }
-        // }
+        stage('Deploiement') {
+            when {
+                expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
+            }
+            steps {
+                sh 'docker compose down'
+                sh 'docker compose build'
+                sh 'docker compose up -d'
+            }
+        }
     }
 
     // Post-actions

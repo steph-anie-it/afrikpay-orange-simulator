@@ -12,7 +12,7 @@ pipeline {
         // Étape 1 : Checkout du code
         stage('Checkout') {
             steps {
-                git clone branch: 'main', url: 'https://github.com/steph-anie-it/afrikpay-orange-simulator.git'
+                git branch: 'main', url: 'https://github.com/steph-anie-it/afrikpay-orange-simulator.git'
             }
         }
 

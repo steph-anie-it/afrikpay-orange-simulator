@@ -69,32 +69,32 @@ pipeline {
         }
 
         // Étape 5 : Vérification de la couverture de code
-        // stage('Vérification de la couverture de code') {
-        //     steps {
-        //         script {
-        //             // Lire le rapport de couverture de code
-        //             def coverageReport = readFile('coverage-report/index.html')
-        //             def coveragePercentage = (coverageReport =~ /(\d+(\.\d+)?%)/)[0][1].replace('%', '').toDouble()
+        stage('Vérification de la couverture de code') {
+            steps {
+                script {
+                    // Lire le rapport de couverture de code
+                    def coverageReport = readFile('coverage-report/index.html')
+                    def coveragePercentage = (coverageReport =~ /(\d+(\.\d+)?%)/)[0][1].replace('%', '').toDouble()
 
-        //             if (coveragePercentage < env.COVERAGE_THRESHOLD.toDouble()) {
-        //                 // En cas de couverture insuffisante, envoyer un e-mail avec le lien vers le rapport
-        //                 emailext (
-        //                     to: "${env.EMAIL_RECIPIENTS}",
-        //                     subject: "Échec du build : Couverture de code insuffisante",
-        //                     body: """
-        //                         La couverture de code est insuffisante.
-        //                         Couverture actuelle : ${coveragePercentage}%
-        //                         Seuil requis : ${env.COVERAGE_THRESHOLD}%
-        //                         Consultez le rapport de couverture : https://cf19-2c0f-2a80-37-a010-d50f-79d9-5aa1-7929.ngrok-free.app/jenkins/job/${env.JOB_NAME}/${env.BUILD_NUMBER}/artifact/coverage-report/index.html
-        //                     """,
-        //                     from: 'stephanietakam1@gmail.com',
-        //                     mimeType: 'text/plain'
-        //                 )
-        //                 error "❌ Couverture de code insuffisante. Consultez l'e-mail pour plus de détails."
-        //             }
-        //         }
-        //     }
-        // }
+                    if (coveragePercentage < env.COVERAGE_THRESHOLD.toDouble()) {
+                        // En cas de couverture insuffisante, envoyer un e-mail avec le lien vers le rapport
+                        emailext (
+                            to: "${env.EMAIL_RECIPIENTS}",
+                            subject: "Échec du build : Couverture de code insuffisante",
+                            body: """
+                                La couverture de code est insuffisante.
+                                Couverture actuelle : ${coveragePercentage}%
+                                Seuil requis : ${env.COVERAGE_THRESHOLD}%
+                                Consultez le rapport de couverture : https://cf19-2c0f-2a80-37-a010-d50f-79d9-5aa1-7929.ngrok-free.app/jenkins/job/${env.JOB_NAME}/${env.BUILD_NUMBER}/artifact/coverage-report/index.html
+                            """,
+                            from: 'stephanietakam1@gmail.com',
+                            mimeType: 'text/plain'
+                        )
+                        error "❌ Couverture de code insuffisante. Consultez l'e-mail pour plus de détails."
+                    }
+                }
+            }
+        }
 
         // Étape 6 : Déploiement
         // stage('Deploiement') {

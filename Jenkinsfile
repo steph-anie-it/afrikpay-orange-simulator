@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // Configuration des destinataires des e-mails
-        EMAIL_RECIPIENTS = 'stephanietakam@it.afrikpay.com, stephaniesanders044@gmail.com, slovanieslovanie@gmail.com, k.tchonkap@it.afrikpay.com'
+        EMAIL_RECIPIENTS = 'stephanietakam@it.afrikpay.com, stephaniesanders044@gmail.com, slovanieslovanie@gmail.com'
         // Seuil de couverture de code (ex : 80 %)
         COVERAGE_THRESHOLD = 80
     }
@@ -12,7 +12,7 @@ pipeline {
         // Étape 1 : Checkout du code
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/steph-anie-it/afrikpay-orange-simulator.git'
+                git clone branch: 'main', url: 'https://github.com/steph-anie-it/afrikpay-orange-simulator.git'
             }
         }
 

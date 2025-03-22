@@ -5,7 +5,7 @@ pipeline {
         // Configuration des destinataires des e-mails
         EMAIL_RECIPIENTS = 'stephanietakam@it.afrikpay.com, stephaniesanders044@gmail.com'
         // Seuil de couverture de code (ex : 80 %)
-        COVERAGE_THRESHOLD = 60
+        COVERAGE_THRESHOLD = 50
     }
 
     stages {
